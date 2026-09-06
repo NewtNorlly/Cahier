@@ -1,0 +1,177 @@
+---
+import { render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Cover from "../../components/Cover.astro";
+import { getCatalog, getNoteById } from "../../lib/catalog";
+import {
+  collectionUrl,
+  encodePath,
+  withBase,
+} from "../../lib/url";
+
+export async function getStaticPaths() {
+  const catalog = await getCatalog();
+
+  return catalog.notes
+    .filter((note) => !note.draft)
+    .map((note) => ({ params: { id: note.id } }));
+}
+
+const id = Astro.params.id ?? "";
+const note = await getNoteById(id);
+
+if (!note || note.draft) {
+  throw new Error(`Note not found: ${id}`);
+}
+
+const { Content, headings } = await render(note.entry);
+const tableOfContents = headings
+  .filter((heading) => heading.depth === 2 || heading.depth === 3)
+  .slice(0, 24);
+const repositoryUrl = `https://github.com/NewtNorlly/Cahier/blob/main/${encodePath(note.sourcePath)}`;
+const kindLabel = note.kind === "book" ? "文献笔记" : note.kind === "stats" ? "阅读统计" : "讲稿";
+const sourceLabel = note.kind === "book" ? "查看原始来源" : "查看原始文档";
+
+/* 返回导航：文献笔记回「文献笔记」，课程讲稿回「教学讲稿」；讲稿另带「返回上级」到该课程归档页 */
+const isLiterature = note.collectionName === "文献笔记";
+const homeTarget = isLiterature ? "literature" : "lectures";
+const parentUrl = isLiterature ? undefined : collectionUrl(note.collectionId);
+---
+
+<BaseLayout
+  title={note.title}
+  description={note.description || `${note.collectionName}收录的${kindLabel}。`}
+  canonicalPath={`/notes/${encodeURIComponent(note.id)}/`}
+  pageClass="article-page"
+>
+  <div class="article-shell">
+    <nav class="article-back" aria-label="返回导航">
+      <a class="article-back__btn" href={`${withBase("/") + "#" + homeTarget}`}>返回首页</a>
+      {parentUrl && <a class="article-back__btn" href={parentUrl}>返回上级</a>}
+    </nav>
+  </div>
+
+  <header class="article-header">
+    <div class="article-shell article-header__grid">
+      <div>
+        <p class="eyebrow">{kindLabel} · {note.collectionName}</p>
+        <h1>{note.title}</h1>
+        {note.description && (
+          <p class="article-header__description">{note.description}</p>
+        )}
+        <div class="article-header__links">
+          {note.sourceUrl && (
+            <a href={note.sourceUrl} target="_blank" rel="noreferrer">{sourceLabel}</a>
+          )}
+          <a href={repositoryUrl} target="_blank" rel="noreferrer">查看原始文档</a>
+        </div>
+        {note.weread && (
+          <dl class="weread-facts" aria-label="阅读信息">
+            {note.weread.author && <div><dt>作者</dt><dd>{note.weread.author}</dd></div>}
+            {note.weread.progress && <div><dt>进度</dt><dd>{note.weread.progress}</dd></div>}
+            {note.weread.readingTime && <div><dt>时长</dt><dd>{note.weread.readingTime}</dd></div>}
+            {note.weread.lastReadDate && <div><dt>最后阅读</dt><dd>{note.weread.lastReadDate}</dd></div>}
+            {note.weread.noteCount !== undefined && <div><dt>划线</dt><dd>{note.weread.noteCount}</dd></div>}
+            {note.weread.reviewCount !== undefined && <div><dt>想法</dt><dd>{note.weread.reviewCount}</dd></div>}
+          </dl>
+        )}
+      </div>
+
+      <Cover
+        cover={note.cover}
+        title={note.title}
+        eager
+        class="article-header__cover"
+      />
+    </div>
+  </header>
+
+  <div class="article-shell article-layout">
+    <aside class="article-aside" aria-label="文章目录">
+      <div class="article-aside__inner">
+        {tableOfContents.length > 0 ? (
+          <>
+            <p class="article-aside__label">本文目录</p>
+            <ol>
+              {tableOfContents.map((heading) => (
+                <li data-depth={heading.depth}>
+                  <a href={`#${heading.slug}`}>{heading.text}</a>
+                </li>
+              ))}
+            </ol>
+          </>
+        ) : (
+          <>
+            <p class="article-aside__label">档案信息</p>
+            <ul>
+              <li><a href={collectionUrl(note.collectionId)}>{note.collectionName}</a></li>
+            </ul>
+          </>
+        )}
+      </div>
+    </aside>
+
+    <article class="prose">
+      <Content />
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  .weread-facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+    gap: 0.8rem;
+    margin: 1.6rem 0 0;
+  }
+  .weread-facts div {
+    background: color-mix(in srgb, var(--paper) 88%, white);
+    border: 1px solid var(--line);
+    border-radius: 0.55rem;
+    padding: 0.85rem 0.95rem;
+  }
+  .weread-facts dt { color: var(--ink-muted); font-size: 0.95rem; font-weight: 600; letter-spacing: 0.06em; }
+  .weread-facts dd { color: var(--ink); font-size: 1.15rem; font-weight: 600; margin: 0.3rem 0 0; }
+</style>
+
+<script>
+  const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>('.article-aside a[href^="#"]')];
+  const headings = tocLinks
+    .map((link) => {
+      const id = decodeURIComponent(link.hash.slice(1));
+      const heading = document.getElementById(id);
+      return heading ? { link, heading } : null;
+    })
+    .filter((item): item is { link: HTMLAnchorElement; heading: HTMLElement } => Boolean(item));
+
+  function setActiveHeading(id: string) {
+    headings.forEach(({ link, heading }) => {
+      const active = heading.id === id;
+      link.classList.toggle('is-active', active);
+      if (active) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+    });
+  }
+
+  if (headings.length > 0) {
+    const initialHeading = headings.find(({ heading }) => `#${encodeURIComponent(heading.id)}` === location.hash);
+    setActiveHeading((initialHeading ?? headings[0]).heading.id);
+
+    headings.forEach(({ link, heading }) => {
+      link.addEventListener('click', () => setActiveHeading(heading.id));
+    });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        const first = visible[0]?.target as HTMLElement | undefined;
+        if (first) setActiveHeading(first.id);
+      },
+      { rootMargin: '-12% 0px -72% 0px' },
+    );
+
+    headings.forEach(({ heading }) => observer.observe(heading));
+  }
+</script>

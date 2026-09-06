@@ -1,0 +1,52 @@
+---
+import type { Note } from "../lib/catalog";
+import { collectionUrl, noteUrl, topicUrl } from "../lib/url";
+import Cover from "./Cover.astro";
+
+interface Props {
+  note: Note;
+  showCollection?: boolean;
+}
+
+const { note, showCollection = false } = Astro.props;
+const kindLabel = note.kind === "book" ? "书摘" : note.kind === "stats" ? "阅读统计" : "文章";
+---
+
+<article class="entry-card">
+  <a class="entry-card__cover-link" href={noteUrl(note.id)} tabindex="-1" aria-hidden="true">
+    <Cover cover={note.cover} title={note.title} thumbnail />
+  </a>
+  <div class="entry-card__body">
+    <div class="entry-card__meta">
+      <span>{kindLabel}</span>
+      {showCollection && (
+        <a href={collectionUrl(note.collectionId)}>{note.collectionName}</a>
+      )}
+    </div>
+    <h3><a href={noteUrl(note.id)}>{note.title}</a></h3>
+    {note.weread && (
+      <p class="entry-card__reading-meta">
+        {[note.weread.author, note.weread.progress, note.weread.noteCount !== undefined ? `${note.weread.noteCount} 条划线` : undefined]
+          .filter(Boolean)
+          .join(" · ")}
+      </p>
+    )}
+    {note.description && <p class="entry-card__description">{note.description}</p>}
+    {note.topics.length > 0 && (
+      <ul class="entry-card__topics" aria-label="所属专题">
+        {note.topics.slice(0, 3).map((topic) => (
+          <li><a href={topicUrl(topic.id)}>{topic.name}</a></li>
+        ))}
+      </ul>
+    )}
+  </div>
+</article>
+
+<style>
+  .entry-card__reading-meta {
+    color: var(--ink-muted);
+    font-size: 0.82rem;
+    line-height: 1.55;
+    margin: 0.25rem 0 0;
+  }
+</style>

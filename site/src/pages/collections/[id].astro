@@ -1,0 +1,82 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import EntryCard from "../../components/EntryCard.astro";
+import { getCatalog, getCollectionById } from "../../lib/catalog";
+import { topicUrl, withBase } from "../../lib/url";
+
+export async function getStaticPaths() {
+  const catalog = await getCatalog();
+  /* 文献笔记已由首页承载，不再单独生成归档页 */
+  return catalog.collections
+    .filter((collection) => collection.name !== "文献笔记")
+    .map((collection) => ({ params: { id: collection.id } }));
+}
+
+const id = Astro.params.id ?? "";
+const collection = await getCollectionById(id);
+if (!collection) throw new Error(`Collection not found: ${id}`);
+
+const catalog = await getCatalog();
+const notes = collection.notes.filter((note) => !note.draft);
+const topics = catalog.topics.filter((topic) => topic.collectionId === collection.id);
+
+const kindLabel = "课程";
+---
+
+<BaseLayout
+  title={collection.name}
+  description={collection.description || `${collection.name}的文本档案。`}
+  canonicalPath={`/collections/${encodeURIComponent(collection.id)}/`}
+>
+  <div class="article-shell">
+    <nav class="article-back" aria-label="返回导航">
+      <a class="article-back__btn" href={`${withBase("/") + "#lectures"}`}>返回首页</a>
+    </nav>
+  </div>
+
+  <div class="shell" style="padding-top: 0.5rem;">
+    <p class="coll-desc">
+      <strong>{collection.name}</strong>（{kindLabel}），共收录文本&nbsp;<strong>{notes.length} 篇</strong>{topics.length > 0 && `，专题&nbsp;${topics.length} 个`}。
+    </p>
+
+    {topics.length > 0 && (
+      <p class="coll-desc" style="margin-top: 0.4rem;">
+        专题：
+        {topics.map((t, i) => (
+          <><a href={topicUrl(t.id)}>{t.name}</a>{i < topics.length - 1 ? " · " : ""}</>
+        ))}
+      </p>
+    )}
+  </div>
+
+  <section class="listing-section" style="padding-block-start: 1.5rem;">
+    <div class="shell">
+      {notes.length > 0 ? (
+        <div class="entry-grid">
+          {notes.map((note) => <EntryCard note={note} />)}
+        </div>
+      ) : (
+        <p class="empty-state">这个合集暂时没有可发布的文本。</p>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .coll-desc {
+    color: var(--ink);
+    font-family: var(--font-serif);
+    font-size: var(--text-lead);
+    line-height: 1.85;
+  }
+  .coll-desc strong {
+    font-weight: 700;
+  }
+  .coll-desc a {
+    color: var(--vermillion-dark);
+    text-decoration: none;
+  }
+  .coll-desc a:hover {
+    text-decoration: underline;
+  }
+</style>

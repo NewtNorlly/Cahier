@@ -1,0 +1,284 @@
+---
+import Cover from "../Cover.astro";
+import { getCatalog, type CollectionSummary } from "../../lib/catalog";
+import { pinyinInitialOf } from "../../lib/pinyin";
+import { collectionUrl, noteUrl } from "../../lib/url";
+
+interface Props {
+  active?: boolean;
+}
+
+const { active = false } = Astro.props;
+
+const catalog = await getCatalog();
+
+/* 教学讲稿 = 文献笔记之外的所有合集（课程） */
+const collections = catalog.collections.filter((collection) => collection.name !== "文献笔记");
+
+interface LetterGroup {
+  letter: string;
+  collections: CollectionSummary[];
+}
+
+const groups = new Map<string, CollectionSummary[]>();
+for (const col of collections) {
+  const letter = pinyinInitialOf(col.name);
+  if (!groups.has(letter)) groups.set(letter, []);
+  groups.get(letter)!.push(col);
+}
+
+const sortedLetters = [...groups.keys()].sort((a, b) => {
+  if (a === "#") return 1;
+  if (b === "#") return -1;
+  return a.localeCompare(b);
+});
+
+const letterGroups: LetterGroup[] = sortedLetters.map((letter) => ({
+  letter,
+  collections: groups.get(letter)!,
+}));
+
+const kindLabel = (_kind: string) => "课程";
+
+/* 相关文本：课程合集下的全部单篇讲稿，供搜索时作为第二类结果 */
+interface ArticleHit {
+  title: string;
+  collection: string;
+  href: string;
+  thumb: string;
+}
+const articleIndex: ArticleHit[] = collections
+  .flatMap((col) =>
+    col.notes
+      .filter((note) => !note.draft)
+      .map((note) => ({
+        title: note.title,
+        collection: col.name,
+        href: noteUrl(note.id),
+        thumb: note.cover?.thumbnailSrc ?? note.cover?.src ?? "",
+      })),
+  )
+  .sort((a, b) => a.title.localeCompare(b.title, "zh-CN"));
+---
+
+<section
+  class:list={["module-panel", { "is-active": active }]}
+  id="panel-lectures"
+  data-module-panel="lectures"
+  role="tabpanel"
+  aria-labelledby="tab-lectures"
+>
+  <div class="shell">
+    <!-- ═══ 独立搜索 ═══ -->
+    <div class="module-search">
+      <div class="module-search__inner">
+        <svg class="module-search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input
+          type="search"
+          class="module-search__input"
+          placeholder="搜索课程或讲稿…"
+          aria-label="搜索教学讲稿"
+          data-blog-search
+          autocomplete="off"
+        />
+      </div>
+    </div>
+
+    <!-- ═══ 简约首字母导航 ═══ -->
+    <nav class="blog-alpha" aria-label="按首字母筛选课程">
+      <button type="button" class="blog-alpha__btn is-active" data-letter="" aria-pressed="true">全部</button>
+      {letterGroups.map((g) => (
+        <button
+          type="button"
+          class="blog-alpha__btn"
+          data-letter={g.letter}
+          aria-pressed="false"
+        >
+          {g.letter}
+        </button>
+      ))}
+    </nav>
+
+    <!-- ═══ 第一类结果：课程（首字母分组） ═══ -->
+    <section class="result-section" data-collection-section>
+      <h3 class="result-section__title" data-collection-title hidden>课程</h3>
+      <div class="blog-groups" data-blog-groups>
+        {letterGroups.map((g) => (
+          <div class="blog-group" data-letter={g.letter}>
+            <div class="blog-group__header">
+              <span class="blog-group__letter" aria-hidden="true">{g.letter}</span>
+            </div>
+            <div class="blog-grid">
+              {g.collections.map((col) => (
+                <a
+                  class="blog-card"
+                  href={collectionUrl(col.id)}
+                  data-search-text={`${col.name} 课程`.toLowerCase()}
+                >
+                  <div class="blog-card__cover">
+                    <Cover cover={col.cover} title={col.name} thumbnail />
+                  </div>
+                  <div class="blog-card__body">
+                    <span class="blog-card__kind">{kindLabel(col.kind)}</span>
+                    <h4 class="blog-card__name">{col.name}</h4>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ═══ 第二类结果：相关文本（单篇讲稿，搜索时动态渲染） ═══ -->
+    <section class="result-section" data-text-section hidden>
+      <h3 class="result-section__title">相关讲稿</h3>
+      <ul class="text-result-list" data-text-list></ul>
+    </section>
+
+    <script is:inline type="application/json" data-article-index set:html={JSON.stringify(articleIndex)} />
+
+    <div class="shelf-empty" data-blog-empty hidden>
+      <p>没有找到匹配的课程或讲稿</p>
+    </div>
+
+    {collections.length === 0 && <p class="empty-state">暂无教学讲稿内容。</p>}
+  </div>
+</section>
+
+<script>
+  // Lectures module: letter filter + independent search
+  const root = document.querySelector<HTMLElement>("#panel-lectures");
+  const btns = root ? Array.from(root.querySelectorAll<HTMLButtonElement>(".blog-alpha__btn")) : [];
+  const groupsEl = root ? Array.from(root.querySelectorAll<HTMLElement>(".blog-group")) : [];
+  const searchInput = root?.querySelector<HTMLInputElement>("[data-blog-search]") ?? null;
+  const searchBox = root?.querySelector<HTMLElement>(".module-search__inner") ?? null;
+  const groupsContainer = root?.querySelector<HTMLElement>("[data-blog-groups]") ?? null;
+  const collectionSection = root?.querySelector<HTMLElement>("[data-collection-section]") ?? null;
+  const collectionTitle = root?.querySelector<HTMLElement>("[data-collection-title]") ?? null;
+  const textSection = root?.querySelector<HTMLElement>("[data-text-section]") ?? null;
+  const textList = root?.querySelector<HTMLElement>("[data-text-list]") ?? null;
+  const emptyEl = root?.querySelector<HTMLElement>("[data-blog-empty]") ?? null;
+
+  type ArticleHit = { title: string; collection: string; href: string; thumb: string };
+  let articleIndex: ArticleHit[] = [];
+  try {
+    const raw = root?.querySelector<HTMLScriptElement>("[data-article-index]")?.textContent ?? "[]";
+    articleIndex = JSON.parse(raw) as ArticleHit[];
+  } catch (e) {
+    articleIndex = [];
+  }
+  const MAX_TEXT_HITS = 30;
+
+  let activeLetter = "";
+  let searchQuery = "";
+
+  function escapeHTML(value: string): string {
+    return value
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function renderTextHits(): number {
+    if (!textList || !textSection) return 0;
+    if (!searchQuery) {
+      textSection.hidden = true;
+      textList.innerHTML = "";
+      return 0;
+    }
+    const hits = articleIndex
+      .filter((a) => a.title.toLowerCase().includes(searchQuery))
+      .slice(0, MAX_TEXT_HITS);
+
+    textList.innerHTML = hits
+      .map((a) => {
+        const thumb = a.thumb
+          ? `<span class="text-result__thumb"><img loading="lazy" decoding="async" src="${escapeHTML(a.thumb)}" alt="" /></span>`
+          : `<span class="text-result__thumb text-result__thumb--text">${escapeHTML(Array.from(a.title)[0] ?? "文")}</span>`;
+        return `<li class="text-result-item"><a href="${escapeHTML(a.href)}">${thumb}<span class="text-result__main"><span class="text-result__title">${escapeHTML(a.title)}</span><span class="text-result__via">${escapeHTML(a.collection)}</span></span><span class="text-result__arrow" aria-hidden="true">›</span></a></li>`;
+      })
+      .join("");
+    textSection.hidden = hits.length === 0;
+    return hits.length;
+  }
+
+  function applyFilters() {
+    let collectionVisible = 0;
+    for (const group of groupsEl) {
+      const letter = group.dataset.letter ?? "";
+      const letterMatch = !activeLetter || letter === activeLetter;
+      const groupCards = Array.from(group.querySelectorAll<HTMLElement>(".blog-card"));
+      let groupVisible = 0;
+
+      for (const card of groupCards) {
+        const text = card.dataset.searchText ?? "";
+        const searchMatch = !searchQuery || text.includes(searchQuery);
+        const show = letterMatch && searchMatch;
+        card.style.display = show ? "" : "none";
+        if (show) groupVisible++;
+      }
+
+      group.style.display = letterMatch && groupVisible > 0 ? "" : "none";
+      collectionVisible += groupVisible;
+    }
+
+    const textVisible = renderTextHits();
+
+    if (collectionTitle) collectionTitle.hidden = !searchQuery;
+    if (collectionSection) collectionSection.hidden = searchQuery ? collectionVisible === 0 : false;
+
+    if (emptyEl) emptyEl.hidden = collectionVisible + textVisible > 0;
+  }
+
+  function revealResults() {
+    applyFilters();
+    const target = collectionSection ?? groupsContainer;
+    if (!target) return;
+    const rect = target.getBoundingClientRect();
+    if (rect.top > 140) {
+      window.scrollTo({ top: rect.top + window.scrollY - 104, behavior: "smooth" });
+    }
+  }
+
+  for (const btn of btns) {
+    btn.addEventListener("click", () => {
+      for (const b of btns) {
+        b.classList.remove("is-active");
+        b.setAttribute("aria-pressed", "false");
+      }
+      btn.classList.add("is-active");
+      btn.setAttribute("aria-pressed", "true");
+      activeLetter = btn.dataset.letter ?? "";
+      applyFilters();
+    });
+  }
+
+  searchBox?.addEventListener("click", (event) => {
+    if (event.target !== searchInput) searchInput?.focus();
+  });
+
+  if (searchInput) {
+    searchInput.addEventListener("input", (event) => {
+      if ((event as InputEvent).isComposing) return;
+      searchQuery = searchInput.value.trim().toLowerCase();
+      applyFilters();
+    });
+    searchInput.addEventListener("compositionend", () => {
+      searchQuery = searchInput.value.trim().toLowerCase();
+      applyFilters();
+    });
+    searchInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        searchInput.blur();
+        revealResults();
+      }
+    });
+    searchInput.addEventListener("search", revealResults);
+  }
+</script>

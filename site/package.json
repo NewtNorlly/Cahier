@@ -1,0 +1,31 @@
+{
+  "name": "cahier",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.9.0",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "dev": "node ./scripts/sync-assets.mjs && astro dev",
+    "generate:covers": "node ./scripts/generate-missing-covers.mjs",
+    "sync-assets": "node ./scripts/sync-assets.mjs",
+    "check": "astro check",
+    "build": "node ./scripts/sync-assets.mjs && astro check && astro build && node ./scripts/check-built-site.mjs",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "^7.2.1",
+    "@astrojs/sitemap": "^3.7.3",
+    "astro": "^7.1.2",
+    "rehype-autolink-headings": "^7.1.0",
+    "rehype-slug": "^6.0.0",
+    "unist-util-visit": "^5.1.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@types/node": "^24.0.0",
+    "sharp": "0.35.3",
+    "typescript": "^6.0.0"
+  }
+}

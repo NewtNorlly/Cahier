@@ -1,0 +1,244 @@
+---
+import "../styles/global.css";
+import { withBase } from "../lib/url";
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonicalPath?: string | false;
+  pageClass?: string;
+}
+
+const {
+  title,
+  description = "Cahier — 文献笔记与教学讲稿档案",
+  canonicalPath = "/",
+  pageClass = "",
+} = Astro.props;
+
+const siteName = "Cahier";
+const documentTitle = title ? `${title}｜${siteName}` : siteName;
+const canonicalUrl = canonicalPath !== false && Astro.site
+  ? new URL(withBase(canonicalPath), Astro.site)
+  : undefined;
+---
+
+<!doctype html>
+<html lang="zh-CN" data-theme="cobalt">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href={withBase("favicon.ico") + "?v=cahier1"} sizes="any" />
+    <link rel="icon" type="image/png" sizes="180x180" href={withBase("favicon.png") + "?v=cahier1"} />
+    <link rel="apple-touch-icon" href={withBase("favicon.png") + "?v=cahier1"} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f4f7fe" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+    <title>{documentTitle}</title>
+  </head>
+  <body class={pageClass}>
+    <a class="skip-link" href="#main-content">跳到正文</a>
+
+    <header class="site-header" id="siteHeader">
+      <div class="shell site-header__inner">
+        <div class="site-header__left">
+          <a class="site-brand" href={withBase("/")} aria-label="Cahier 首页">
+            <span class="site-brand__copy">
+              <span class="site-brand__name">Cahier</span>
+            </span>
+          </a>
+        </div>
+
+        <div class="site-header__center">
+          <slot name="header-center" />
+        </div>
+
+        <div class="site-header__right">
+          <!-- 游戏入口 · 手柄按钮（置于时钟左侧） -->
+          <button
+            type="button"
+            class="gamepad-portal"
+            id="gamepadPortal"
+            aria-label="进入游戏空间"
+            title="进入游戏空间"
+          >
+            <svg class="gamepad-portal__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M6 11h4M8 9v4"/>
+              <circle cx="15" cy="10" r="1"/>
+              <circle cx="17.5" cy="12" r="1"/>
+              <path d="M4 8h16a2 2 0 0 1 2 2v2a6 6 0 0 1-6 6h-8a6 6 0 0 1-6-6v-2a2 2 0 0 1 2-2z"/>
+            </svg>
+            <span class="gamepad-portal__label">回到书桌</span>
+          </button>
+
+          <div class="site-clock" id="siteClock" aria-label="当前时间">
+            <span class="site-clock__dot" aria-hidden="true"></span>
+            <span class="site-clock__time" id="clockTime">--:--:--</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell site-footer__inner">
+        <div>
+          <p class="site-footer__title">Cahier</p>
+          <p class="site-footer__note">文献笔记 · 教学讲稿｜个人学术档案</p>
+        </div>
+        <p class="site-footer__meta">
+          内容以仓库原始文件为准<br />
+          <a href="https://github.com/NewtNorlly/Cahier">查看 GitHub 仓库</a>
+        </p>
+      </div>
+    </footer>
+
+    <!-- 游戏空间覆盖层 · Aperture Reveal -->
+    <div class="game-overlay" id="gameOverlay" aria-hidden="true">
+      <iframe
+        class="game-overlay__frame"
+        id="gameFrame"
+        src={withBase("game/index.html")}
+        title="恐龙快跑"
+        loading="eager"
+      ></iframe>
+    </div>
+
+    <script>
+      // Beijing time clock
+      function updateClock() {
+        const now = new Date();
+        const parts = new Intl.DateTimeFormat("en-GB", {
+          timeZone: "Asia/Shanghai",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        }).formatToParts(now);
+        const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "00";
+        const el = document.getElementById("clockTime");
+        if (el) el.textContent = `${get("hour")}:${get("minute")}:${get("second")}`;
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
+
+      // Scroll fade: hide when scrolling down, show when scrolling up or hovering
+      const header = document.getElementById("siteHeader");
+      let lastScroll = 0;
+      let ticking = false;
+
+      function onScroll() {
+        const currentScroll = window.scrollY;
+        if (currentScroll > 100 && currentScroll > lastScroll) {
+          header?.classList.add("is-hidden");
+        } else {
+          header?.classList.remove("is-hidden");
+        }
+        lastScroll = currentScroll;
+        ticking = false;
+      }
+
+      window.addEventListener(
+        "scroll",
+        () => {
+          if (!ticking) {
+            requestAnimationFrame(onScroll);
+            ticking = true;
+          }
+        },
+        { passive: true },
+      );
+
+      /* ════════ Aperture Reveal · 游戏空间入口/返回 ════════ */
+      const gamepadBtn = document.getElementById("gamepadPortal") as HTMLButtonElement | null;
+      const gameOverlay = document.getElementById("gameOverlay") as HTMLElement | null;
+      const siteHeader = document.getElementById("siteHeader");
+
+      let isGameOpen = false;
+      let isAnimating = false;
+
+      const APERTURE_EASE = "cubic-bezier(0.77, 0, 0.175, 1)";
+      const APERTURE_DURATION = 700; // ms
+
+      function buttonCenter(btn: HTMLElement): { cx: number; cy: number } {
+        const rect = btn.getBoundingClientRect();
+        return {
+          cx: rect.left + rect.width / 2,
+          cy: rect.top + rect.height / 2,
+        };
+      }
+
+      function openGame() {
+        if (!gamepadBtn || !gameOverlay || isAnimating) return;
+        isAnimating = true;
+
+        const { cx, cy } = buttonCenter(gamepadBtn);
+
+        // 重置为从按钮中心开始的零半径圆
+        gameOverlay.style.transition = "none";
+        gameOverlay.style.clipPath = `circle(0px at ${cx}px ${cy}px)`;
+        gameOverlay.style.display = "flex";
+        gameOverlay.setAttribute("aria-hidden", "false");
+
+        // 强制 reflow 后再开启动画
+        void gameOverlay.offsetWidth;
+
+        gameOverlay.style.transition = `clip-path ${APERTURE_DURATION}ms ${APERTURE_EASE}`;
+        gameOverlay.style.clipPath = `circle(150% at ${cx}px ${cy}px)`;
+
+        // 动画完成后切换按钮为"回到书桌"，并把顶栏提到覆盖层之上使其可点击
+        window.setTimeout(() => {
+          isGameOpen = true;
+          isAnimating = false;
+          gamepadBtn.classList.add("is-return");
+          gamepadBtn.setAttribute("aria-label", "回到书桌");
+          gamepadBtn.title = "回到书桌";
+          siteHeader?.classList.remove("is-hidden");
+          siteHeader?.classList.add("is-game-open");
+        }, APERTURE_DURATION);
+      }
+
+      function closeGame() {
+        if (!gamepadBtn || !gameOverlay || isAnimating) return;
+        isAnimating = true;
+
+        const { cx, cy } = buttonCenter(gamepadBtn);
+
+        // 先切换回手柄图标（此时覆盖层仍全屏，按钮视觉变化被覆盖层遮挡）
+        gamepadBtn.classList.remove("is-return");
+        gamepadBtn.setAttribute("aria-label", "进入游戏空间");
+        gamepadBtn.title = "进入游戏空间";
+
+        gameOverlay.style.transition = "none";
+        gameOverlay.style.clipPath = `circle(150% at ${cx}px ${cy}px)`;
+
+        void gameOverlay.offsetWidth;
+
+        gameOverlay.style.transition = `clip-path ${APERTURE_DURATION}ms ${APERTURE_EASE}`;
+        gameOverlay.style.clipPath = `circle(0px at ${cx}px ${cy}px)`;
+
+        window.setTimeout(() => {
+          isGameOpen = false;
+          isAnimating = false;
+          gameOverlay.style.display = "none";
+          gameOverlay.setAttribute("aria-hidden", "true");
+          siteHeader?.classList.remove("is-game-open");
+        }, APERTURE_DURATION);
+      }
+
+      gamepadBtn?.addEventListener("click", () => {
+        if (isGameOpen) closeGame();
+        else openGame();
+      });
+
+      // ESC 键返回书桌
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && isGameOpen) closeGame();
+      });
+    </script>
+  </body>
+</html>
