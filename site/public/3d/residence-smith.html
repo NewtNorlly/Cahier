@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN" style="--sky-top:#8bcbf9;--sky-mid:#e0effd;--sky-bot:#efe7da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Residence Smith · 3D 住宅模型</title>
+<style>
+  html, body {
+    margin: 0; height: 100%; overflow: hidden;
+    /* 模型加载前先铺一层钴蓝天空，杜绝黑块；JS 渲染后无缝衔接 */
+    background:
+      linear-gradient(to bottom,
+        var(--sky-top, #8bcbf9) 0%,
+        var(--sky-mid, #e0effd) 55%,
+        var(--sky-bot, #efe7da) 100%);
+  }
+  #stage {
+    width: 100vw; height: 100vh; display: block;
+    opacity: 1;
+  }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<script src="./residence-smith.js"></script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "845b4d1c84044bd3a44f165ee43031be"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

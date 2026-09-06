@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="description" content="恐龙快跑——四种玩法的横屏小游戏">
+  <meta name="theme-color" content="#07c160">
+  <title>恐龙快跑</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="dino.css?v=20260828l">
+  <link rel="icon" type="image/png" href="images/小恐龙-removebg-preview.png">
+</head>
+<body>
+
+  <!-- Loading -->
+  <div id="loading">
+    <div class="loading-dino"><img src="images/小恐龙-removebg-preview.png" alt=""></div>
+    <div class="loading-bar"><div id="loading-progress"></div></div>
+    <p id="loading-text" data-i18n="loading">加载中…</p>
+  </div>
+
+  <!-- Rotate device overlay -->
+  <div id="rotate-overlay">
+    <div class="rotate-icon">
+      <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+        <line x1="12" y1="18" x2="12.01" y2="18"/>
+      </svg>
+    </div>
+    <p data-i18n="rotate_hint">请横屏使用</p>
+  </div>
+
+  <!-- Game canvas -->
+  <canvas id="game"></canvas>
+
+  <!-- Score (casual mode only) -->
+  <div id="score" hidden>
+    <span class="score-label" data-i18n="score_label">分数</span>
+    <span id="score-current">0</span>
+    <span class="score-sep">/</span>
+    <span id="score-target">10</span>
+    <span id="shield-badge" hidden>
+      <span class="shield-icon">🔥</span>
+      <span id="shield-count">1</span>
+    </span>
+  </div>
+
+  <!-- Level indicator (maze/platformer/portal modes) -->
+  <div id="level-indicator" hidden>
+    <span id="level-name"></span>
+  </div>
+
+  <!-- Top-center controls -->
+  <div id="top-controls">
+    <button id="sound-toggle" class="top-btn" title="音乐开关" aria-label="音乐开关">
+      <img src="images/icon_sound.png?v=20260828l" alt="声音" class="top-btn-icon">
+    </button>
+    <button id="btn-flight" class="top-btn" title="飞行" aria-label="飞行" hidden>
+      <img src="images/icon_flight.png?v=20260828l" alt="飞行" class="top-btn-icon">
+    </button>
+    <button id="btn-pause" class="top-btn" title="暂停" aria-label="暂停">
+      <img src="images/icon_pause.png?v=20260828l" alt="暂停" class="top-btn-icon">
+    </button>
+  </div>
+
+  <!-- Start screen — 沉浸式大背景 -->
+  <div id="startscreen" class="overlay overlay--immersive">
+    <div class="start-bg"></div>
+    <div class="start-content">
+      <div class="start-header">
+        <div class="start-logo"><img src="images/小恐龙-removebg-preview.png" alt=""></div>
+        <h1 class="start-title" data-i18n="game_title">恐龙快跑</h1>
+        <p class="start-subtitle" data-i18n="game_subtitle">四种玩法 · 横屏冒险</p>
+      </div>
+      <div class="mode-grid mode-grid--immersive">
+        <button class="mode-btn mode-btn--immersive" data-mode="casual">
+          <div class="mode-icon mode-icon--casual">
+            <svg viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="24" r="22" fill="#e8f8ef"/>
+              <path d="M14 30c2-6 6-10 10-10s8 4 10 10" stroke="#07c160" stroke-width="2.5" stroke-linecap="round" fill="none" stroke-dasharray="4 3"/>
+              <circle cx="20" cy="20" r="2.5" fill="#07c160"/>
+              <circle cx="28" cy="20" r="2.5" fill="#07c160"/>
+              <path d="M16 34h16" stroke="#07c160" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span class="mode-name" data-i18n="mode_casual">休闲</span>
+          <span class="mode-desc" data-i18n="mode_casual_desc">横版跑酷</span>
+        </button>
+        <button class="mode-btn mode-btn--immersive" data-mode="novice">
+          <div class="mode-icon mode-icon--novice">
+            <svg viewBox="0 0 48 48" fill="none">
+              <rect x="6" y="6" width="36" height="36" rx="6" fill="#fff3e0"/>
+              <path d="M6 18h12V6M18 18h12M30 18h12V6M18 18v12M30 18v12M6 30h12M18 30v12M30 30h12M30 42V30" stroke="#ff976a" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="12" cy="12" r="2.5" fill="#ff976a"/>
+              <circle cx="36" cy="36" r="2.5" fill="#ff976a"/>
+            </svg>
+          </div>
+          <span class="mode-name" data-i18n="mode_novice">上手</span>
+          <span class="mode-desc" data-i18n="mode_novice_desc">空中迷宫</span>
+        </button>
+        <button class="mode-btn mode-btn--immersive" data-mode="hooked">
+          <div class="mode-icon mode-icon--hooked">
+            <svg viewBox="0 0 48 48" fill="none">
+              <rect x="6" y="6" width="36" height="36" rx="6" fill="#e3f2fd"/>
+              <path d="M10 36l6-10 6 4 8-12 8 8" stroke="#1989fa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <circle cx="10" cy="36" r="3" fill="#1989fa"/>
+              <rect x="30" y="8" width="10" height="14" rx="2" fill="none" stroke="#1989fa" stroke-width="2"/>
+              <path d="M33 8V5M37 8V5" stroke="#1989fa" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span class="mode-name" data-i18n="mode_hooked">入坑</span>
+          <span class="mode-desc" data-i18n="mode_hooked_desc">平台跳跃</span>
+        </button>
+        <button class="mode-btn mode-btn--immersive" data-mode="expert">
+          <div class="mode-icon mode-icon--expert">
+            <svg viewBox="0 0 48 48" fill="none">
+              <rect x="6" y="6" width="36" height="36" rx="6" fill="#f3e5f5"/>
+              <ellipse cx="24" cy="24" rx="10" ry="10" fill="none" stroke="#7c3aed" stroke-width="2.5"/>
+              <ellipse cx="24" cy="24" rx="5" ry="5" fill="#7c3aed" opacity="0.3"/>
+              <circle cx="24" cy="24" r="2.5" fill="#7c3aed"/>
+              <circle cx="12" cy="36" r="3" fill="#7c3aed" opacity="0.5"/>
+              <circle cx="36" cy="12" r="3" fill="#7c3aed" opacity="0.5"/>
+            </svg>
+          </div>
+          <span class="mode-name" data-i18n="mode_expert">专家</span>
+          <span class="mode-desc" data-i18n="mode_expert_desc">传送迷岛</span>
+        </button>
+      </div>
+      <div class="start-footer">
+        <div class="start-hint">
+          <span class="wx-hint-item" data-i18n="hint_keyboard">⌨️ 方向键/WASD</span>
+          <span class="wx-hint-item" data-i18n="hint_space">空格跳跃</span>
+          <span class="wx-hint-item" data-i18n="hint_touch">📱 触屏摇杆</span>
+        </div>
+        <div class="lang-switcher">
+          <button class="lang-btn" data-lang="zh">中文</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="fr">FR</button>
+          <button class="lang-btn" data-lang="de">DE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Casual mode popup -->
+  <div id="casual-popup" class="overlay overlay--modal" hidden>
+    <div class="wx-card wx-card--modal">
+      <div class="wx-card-body">
+        <h2 class="modal-title" data-i18n="mode_casual_settings">休闲模式</h2>
+        <p class="modal-desc" data-i18n="casual_desc">横版跑酷，躲避刺猬和蝙蝠，吃圣女果获得护盾</p>
+        <div class="wx-section">
+          <p class="wx-section-label">
+            <span data-i18n="target_score">目标分数</span>
+            <span class="wx-section-hint" data-i18n="target_hint">设置你的挑战目标</span>
+          </p>
+          <div class="score-stepper">
+            <button class="stepper-btn" id="score-minus" aria-label="−">−</button>
+            <input type="number" id="target-score-input" value="10" min="1" max="999" inputmode="numeric">
+            <button class="stepper-btn" id="score-plus" aria-label="+">+</button>
+          </div>
+        </div>
+        <div class="modal-btns">
+          <button class="wx-btn-secondary modal-back" data-i18n="back">返回</button>
+          <button id="start-casual" class="wx-btn-primary" data-i18n="start_game">开始游戏</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Level select popup (novice / hooked / expert) -->
+  <div id="level-popup" class="overlay overlay--modal" hidden>
+    <div class="wx-card wx-card--modal">
+      <div class="wx-card-body">
+        <h2 class="modal-title" id="level-popup-title">选择关卡</h2>
+        <p class="modal-desc" id="level-popup-desc"></p>
+        <div class="level-grid" id="level-grid"></div>
+        <div class="modal-btns">
+          <button class="wx-btn-secondary modal-back" data-i18n="back">返回</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pause popup -->
+  <div id="pause-popup" class="overlay overlay--modal" hidden>
+    <div class="wx-card wx-card--modal wx-card--small">
+      <div class="wx-card-body">
+        <h2 class="modal-title" data-i18n="paused">已暂停</h2>
+        <div class="modal-btns modal-btns--col">
+          <button id="btn-resume" class="wx-btn-primary" data-i18n="resume">继续</button>
+          <button id="btn-quit" class="wx-btn-secondary" data-i18n="quit_to_menu">返回首页</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settlement screen -->
+  <div id="gameover" class="overlay" hidden>
+    <div class="wx-card wx-card--result">
+      <div class="result-icon" id="result-icon">🏆</div>
+      <h1 class="result-title" id="result-title" data-i18n="victory">通关！</h1>
+      <div class="result-score-box" id="result-score-box">
+        <div class="result-score-row">
+          <span class="result-score-label" data-i18n="final_score">本次得分</span>
+          <span class="result-score-value" id="final-score">0</span>
+        </div>
+        <div class="result-score-row">
+          <span class="result-score-label" data-i18n="target_score">目标分数</span>
+          <span class="result-score-value" id="final-target">10</span>
+        </div>
+      </div>
+      <p class="result-msg" id="result-msg"></p>
+      <div class="result-btns">
+        <button id="btn-home" class="wx-btn-secondary" data-i18n="back_home">返回首页</button>
+        <button id="restart" class="wx-btn-primary" data-i18n="play_again">再来一次</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile touch surface -->
+  <div id="mobile-controls" class="mobile-ctrl"></div>
+
+  <!-- Confetti canvas (above all overlays) -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <script src="dino.js?v=20260828l"></script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "9eaa691912f546d18acd2e7e9ba60f12"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

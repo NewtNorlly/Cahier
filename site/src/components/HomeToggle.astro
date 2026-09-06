@@ -1,0 +1,113 @@
+---
+interface Props {
+  /** 当前激活的模块 */
+  active?: "literature" | "lectures";
+}
+
+const { active = "literature" } = Astro.props;
+---
+
+<div class="module-switch" role="tablist" aria-label="切换首页内容模块">
+  <div class="module-switch__track">
+    <button
+      type="button"
+      role="tab"
+      id="tab-literature"
+      aria-selected={active === "literature"}
+      aria-controls="panel-literature"
+      class:list={["module-switch__btn", { "is-active": active === "literature" }]}
+      data-module-target="literature"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+      </svg>
+      <span>文献笔记</span>
+    </button>
+    <button
+      type="button"
+      role="tab"
+      id="tab-lectures"
+      aria-selected={active === "lectures"}
+      aria-controls="panel-lectures"
+      class:list={["module-switch__btn", { "is-active": active === "lectures" }]}
+      data-module-target="lectures"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+      </svg>
+      <span>教学讲稿</span>
+    </button>
+  </div>
+</div>
+
+<style>
+  .module-switch {
+    display: inline-flex;
+  }
+
+  .module-switch__track {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .module-switch__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 8.5rem;
+    justify-content: center;
+    padding: 0.6rem 1.4rem;
+    border: 1px solid hsl(var(--border) / 0.7);
+    border-radius: 999px;
+    background: hsl(var(--card) / 0.66);
+    box-shadow: inset 0 1px 0 hsl(var(--card) / 0.8), 0 2px 12px hsl(var(--fg) / 0.06);
+    backdrop-filter: blur(14px) saturate(1.4);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    color: hsl(var(--muted-fg));
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: color 0.3s var(--ease-out, ease), transform var(--duration-press) var(--ease-out),
+      background-color 0.3s var(--ease-out);
+    white-space: nowrap;
+  }
+
+  .module-switch__btn svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .module-switch__btn.is-active {
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-fg));
+    border-color: hsl(var(--story-accent) / 0.25);
+  }
+
+  .module-switch__btn:active {
+    transform: scale(0.97);
+  }
+
+  @media (max-width: 44rem) {
+    .module-switch__btn {
+      min-width: auto;
+      padding: 0.5rem 0.9rem;
+      font-size: 0.8rem;
+      gap: 0.35rem;
+    }
+
+    .module-switch__btn span {
+      display: none;
+    }
+
+    .module-switch__btn svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+  }
+</style>

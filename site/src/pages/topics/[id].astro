@@ -1,0 +1,67 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import EntryCard from "../../components/EntryCard.astro";
+import { getCatalog, getTopicById } from "../../lib/catalog";
+import { collectionUrl, withBase } from "../../lib/url";
+
+export async function getStaticPaths() {
+  const catalog = await getCatalog();
+  return catalog.topics.map((topic) => ({ params: { id: topic.id } }));
+}
+
+const id = Astro.params.id ?? "";
+const topic = await getTopicById(id);
+if (!topic) throw new Error(`Topic not found: ${id}`);
+
+const notes = topic.notes.filter((note) => !note.draft);
+---
+
+<BaseLayout
+  title={topic.name}
+  description={`${topic.collectionName}中的${topic.name}专题文本。`}
+  canonicalPath={`/topics/${encodeURIComponent(topic.id)}/`}
+>
+  <div class="article-shell">
+    <nav class="article-back" aria-label="返回导航">
+      <a class="article-back__btn" href={`${withBase("/") + "#lectures"}`}>返回首页</a>
+      <a class="article-back__btn" href={collectionUrl(topic.collectionId)}>返回上级</a>
+    </nav>
+  </div>
+
+  <div class="shell" style="padding-top: 0.5rem;">
+    <p class="coll-desc">
+      专题<strong>{topic.name}</strong>，隶属「<a href={collectionUrl(topic.collectionId)}>{topic.collectionName}</a>」，共收录文本&nbsp;<strong>{notes.length} 篇</strong>。
+    </p>
+  </div>
+
+  <section class="listing-section" style="padding-block-start: 1.5rem;">
+    <div class="shell">
+      {notes.length > 0 ? (
+        <div class="entry-grid">
+          {notes.map((note) => <EntryCard note={note} showCollection />)}
+        </div>
+      ) : (
+        <p class="empty-state">这个专题暂时没有可发布的文本。</p>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .coll-desc {
+    color: var(--ink);
+    font-family: var(--font-serif);
+    font-size: var(--text-lead);
+    line-height: 1.85;
+  }
+  .coll-desc strong {
+    font-weight: 700;
+  }
+  .coll-desc a {
+    color: var(--vermillion-dark);
+    text-decoration: none;
+  }
+  .coll-desc a:hover {
+    text-decoration: underline;
+  }
+</style>

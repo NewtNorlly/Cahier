@@ -1,0 +1,58 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HomeToggle from "../components/HomeToggle.astro";
+import LiteratureModule from "../components/modules/LiteratureModule.astro";
+import LecturesModule from "../components/modules/LecturesModule.astro";
+
+const literatureActive = true;
+const lecturesActive = false;
+---
+
+<BaseLayout
+  title="文献笔记 · 教学讲稿"
+  description="Cahier — 个人学术档案：文献笔记与教学讲稿。"
+  canonicalPath="/"
+>
+  <Fragment slot="header-center">
+    <HomeToggle active="literature" />
+  </Fragment>
+  <LiteratureModule active={literatureActive} />
+  <LecturesModule active={lecturesActive} />
+</BaseLayout>
+
+<script>
+  /* ════════════ 双模块切换（文献笔记 / 教学讲稿） ════════════ */
+  const tabs = document.querySelectorAll<HTMLButtonElement>("[data-module-target]");
+  const panels = document.querySelectorAll<HTMLElement>("[data-module-panel]");
+
+  function activateModule(name: "literature" | "lectures", updateHash = true) {
+    panels.forEach((panel) => {
+      panel.classList.toggle("is-active", panel.dataset.modulePanel === name);
+    });
+    tabs.forEach((tab) => {
+      const on = tab.dataset.moduleTarget === name;
+      tab.classList.toggle("is-active", on);
+      tab.setAttribute("aria-selected", String(on));
+    });
+    if (updateHash) {
+      const hash = name === "lectures" ? "#lectures" : "#literature";
+      if (location.hash !== hash) history.replaceState(null, "", hash);
+    }
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const name = (tab.dataset.moduleTarget ?? "literature") as "literature" | "lectures";
+      activateModule(name);
+    });
+  });
+
+  /* 支持 #literature / #lectures 直达深链 */
+  const initial = location.hash === "#lectures" ? "lectures" : "literature";
+  activateModule(initial, false);
+
+  window.addEventListener("hashchange", () => {
+    const name = location.hash === "#lectures" ? "lectures" : "literature";
+    activateModule(name, false);
+  });
+</script>

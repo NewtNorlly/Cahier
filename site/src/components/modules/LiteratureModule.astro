@@ -1,0 +1,190 @@
+---
+import { noteUrl, withBase } from "../../lib/url";
+import { getBookshelf } from "../../lib/bookshelf";
+
+interface Props {
+  active?: boolean;
+}
+
+const { active = false } = Astro.props;
+
+const data = await getBookshelf();
+const { categories, allBooks } = data;
+
+/* 每篇文献所属分类（用于前端筛选） */
+const categoryOf = new Map<string, string>();
+for (const cat of categories) {
+  for (const note of cat.notes) categoryOf.set(note.id, cat.name);
+}
+
+function firstChar(title: string): string {
+  return Array.from(title.trim())[0] ?? "文";
+}
+
+/* 学术教材布面配色（沉稳、低饱和），「全部」固定用深藏青 */
+const CLOTH = [
+  "#3E5C4A", "#7A3B36", "#8A5A2B", "#46556E", "#5C4A3A",
+  "#3F5D63", "#6B4A63", "#54613F", "#7A4B2E", "#374B63",
+  "#5D4E37", "#4A5A52", "#6E4650",
+];
+---
+
+<section
+  class:list={["module-panel", { "is-active": active }]}
+  id="panel-literature"
+  data-module-panel="literature"
+  role="tabpanel"
+  aria-labelledby="tab-literature"
+>
+  <div class="shell">
+    <!-- ═══ 独立搜索 ═══ -->
+    <div class="module-search">
+      <div class="module-search__inner">
+        <svg class="module-search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input
+          type="search"
+          class="module-search__input"
+          placeholder="搜索文献或作者…"
+          aria-label="搜索文献笔记"
+          data-shelf-search
+          autocomplete="off"
+        />
+      </div>
+    </div>
+
+    <!-- ═══ 3D 模型展示（Residence Smith 真实住宅） ═══ -->
+    <div class="shelf-3d">
+      <iframe
+        class="shelf-3d__frame"
+        id="shelfHouseFrame"
+        src={withBase("3d/residence-smith.html") + "#cobalt"}
+        title="3D 住宅模型"
+        loading="eager"
+      ></iframe>
+    </div>
+
+    <!-- ═══ 书背分类（最左「全部」，竖排，点击筛选） ═══ -->
+    <div class="shelf-spines" role="tablist" aria-label="按学科门类筛选文献">
+      <button type="button" class="shelf-spine is-active" style="--cloth:#2F415B" data-shelf-filter="" aria-pressed="true">全部</button>
+      {categories.map((cat, i) => (
+        <button
+          type="button"
+          class="shelf-spine"
+          style={`--cloth:${CLOTH[i % CLOTH.length]}`}
+          data-shelf-filter={cat.name}
+          aria-pressed="false"
+        >{cat.name}</button>
+      ))}
+    </div>
+    <div class="shelf-spines-plank" aria-hidden="true"></div>
+
+    <!-- ═══ 文献网格 ═══ -->
+    <div class="shelf-grid" data-shelf-grid>
+      {allBooks.map((note) => {
+        const cover = note.cover;
+        return (
+        <a
+          class="book-card"
+          href={noteUrl(note.id)}
+          data-shelf-book={categoryOf.get(note.id) ?? ""}
+          data-search-text={`${note.title} ${note.author ?? ""}`.toLowerCase()}
+        >
+          <span class="book-card__cover">
+            {cover ? (
+              <img src={cover.thumbnailSrc ?? cover.src} alt={`${note.title}封面`} loading="lazy" decoding="async" />
+            ) : (
+              <span class="book-card__fallback">{firstChar(note.title)}</span>
+            )}
+          </span>
+          <span class="book-card__body">
+            <span class="book-card__title">{note.title}</span>
+            <span class="book-card__meta">
+              {note.author && <span>{note.author}</span>}
+            </span>
+          </span>
+        </a>
+        );
+      })}
+    </div>
+
+    <div class="shelf-empty" data-shelf-empty hidden>
+      <p>没有找到匹配的文献</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Literature module: book-spine category filter + independent search
+  const root = document.querySelector<HTMLElement>("#panel-literature");
+  const spines = root ? Array.from(root.querySelectorAll<HTMLButtonElement>("[data-shelf-filter]")) : [];
+  const grid = root?.querySelector<HTMLElement>("[data-shelf-grid]") ?? null;
+  const books = grid ? Array.from(grid.querySelectorAll<HTMLElement>("[data-shelf-book]")) : [];
+  const searchInput = root?.querySelector<HTMLInputElement>("[data-shelf-search]") ?? null;
+  const searchBox = root?.querySelector<HTMLElement>(".module-search__inner") ?? null;
+  const emptyEl = root?.querySelector<HTMLElement>("[data-shelf-empty]") ?? null;
+
+  let activeCategory = "";
+  let searchQuery = "";
+
+  function applyFilters() {
+    let visible = 0;
+    for (const book of books) {
+      const catMatch = !activeCategory || book.dataset.shelfBook === activeCategory;
+      const text = book.dataset.searchText ?? "";
+      const searchMatch = !searchQuery || text.includes(searchQuery);
+      const show = catMatch && searchMatch;
+      book.style.display = show ? "" : "none";
+      if (show) visible++;
+    }
+    if (emptyEl) emptyEl.hidden = visible > 0;
+  }
+
+  function revealResults() {
+    applyFilters();
+    if (!grid) return;
+    const rect = grid.getBoundingClientRect();
+    if (rect.top > 140) {
+      window.scrollTo({ top: rect.top + window.scrollY - 104, behavior: "smooth" });
+    }
+  }
+
+  for (const spine of spines) {
+    spine.addEventListener("click", () => {
+      for (const s of spines) {
+        s.classList.remove("is-active");
+        s.setAttribute("aria-pressed", "false");
+      }
+      spine.classList.add("is-active");
+      spine.setAttribute("aria-pressed", "true");
+      activeCategory = spine.dataset.shelfFilter ?? "";
+      applyFilters();
+    });
+  }
+
+  searchBox?.addEventListener("click", (event) => {
+    if (event.target !== searchInput) searchInput?.focus();
+  });
+
+  if (searchInput) {
+    searchInput.addEventListener("input", (event) => {
+      if ((event as InputEvent).isComposing) return;
+      searchQuery = searchInput.value.trim().toLowerCase();
+      applyFilters();
+    });
+    searchInput.addEventListener("compositionend", () => {
+      searchQuery = searchInput.value.trim().toLowerCase();
+      applyFilters();
+    });
+    searchInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        searchInput.blur();
+        revealResults();
+      }
+    });
+    searchInput.addEventListener("search", revealResults);
+  }
+</script>

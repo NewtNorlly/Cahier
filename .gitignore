@@ -1,0 +1,41 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Preview / temp
+.preview/
+screenshot_*.png
+preview_*.png
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Node / Astro
+site/node_modules/
+site/dist/
+site/.astro/
+
+# PDF staging (intermediate processing)
+_pdf-staging/
+
+# Processing scripts (not needed in repo)
+pdf_to_md*.py
+analyze_drawings.py
+diagnose_pdf.py
+inspect_pdf.py
+verify_output.py
+
+# WeChat DevTools config (contains AppID)
+project.config.json
+project.private.config.json
