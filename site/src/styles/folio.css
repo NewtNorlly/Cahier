@@ -133,42 +133,52 @@
     transparent 75%, #EDEDED 75%, #EDEDED calc(75% + 0.5px), transparent calc(75% + 0.5px));
 }
 
-/* 每一页 PDF = 一个 folio：中栏原文纸，左右连贯便签纸 */
+/* 每一页 PDF = 一个 folio：由若干「带」纵向堆叠；每带内中栏原文纸与左右便签纸三栏对齐。
+   带（band）是垂直对齐单元：同一带内三栏顶部对齐，批注因此落在其呼应原文的高度上。 */
 .folio {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
-  align-items: start;
+  display: flex;
+  flex-direction: column;
   /* 页内上下留白不切断竖线背景；页间以虚线分页（左右便签纸在分页处同步断开） */
   padding: clamp(1rem, 2vw, 1.5rem) 0 clamp(1.6rem, 3vw, 2.2rem);
   border-bottom: 1px dashed #E6E6E6;
 }
 .folio:last-child { border-bottom: 0; }
 
+/* 一带 = 一行三栏网格（左注 / 原文 / 右注），顶部对齐 → 笔记与原文垂直位置一一对应 */
+.folio__band {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
+  align-items: start;
+}
+
 .folio__col {
   min-width: 0;
 }
 
-/* 页码：位于原文纸（中栏）下方 */
+/* 页码：位于原文纸（中栏）下方；中栏占 50% 宽且水平居中，故宽度取半并居中 */
 .folio__pageno {
-  grid-column: 2;
-  grid-row: 2;
+  width: 50%;
   justify-self: center;
-  margin: 0.9rem 0 0;
+  margin: 0.9rem auto 0;
   font-family: Georgia, var(--font-latin);
   font-style: italic;
   font-size: 0.76rem;
   letter-spacing: 0.22em;
+  text-align: center;
   color: #B0A99B;
 }
 
-/* 三栏同行、顶部对齐 → 笔记与原文垂直位置一一对应 */
-.folio__col--left  { grid-column: 1; grid-row: 1; align-self: start; }
-.folio__col--main  { grid-column: 2; grid-row: 1; }
-.folio__col--right { grid-column: 3; grid-row: 1; align-self: start; }
+/* 三栏同带、顶部对齐 → 笔记与原文垂直位置一一对应 */
+.folio__col--left  { grid-column: 1; align-self: start; }
+.folio__col--main  { grid-column: 2; }
+.folio__col--right { grid-column: 3; align-self: start; }
 
 /* ── 左右栏：连贯便签纸（纯白背景，宽度=原文纸一半）── */
-.folio__col--left  { padding: clamp(1.3rem, 2.6vw, 2.4rem) 1.1rem 0 0.4rem; }
-.folio__col--right { padding: clamp(1.3rem, 2.6vw, 2.4rem) 0.4rem 0 1.1rem; }
+/* 水平内边距逐带保留；纵向留白只落在整页首/末带，避免带间凭空拉高批注与原文的错位 */
+.folio__col--left  { padding: 0 1.1rem 0 0.4rem; }
+.folio__col--right { padding: 0 0.4rem 0 1.1rem; }
+.folio__band:first-child .folio__col--left,
+.folio__band:first-child .folio__col--right { padding-top: clamp(1.2rem, 2.4vw, 2.2rem); }
 
 /* ── 中栏：纯白原文纸（无卡片边框/阴影，与便签纸同属一张纸面）── */
 .folio__col--main {
@@ -176,12 +186,15 @@
   border: 0;
   border-radius: 0;
   box-shadow: none;
-  padding: clamp(1.2rem, 2.4vw, 2.2rem) clamp(1.3rem, 3vw, 2.8rem);
+  /* 水平内边距逐带保留；纵向留白只落在整页首/末带，保证带与带之间行距自然 */
+  padding: 0 clamp(1.3rem, 3vw, 2.8rem);
   color: #1F1C18;
   font-family: var(--font-serif);
   font-size: 0.9rem;
   line-height: 1.78;
 }
+.folio__band:first-child .folio__col--main { padding-top: clamp(1.2rem, 2.4vw, 2.2rem); }
+.folio__band:last-child  .folio__col--main { padding-bottom: clamp(1.2rem, 2.4vw, 2.2rem); }
 
 .folio__col--main p {
   margin-block: 0.72em;
@@ -210,8 +223,17 @@
   text-indent: 0;
 }
 
-.folio__col--main > :first-child { margin-top: 0; }
-.folio__col--main > :last-child { margin-bottom: 0; }
+/* 整页首带的首个块、末带的末块去掉外边距（由栏内边距统一留白）；
+   中间各带保留正常段距，避免被切开的相邻段落/标题挤在一起 */
+.folio__band:first-child .folio__col--main > :first-child { margin-top: 0; }
+.folio__band:last-child .folio__col--main > :last-child { margin-bottom: 0; }
+
+/* 同一段落为对齐批注而被拆到相邻带时，后续片段（para-run）无缩进、无段距，
+   视觉上与上段无缝连成同一自然段 */
+.folio__col--main p.para-run {
+  margin-block: 0;
+  text-indent: 0;
+}
 
 .folio__col--main h2,
 .folio__col--main h3 {
@@ -663,12 +685,6 @@
 }
 
 /* ── 响应式 ── */
-@media (max-width: 1180px) {
-  .folio {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
-  }
-}
-
 @media (max-width: 920px) {
   /* 单列：去掉三栏竖线背景 */
   .doc-body {
@@ -676,14 +692,26 @@
     background-color: #FFFFFF;
   }
   .folio {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.9rem;
+    gap: 0;
     padding: 0.6rem 0 1.4rem;
   }
-  .folio__pageno { grid-column: 1; grid-row: auto; order: 2; margin: 0.2rem 0 0; }
-  .folio__col--main { grid-column: 1; grid-row: auto; order: 1; }
-  .folio__col--left { grid-column: 1; grid-row: auto; order: 3; padding: 0.2rem 0 0; }
-  .folio__col--right { grid-column: 1; grid-row: auto; order: 4; padding: 0.2rem 0 0; }
+  /* 每带内部单列堆叠：先原文，再左注、右注，使批注紧跟其呼应段落 */
+  .folio__band {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.9rem;
+  }
+  .folio__pageno {
+    width: auto;
+    order: 2;
+    margin: 0.4rem 0 0;
+  }
+  .folio__col--main { grid-column: 1; order: 1; padding-inline: 0.4rem; }
+  .folio__col--left { grid-column: 1; order: 2; padding: 0.2rem 0.4rem 0; }
+  .folio__col--right { grid-column: 1; order: 3; padding: 0.2rem 0.4rem 0; }
+  .folio__band:first-child .folio__col--left,
+  .folio__band:first-child .folio__col--right,
+  .folio__band:first-child .folio__col--main { padding-top: 0.6rem; }
+  .folio__band:last-child .folio__col--main { padding-bottom: 0.4rem; }
   .folio__col--left,
   .folio__col--right {
     display: grid;
