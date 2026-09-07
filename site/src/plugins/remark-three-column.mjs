@@ -168,6 +168,14 @@ export function remarkThreeColumn() {
       const cols = new Map(buckets);
       out.push(makeFolio(folioLabel, cols));
     }
+    // 全文没有任何 folio 标记 → 自动包成单页三栏
+    // （中栏 = 全部内容；左右便签纸为空但同样呈现，保证笔记栏连贯）
+    if (!out.some((n) => n.type === 'folio') && preFolio.length) {
+      const cols = new Map();
+      cols.set('M', makeCol('M', preFolio));
+      out.push(makeFolio('', cols));
+      preFolio = [];
+    }
     flushPre();
 
     tree.children = out;

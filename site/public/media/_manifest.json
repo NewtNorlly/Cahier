@@ -1,81 +1,81 @@
 {
-  "generatedAt": "2026-09-07T06:35:45.534Z",
+  "generatedAt": "2026-09-07T08:36:17.968Z",
   "files": [
     {
-      "path": "_cjk-test.webp",
-      "bytes": 7038
+      "path": "_masthead_peek.png",
+      "bytes": 48965
     },
     {
       "path": "德语/covers/german-480.webp",
-      "bytes": 3482
+      "bytes": 6458
     },
     {
       "path": "德语/covers/german-960_thumb.webp",
-      "bytes": 1096
+      "bytes": 3398
     },
     {
       "path": "德语/covers/german-960.webp",
-      "bytes": 9670
+      "bytes": 16496
     },
     {
       "path": "决策理论与方法/covers/decision-theory-480.webp",
-      "bytes": 5090
+      "bytes": 15718
     },
     {
       "path": "决策理论与方法/covers/decision-theory-960_thumb.webp",
-      "bytes": 1610
+      "bytes": 7476
     },
     {
       "path": "决策理论与方法/covers/decision-theory-960.webp",
-      "bytes": 14024
+      "bytes": 40600
     },
     {
       "path": "民事诉讼法/covers/civil-procedure-480.webp",
-      "bytes": 4476
+      "bytes": 10892
     },
     {
       "path": "民事诉讼法/covers/civil-procedure-960_thumb.webp",
-      "bytes": 1384
+      "bytes": 5278
     },
     {
       "path": "民事诉讼法/covers/civil-procedure-960.webp",
-      "bytes": 12354
+      "bytes": 28856
     },
     {
       "path": "脑图集/covers/brain-atlas-480.webp",
-      "bytes": 4072
+      "bytes": 9962
     },
     {
       "path": "脑图集/covers/brain-atlas-960_thumb.webp",
-      "bytes": 1290
+      "bytes": 4480
     },
     {
       "path": "脑图集/covers/brain-atlas-960.webp",
-      "bytes": 11146
+      "bytes": 26792
     },
     {
       "path": "社会保障学/covers/social-security-480.webp",
-      "bytes": 4428
+      "bytes": 11286
     },
     {
       "path": "社会保障学/covers/social-security-960_thumb.webp",
-      "bytes": 1370
+      "bytes": 5264
     },
     {
       "path": "社会保障学/covers/social-security-960.webp",
-      "bytes": 12246
+      "bytes": 29986
     },
     {
       "path": "土地资源管理/covers/land-resource-480.webp",
-      "bytes": 4992
+      "bytes": 20922
     },
     {
       "path": "土地资源管理/covers/land-resource-960_thumb.webp",
-      "bytes": 1554
+      "bytes": 9726
     },
     {
       "path": "土地资源管理/covers/land-resource-960.webp",
-      "bytes": 13752
+      "bytes": 54626
     },
     {
       "path": "文献笔记/covers/legal-zhishichanquan-480.webp",
@@ -95,39 +95,39 @@
     },
     {
       "path": "宪法/covers/constitution-480.webp",
-      "bytes": 3716
+      "bytes": 8234
     },
     {
       "path": "宪法/covers/constitution-960_thumb.webp",
-      "bytes": 1132
+      "bytes": 3760
     },
     {
       "path": "宪法/covers/constitution-960.webp",
-      "bytes": 10810
+      "bytes": 22300
     },
     {
       "path": "知识产权法基础理论/covers/ip-theory-480.webp",
-      "bytes": 5414
+      "bytes": 15134
     },
     {
       "path": "知识产权法基础理论/covers/ip-theory-960_thumb.webp",
-      "bytes": 1572
+      "bytes": 7326
     },
     {
       "path": "知识产权法基础理论/covers/ip-theory-960.webp",
-      "bytes": 14360
+      "bytes": 39216
     },
     {
       "path": "中国法制史/covers/legal-history-480.webp",
-      "bytes": 4326
+      "bytes": 9558
     },
     {
       "path": "中国法制史/covers/legal-history-960_thumb.webp",
-      "bytes": 1298
+      "bytes": 4936
     },
     {
       "path": "中国法制史/covers/legal-history-960.webp",
-      "bytes": 12036
+      "bytes": 24048
     }
   ]
 }

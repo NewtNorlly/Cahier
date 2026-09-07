@@ -118,58 +118,73 @@
   margin-right: 0.5rem;
 }
 
-/* ── 文档体容器 ── */
+/* ── 文档体容器：四根竖线画在这里，贯穿所有页（左右连贯便签纸）── */
 .doc-body {
   width: min(calc(100% - 2.5rem), 96rem);
   margin-inline: auto;
   padding-top: clamp(2rem, 4.5vw, 3.6rem);
   display: flex;
   flex-direction: column;
-  gap: clamp(1.5rem, 3vw, 2.4rem);
+  gap: 0; /* 页间虚线由 .folio 自身 border-bottom 提供 */
+  /* 纯白纸面 + 四根竖线：
+     左便签纸侧边条(粉) · 中-左分隔线 · 中-右分隔线 · 右便签纸侧边条(蓝)
+     列宽 1:2:1 → 分隔线精确落在 25% / 75% */
+  background-color: #FFFFFF;
+  background-image: linear-gradient(90deg,
+    #F3D8CB 0, #F3D8CB 3px, transparent 3px,
+    transparent calc(25% - 0.5px), #E9E4DA calc(25% - 0.5px), #E9E4DA 25%, transparent 25%,
+    transparent 75%, #E9E4DA 75%, #E9E4DA calc(75% + 0.5px), transparent calc(75% + 0.5px),
+    transparent calc(100% - 3px), #D5E2EE calc(100% - 3px), #D5E2EE 100%);
 }
 
-/* 每一页 PDF = 一个 folio：中栏原文，左右横线本批注 */
+/* 每一页 PDF = 一个 folio：中栏原文纸，左右连贯便签纸 */
 .folio {
   display: grid;
-  grid-template-columns:
-    minmax(12.5rem, 0.92fr)
-    minmax(0, 2.55fr)
-    minmax(12.5rem, 0.92fr);
-  gap: clamp(1rem, 2vw, 1.9rem);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
   align-items: start;
+  /* 页内上下留白不切断竖线背景；页间以虚线分页 */
+  padding: clamp(1rem, 2vw, 1.5rem) 0 clamp(1.6rem, 3vw, 2.2rem);
+  border-bottom: 1px dashed #E3DED2;
 }
+.folio:last-child { border-bottom: 0; }
 
 .folio__col {
   min-width: 0;
 }
 
-/* 页码：像笔记本页脚的手写页码 */
+/* 页码：位于原文纸（中栏）下方 */
 .folio__pageno {
   grid-column: 2;
-  grid-row: 1;
+  grid-row: 2;
   justify-self: center;
-  margin: 0 0 0.2rem;
+  margin: 0.9rem 0 0;
   font-family: Georgia, var(--font-latin);
   font-style: italic;
   font-size: 0.76rem;
-  letter-spacing: 0.2em;
-  color: #B3AC9E;
+  letter-spacing: 0.22em;
+  color: #B0A99B;
 }
 
-.folio__col--left { grid-column: 1; grid-row: 1 / span 2; align-self: start; }
-.folio__col--main { grid-column: 2; grid-row: 2; }
-.folio__col--right { grid-column: 3; grid-row: 1 / span 2; align-self: start; }
+/* 三栏同行、顶部对齐 → 笔记与原文垂直位置一一对应 */
+.folio__col--left  { grid-column: 1; grid-row: 1; align-self: start; }
+.folio__col--main  { grid-column: 2; grid-row: 1; }
+.folio__col--right { grid-column: 3; grid-row: 1; align-self: start; }
 
-/* ── 中栏：干净纸面（原文）── */
+/* ── 左右栏：连贯便签纸（纯白背景，宽度=原文纸一半）── */
+.folio__col--left  { padding: clamp(1.3rem, 2.6vw, 2.4rem) 1.1rem 0 0.4rem; }
+.folio__col--right { padding: clamp(1.3rem, 2.6vw, 2.4rem) 0.4rem 0 1.1rem; }
+
+/* ── 中栏：干净白纸（原文）── */
 .folio__col--main {
-  background: #FEFDFB;
-  border: 1px solid #E8E5DB;
-  border-radius: 6px;
+  background: #FFFFFF;
+  border: 1px solid #E4E0D4;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px hsl(var(--fg) / 0.04), 0 14px 32px hsl(var(--fg) / 0.06);
   padding: clamp(1.4rem, 2.8vw, 2.6rem) clamp(1.4rem, 3.2vw, 3rem);
   color: var(--ink-prose);
   font-family: var(--font-serif);
   font-size: 0.95rem;
-  line-height: 1.82;
+  line-height: 1.8;
 }
 
 .folio__col--main p {
@@ -315,27 +330,47 @@
   letter-spacing: 0.02em;
 }
 
-/* 脚注：比正文更小、更疏、更浅 —— 脚注不是正文 */
+/* 脚注：比正文更小、更疏、更浅 —— 脚注不是正文（学术规范：短横线分隔）*/
 .folio-footnotes {
   margin-top: 2rem;
-  padding: 0.9rem 1rem 0.95rem;
-  border-top: 1px dashed #DCD5C6;
+  padding-top: 0.6rem;
   font-size: 0.78rem;
-  line-height: 1.62;
-  color: #8C8578;
+  line-height: 1.72;
+  color: #6F685C;
   text-align: justify;
 }
-.folio-footnotes p { text-indent: 0; margin-block: 0.35rem; }
-.folio-footnotes__label {
+.folio-footnotes::before {
+  content: "";
   display: block;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.24em;
-  color: #B3AC9E;
-  margin-bottom: 0.45rem;
+  width: 2.2em;
+  height: 1px;
+  background: #B8B1A2;
+  margin-bottom: 0.75rem;
+}
+.folio-footnotes p { text-indent: 0; margin-block: 0.5rem; }
+/* 脚注按条分行（fn-break 注入的 <br> 呈现为段间距） */
+.folio-footnotes br.fn-break {
+  display: block;
+  content: "";
+  margin-top: 0.5em;
+}
+.folio-footnotes__label {
+  display: none; /* 页注小标题不展示，脚注直接按条分行 */
 }
 
-/* ── 左/右栏：横线本（康奈尔）── */
+/* 脚注序号：右上角标（尊重学术论文视觉规范） */
+.fn-ref,
+.folio__col--main .fn-ref {
+  font-size: 0.72em;
+  vertical-align: super;
+  line-height: 0;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: #6B6355;
+  text-decoration: none;
+}
+
+/* ── 左/右栏：连贯便签纸（纯白背景，无横线）── */
 .folio__col--left,
 .folio__col--right {
   display: flex;
@@ -343,17 +378,8 @@
   gap: 0.65rem;
   font-size: 0.84rem;
   line-height: 1.85;
-  padding-top: 2.5rem; /* 与中栏正文首行对齐 */
-  padding-left: 1.85rem;
-  padding-right: 0.9rem;
-  padding-bottom: 1.4rem;
   color: #4A453C;
-  border-radius: 4px;
-  /* 横线纸：左侧红边线 + 细横线 */
-  background-color: #FBF8F1;
-  background-image:
-    linear-gradient(90deg, transparent 0, transparent 1.1rem, #E9C8BC 1.1rem, #E9C8BC 1.28rem, transparent 1.28rem),
-    repeating-linear-gradient(to bottom, transparent 0, transparent calc(1.85em - 1px), #E8E2D2 calc(1.85em - 1px), #E8E2D2 1.85em);
+  background: transparent; /* 竖线背景由 .doc-body 提供，贯穿所有页 */
 }
 
 /* 批注 callout —— 去掉卡片，文字直接坐在横线上 */
@@ -421,21 +447,26 @@
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  padding: 0.22rem 0.65rem;
+  padding: 0.18rem 0.6rem;
   border-radius: 999px;
   font-size: 0.72rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.06em;
   color: #7A6F5C;
-  background: #F3EFE4;
-  border: 1px solid #E3DCC8;
-  margin-bottom: 0.3rem;
+  background: #F7F4EC;
+  border: 1px solid #E7E1D2;
+  margin-bottom: 0.4rem;
 }
-.struct-chip::before { content: "★"; color: #B08A3E; }
+.struct-chip::before {
+  content: "";
+  width: 0.34em;
+  height: 0.34em;
+  border-radius: 50%;
+  background: #C7A875;
+}
 
-/* 空批注栏不渲染背景，保持留白 */
-.folio__col--left:empty,
-.folio__col--right:empty { visibility: hidden; }
+/* 空批注栏：便签纸始终呈现（连贯），内容为空时保持空栏 */
+/* 注：移动端单列时仍隐藏，见响应式 */
 
 /* ── 讲稿专用：层级清晰的提纲（中栏）── */
 .lecture-outline .outline-section-title {
@@ -500,20 +531,25 @@
 /* ── 响应式 ── */
 @media (max-width: 1180px) {
   .folio {
-    grid-template-columns: minmax(10.5rem, 0.9fr) minmax(0, 2.4fr) minmax(10.5rem, 0.9fr);
-    gap: 1rem;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
   }
 }
 
 @media (max-width: 920px) {
+  /* 单列：去掉三栏竖线背景 */
+  .doc-body {
+    background-image: none;
+    background-color: #FFFFFF;
+  }
   .folio {
     grid-template-columns: minmax(0, 1fr);
     gap: 0.9rem;
+    padding: 0.6rem 0 1.4rem;
   }
-  .folio__pageno { grid-column: 1; grid-row: auto; }
+  .folio__pageno { grid-column: 1; grid-row: auto; order: 2; margin: 0.2rem 0 0; }
   .folio__col--main { grid-column: 1; grid-row: auto; order: 1; }
-  .folio__col--left { grid-column: 1; grid-row: auto; order: 2; padding-top: 0; }
-  .folio__col--right { grid-column: 1; grid-row: auto; order: 3; padding-top: 0; }
+  .folio__col--left { grid-column: 1; grid-row: auto; order: 3; padding: 0.2rem 0 0; }
+  .folio__col--right { grid-column: 1; grid-row: auto; order: 4; padding: 0.2rem 0 0; }
   .folio__col--left,
   .folio__col--right {
     display: grid;
