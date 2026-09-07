@@ -178,7 +178,6 @@ function placeAtInteriorCenter(root) {
   const whole = new THREE.Box3().setFromObject(root);
   const foot = findInteriorFootprint(root);
   const footCenter = foot.getCenter(new THREE.Vector3());
-  const footSize = foot.getSize(new THREE.Vector3());
   const wholeSize = whole.getSize(new THREE.Vector3());
   // 水平位置取室内地面中心；纵向取自然站立视高（约 1.55m，小房间按比例收）
   const eyeY = whole.min.y + Math.min(1.55, wholeSize.y * 0.5);
