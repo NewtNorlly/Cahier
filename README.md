@@ -4,7 +4,7 @@
 
 *Cahier —— 法语里「笔记本」的意思*
 
-<img alt="清新薄荷" src="https://img.shields.io/badge/Astro-静态站点-55C4A5?style=flat-square"> <img alt="三栏" src="https://img.shields.io/badge/版式-三栏康奈尔-8FBF9F?style=flat-square"> <img alt="纯白纸面" src="https://img.shields.io/badge/纸面-纯白安静-F6F3EC?style=flat-square">
+<img alt="清新薄荷" src="https://img.shields.io/badge/Astro-静态站点-55C4A5?style=flat-square"> <img alt="三栏" src="https://img.shields.io/badge/版式-三栏康奈尔-8FBF9F?style=flat-square"> <img alt="昼夜" src="https://img.shields.io/badge/主题-白昼/暗夜-5B8DEF?style=flat-square"> <img alt="纯白纸面" src="https://img.shields.io/badge/纸面-纯白安静-F6F3EC?style=flat-square">
 
 </div>
 
@@ -28,21 +28,22 @@
 
 - **📚 文献笔记** —— 文献阅读笔记与书摘归档。中栏按学术论文 PDF 的视觉规范排版：大标题居中、作者右对齐、内容提要与关键词、`〔n〕` 六角脚注号右上标、页底悬挂脚注、英文书名斜体；左右两栏是连贯的便签纸，宽度正好是原文纸的一半，你读到哪、批到哪，笔记就跟到哪。
 - **📝 教学讲稿** —— 法学、决策、土地、宪法、德语、社保……按学科分册。每份讲稿都有一张**亲手设计的学院派封面**，配色、纹样各不相同，拒绝批量生产的味道；脑图按语义多级缩进，复习时层级一眼看清。
-- **🕹️ 游戏空间** —— 右上角手柄按钮，一个光圈转场进入「🦕 恐龙快跑（黄州）」，四种玩法，跑酷时顺手逛一遍黄州的地标。
+- **🌗 昼夜书桌** —— 右上角一颗小按钮，一圈「圆形破口」从按钮晕开，整座笔记本就在**白昼钴蓝**与**暗夜墨蓝**之间温柔换色，夜里读纸也不刺眼；文献笔记首页还有一张可以拖着环绕、慢慢自转的 3D 天蓝书桌陪着你。
 
 ## 🗂️ 项目结构
 
 ```text
 site/                       Cahier Astro 站点（构建产物在 site/dist/）
   src/pages/                页面：首页 / 文献 / 讲稿
-  src/styles/folio.css      三栏康奈尔文档体（纯白纸面 + 连贯便签纸）
+  src/styles/folio.css      三栏康奈尔文档体（纯白纸面 + 连贯便签纸 + 夜读纸）
+  src/styles/global.css     设计令牌：白昼钴蓝 / 暗夜墨蓝两套主题变量
   src/plugins/              内容管线（三栏包裹 / Obsidian 语法 / 跨页续段）
-  src/layouts/              布局与游戏光圈转场
-  public/game/              恐龙快跑（dino.js · index.html · dino.css · WebP）
-  public/3d/                首页 3D 模型
-  public/favicon.*          薄荷绿笔记本电脑站点图标
+  src/layouts/              布局、昼夜切换按钮与圆形破口转场
+  scripts/3d/desk-viewer.mjs  3D 书桌查看器源码（OrbitControls 环绕）
+  public/3d/                3D 书桌 desk.glb / desk.js / desk.html
+  public/favicon.*          笔记本电脑造型的站点图标
   public/CNAME              自定义域名（20061018.xyz）
-恐龙快跑（黄州府）*.py        Python 版游戏源码
+_tools/                      3D 模型转换等一次性工程脚本（desk_build.py）
 .github/workflows/          GitHub Actions 部署工作流（deploy.yml）
 ```
 
@@ -59,26 +60,21 @@ pnpm build        # 产出静态站点到 site/dist
 
 构建管线会依次执行：`sync-assets`（同步根目录素材到 `public/media`）→ `astro check`（类型检查）→ `astro build` → 站内链接与资源完整性校验。
 
-## 🦕 恐龙快跑（黄州）
+## 🌗 白昼与暗夜，一张会换色的书桌
 
-右上角手柄按钮 → 全屏光圈转场打开游戏，顶部「回到书桌」收起。**电脑端键位：**
+右上角那颗按钮就是昼夜开关：点一下，一圈圆形破口从按钮中心缓缓扩散，钴蓝白昼收成深夜墨蓝，再点又亮回来。
 
-| 按键 | 作用 |
-| --- | --- |
-| `←` `→`（或 `A` `D`） | 左右移动 |
-| `↑`（或 `W`） / `空格` | 向上跳 |
-| `M` | 音乐开关 |
-| `N`（或 `F`） | 飞行模式（**仅休闲模式**） |
-| `Esc` | 暂停 / 继续 |
+- **白昼（钴蓝）**：纯白纸面、安静学院风，适合白天长时间阅读；
+- **暗夜（墨蓝）**：不用纯黑、不偏靛紫，纸面是柔和的深夜蓝、文字是护眼柔白，连脚注、三线表、左右便签都一并转成夜读配色；
+- 选择会被记住，刷新也不白闪；文献笔记首页的 **3D 书桌**会跟着主题一起换灯光——白天明媚天青，夜里沉静清晰，按住拖动可以 360° 环绕看，松手后它又会慢慢自转。
 
-- **顶部左上控制条**：🎵 音乐开关、🪂 飞行模式（只在休闲模式出现）、⏸ 暂停，触屏设备另有虚拟摇杆。
-- **四种玩法**：休闲（横版跑酷）／上手（空中迷宫）／入坑（平台跳跃）／专家（传送迷岛）。
-- **轻快加载**：素材全部压缩为 WebP，进页时先把图片解码好，任意屏幕比例都等比铺满、不留黑边；BGM 默认静音，想听再按 `M`。
+> 3D 书桌由本地 `Desk.skp` 经 `_tools/desk_build.py` 转成轻量 glb（约 1.6MB），桌面从原本的巧克力棕、深蓝重新调成了天蓝与天青。
 
 ## ☁️ 部署
 
 - 推送或合并到 `main` 后，`.github/workflows/deploy.yml` 自动构建并发布到 GitHub Pages。
-- Pages 由 GitHub Actions 提供数据；旧的 `pages-build-deployment` 已停用，运行记录也已清理，不再与本站工作流冲突。
+- Pages 由 GitHub Actions 提供数据；旧的 `pages-build-deployment` 工作流及其运行记录已彻底清理，不再与本站工作流冲突。
+- 站点为纯静态资源，3D 模型懒加载、图片走 WebP，首屏保持轻量。
 - 自定义域名：**20061018.xyz**（见 `site/public/CNAME`）。
 
 ---

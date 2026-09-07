@@ -55,14 +55,14 @@ const CLOTH = [
       </div>
     </div>
 
-    <!-- ═══ 3D 模型展示（卧室内部中心点球形环顾） ═══ -->
+    <!-- ═══ 3D 模型展示（一张可环绕查看的书桌） ═══ -->
     <div class="shelf-3d">
       <iframe
         class="shelf-3d__frame"
         id="shelfHouseFrame"
-        src={withBase("3d/bedroom.html") + "#cobalt"}
-        title="3D 卧室书房：站在房间中央，拖拽或滑动即可环顾四周"
-        loading="eager"
+        src={withBase("3d/desk.html") + "#cobalt"}
+        title="3D 书桌：按住拖动可环绕查看，滚轮缩放"
+        loading="lazy"
       ></iframe>
     </div>
 

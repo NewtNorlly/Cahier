@@ -721,3 +721,100 @@
   .folio__col--left:empty,
   .folio__col--right:empty { display: none; }
 }
+
+/* ════════════════════════════════════════════════════════════
+   暗夜主题：白昼的纯白纸面在夜间转为柔和「夜读纸」，
+   墨色文字转柔白；只在 [data-theme="night"] 下生效，白昼样式一律不动。
+   ════════════════════════════════════════════════════════════ */
+[data-theme="night"] .doc-cover {
+  background: linear-gradient(180deg, #181f2c, #141a26);
+  border-color: #2c3547;
+}
+[data-theme="night"] .doc-cover::before { border-color: #2c3547; }
+[data-theme="night"] .doc-cover__abstract {
+  background: hsl(222 26% 16% / 0.7);
+  border-color: #2c3547;
+  border-inline-start-color: #5b7fa6;
+}
+[data-theme="night"] .doc-cover__kicker,
+[data-theme="night"] .doc-cover__abstract-label,
+[data-theme="night"] .doc-cover__keywords b { color: #8b94a6; }
+[data-theme="night"] .doc-cover__rule { background: #3a445a; }
+
+[data-theme="night"] .doc-body,
+[data-theme="night"] .folio__col--main { background-color: #141a26; }
+[data-theme="night"] .doc-body {
+  background-image: linear-gradient(90deg,
+    transparent calc(25% - 0.5px), #28303f calc(25% - 0.5px), #28303f 25%, transparent 25%,
+    transparent 75%, #28303f 75%, #28303f calc(75% + 0.5px), transparent calc(75% + 0.5px));
+}
+[data-theme="night"] .folio { border-bottom-color: #28303f; }
+[data-theme="night"] .folio__pageno { color: #6b7488; }
+
+/* 中栏正文与各级标题：墨色 → 柔白 */
+[data-theme="night"] .folio__col--main { color: #d6dce7; }
+[data-theme="night"] .folio__col--main h2 { border-bottom-color: #2e384c; }
+[data-theme="night"] .folio__col--main h2,
+[data-theme="night"] .folio__col--main h3,
+[data-theme="night"] .folio__col--main h4,
+[data-theme="night"] .folio__col--main h5,
+[data-theme="night"] .folio__col--main .doc-title,
+[data-theme="night"] .folio__col--main .doc-section,
+[data-theme="night"] .folio__col--main .doc-kicker,
+[data-theme="night"] .folio__col--main .doc-author,
+[data-theme="night"] .lecture-outline .outline-section-title,
+[data-theme="night"] .lecture-outline .outline-sub { color: #eceff6; }
+[data-theme="night"] .struct-chip { color: #e3e8f2; }
+[data-theme="night"] .folio__col--main .doc-keywords { border-bottom-color: #2e384c; }
+[data-theme="night"] .folio__col--main .fn,
+[data-theme="night"] .folio__col--main .doc-abstract,
+[data-theme="night"] .folio__col--main .doc-editornote { color: #c2c9d6; }
+[data-theme="night"] .folio__col--main blockquote { color: #98a1b3; }
+[data-theme="night"] .folio__col--main li::marker { color: #7e889c; }
+[data-theme="night"] .folio-footnotes { border-top-color: #2e384c; }
+
+/* 公式块 / 表格：夜读配色 */
+[data-theme="night"] .folio__col--main .katex-display { background: #1b2230; }
+[data-theme="night"] .folio__col--main table thead th {
+  color: #e3e8f2;
+  border-top-color: #46506a;
+  border-bottom-color: #46506a;
+}
+[data-theme="night"] .folio__col--main table tbody tr:last-child td { border-bottom-color: #46506a; }
+[data-theme="night"] .folio__col--main table tbody tr:nth-child(even) { background: #1a2130; }
+[data-theme="night"] .folio-figure figcaption { color: #8b94a6; }
+
+/* 左右便签批注：容器与所有正文子元素同样转柔白（白昼显式设过墨色，夜间需逐条覆盖，左栏不能漏） */
+[data-theme="night"] .folio__col--left .callout,
+[data-theme="night"] .folio__col--right .callout,
+[data-theme="night"] .folio__col--left .callout .callout-title,
+[data-theme="night"] .folio__col--right .callout .callout-title,
+[data-theme="night"] .folio__col--left .callout p,
+[data-theme="night"] .folio__col--right .callout p,
+[data-theme="night"] .folio__col--left .callout ul,
+[data-theme="night"] .folio__col--right .callout ul,
+[data-theme="night"] .folio__col--left .callout ol,
+[data-theme="night"] .folio__col--right .callout ol,
+[data-theme="night"] .folio__col--left .callout li,
+[data-theme="night"] .folio__col--right .callout li,
+[data-theme="night"] .folio__col--left .callout strong,
+[data-theme="night"] .folio__col--right .callout strong,
+[data-theme="night"] .folio__col--left .callout span,
+[data-theme="night"] .folio__col--right .callout span,
+[data-theme="night"] .folio__col--left .callout div,
+[data-theme="night"] .folio__col--right .callout div { color: #d6dce7; }
+[data-theme="night"] .folio__col--left .callout li::marker,
+[data-theme="night"] .folio__col--right .callout li::marker { color: #7e889c; }
+[data-theme="night"] .folio__col--right .callout em,
+[data-theme="night"] .folio__col--left .callout em { color: #8b94a6; }
+
+/* 提纲层级线/点在暗底上提亮 */
+[data-theme="night"] .lecture-outline > ul > li::before { background: #6e7891; }
+[data-theme="night"] .lecture-outline li ul { border-left-color: #303a4d; }
+[data-theme="night"] .lecture-outline li ul li::before { background: #5a647c; }
+[data-theme="night"] .lecture-outline li ul li ul li::before { border-color: #5a647c; }
+
+/* 移动端单列：同样夜读纸、去掉竖线 */
+@media (max-width: 920px) {
+  [data-theme="night"] .doc-body { background-image: none; background-color: #141a26; }
+}

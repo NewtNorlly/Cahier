@@ -1,4 +1,4 @@
-﻿---
+---
 import "../styles/global.css";
 import "katex/dist/katex.min.css";
 import { withBase } from "../lib/url";
@@ -33,11 +33,21 @@ const canonicalUrl = canonicalPath !== false && Astro.site
     <link rel="icon" type="image/png" sizes="180x180" href={withBase("favicon.png") + "?v=cahier3"} />
     <link rel="apple-touch-icon" href={withBase("favicon.png") + "?v=cahier3"} />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#e9f7f1" />
+    <meta name="theme-color" content="#eef4ff" id="metaThemeColor" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
     {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
     <title>{documentTitle}</title>
+    {/* 渲染前应用已保存的主题，避免暗夜模式刷新时白屏闪烁 */}
+    <script is:inline>
+      (() => {
+        try {
+          const saved = localStorage.getItem("cahier-theme");
+          const t = saved === "night" ? "night" : "cobalt";
+          document.documentElement.setAttribute("data-theme", t);
+        } catch { /* localStorage 不可用时保持白昼 */ }
+      })();
+    </script>
   </head>
   <body class={pageClass}>
     <a class="skip-link" href="#main-content">跳到正文</a>
@@ -57,21 +67,23 @@ const canonicalUrl = canonicalPath !== false && Astro.site
         </div>
 
         <div class="site-header__right">
-          <!-- 游戏入口 · 手柄按钮（置于时钟左侧） -->
+          <!-- 暗夜 / 白昼主题切换（沿用圆形破口转场） -->
           <button
             type="button"
-            class="gamepad-portal"
-            id="gamepadPortal"
-            aria-label="进入游戏空间"
-            title="进入游戏空间"
+            class="theme-toggle"
+            id="themeToggle"
+            aria-label="切换到暗夜模式"
+            title="切换暗夜 / 白昼"
+            aria-pressed="false"
           >
-            <svg class="gamepad-portal__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M6 11h4M8 9v4"/>
-              <circle cx="15" cy="10" r="1"/>
-              <circle cx="17.5" cy="12" r="1"/>
-              <path d="M4 8h16a2 2 0 0 1 2 2v2a6 6 0 0 1-6 6h-8a6 6 0 0 1-6-6v-2a2 2 0 0 1 2-2z"/>
+            <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
             </svg>
-            <span class="gamepad-portal__label">回到书桌</span>
+            <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4"/>
+              <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+            </svg>
+            <span class="theme-toggle__label" id="themeToggleLabel">暗夜</span>
           </button>
 
           <div class="site-clock" id="siteClock" aria-label="当前时间">
@@ -99,18 +111,8 @@ const canonicalUrl = canonicalPath !== false && Astro.site
       </div>
     </footer>
 
-    <!-- 游戏空间覆盖层 · Aperture Reveal -->
-    <div class="game-overlay" id="gameOverlay" aria-hidden="true">
-      <iframe
-        class="game-overlay__frame"
-        id="gameFrame"
-        src={withBase("game/index.html")}
-        title="恐龙快跑"
-        loading="eager"
-        tabindex="-1"
-        allow="autoplay"
-      ></iframe>
-    </div>
+    <!-- 主题切换圆形破口揭示层（Aperture Reveal） -->
+    <div class="theme-veil" id="themeVeil" aria-hidden="true"></div>
 
     <script>
       // Beijing time clock
@@ -130,7 +132,7 @@ const canonicalUrl = canonicalPath !== false && Astro.site
       updateClock();
       setInterval(updateClock, 1000);
 
-      // Scroll fade: hide when scrolling down, show when scrolling up or hovering
+      // Scroll fade: hide when scrolling down, show when scrolling up
       const header = document.getElementById("siteHeader");
       let lastScroll = 0;
       let ticking = false;
@@ -157,117 +159,95 @@ const canonicalUrl = canonicalPath !== false && Astro.site
         { passive: true },
       );
 
-      /* ════════ Aperture Reveal · 游戏空间入口/返回 ════════ */
-      const gamepadBtn = document.getElementById("gamepadPortal") as HTMLButtonElement | null;
-      const gameOverlay = document.getElementById("gameOverlay") as HTMLElement | null;
-      const gameFrame = document.getElementById("gameFrame") as HTMLIFrameElement | null;
-      const siteHeader = document.getElementById("siteHeader");
+      /* ════════ 暗夜 / 白昼：圆形破口（Aperture）主题揭示 ════════ */
+      const root = document.documentElement;
+      const toggleBtn = document.getElementById("themeToggle") as HTMLButtonElement | null;
+      const toggleLabel = document.getElementById("themeToggleLabel");
+      const veil = document.getElementById("themeVeil") as HTMLElement | null;
+      const metaColor = document.getElementById("metaThemeColor") as HTMLMetaElement | null;
 
-      function postGame(type: string) {
-        try {
-          gameFrame?.contentWindow?.postMessage({ type }, "*");
-        } catch {
-          /* iframe 尚未就绪时忽略 */
+      // 两套主题的页面底色（用于破口层颜色）与浏览器地址栏色
+      const THEME_BG: Record<string, string> = {
+        cobalt: "hsl(220, 100%, 98%)",
+        night: "hsl(222, 32%, 9%)",
+      };
+      const THEME_CHROME: Record<string, string> = {
+        cobalt: "#eef4ff",
+        night: "#11151d",
+      };
+      const EASE = "cubic-bezier(0.77, 0, 0.175, 1)";
+      const DURATION = 620;
+      let animating = false;
+
+      function currentTheme(): string {
+        return root.getAttribute("data-theme") === "night" ? "night" : "cobalt";
+      }
+
+      // 同步按钮外观 / aria / 地址栏 / 3D iframe
+      function reflectTheme(theme: string) {
+        const isNight = theme === "night";
+        toggleBtn?.setAttribute("aria-pressed", isNight ? "true" : "false");
+        toggleBtn?.setAttribute("aria-label", isNight ? "切换到白昼模式" : "切换到暗夜模式");
+        if (toggleLabel) toggleLabel.textContent = isNight ? "白昼" : "暗夜";
+        if (metaColor) metaColor.setAttribute("content", THEME_CHROME[theme] ?? THEME_CHROME.cobalt);
+        document.querySelectorAll("iframe").forEach((f) => {
+          try { f.contentWindow?.postMessage({ type: "le-theme", theme }, "*"); } catch { /* 跨域忽略 */ }
+        });
+      }
+
+      function applyTheme(theme: string) {
+        root.setAttribute("data-theme", theme);
+        try { localStorage.setItem("cahier-theme", theme); } catch { /* 忽略 */ }
+        reflectTheme(theme);
+      }
+
+      function toggleTheme() {
+        if (animating || !veil) return;
+        animating = true;
+        const from = currentTheme();
+        const to = from === "night" ? "cobalt" : "night";
+
+        // 原点：切换按钮中心（兜底右上角）
+        let cx = window.innerWidth - 34;
+        let cy = 34;
+        if (toggleBtn) {
+          const r = toggleBtn.getBoundingClientRect();
+          cx = r.left + r.width / 2;
+          cy = r.top + r.height / 2;
         }
-      }
+        // 铺满所需最大半径
+        const maxR = Math.hypot(
+          Math.max(cx, window.innerWidth - cx),
+          Math.max(cy, window.innerHeight - cy),
+        ) + 24;
 
-      let isGameOpen = false;
-      let isAnimating = false;
+        // 破口层先染成“目标主题”的底色，从按钮处 0 半径圆形扩散
+        veil.style.background = THEME_BG[to];
+        veil.style.transition = "none";
+        veil.style.clipPath = `circle(0px at ${cx}px ${cy}px)`;
+        veil.style.display = "block";
+        veil.setAttribute("aria-hidden", "false");
+        void veil.offsetWidth; // 强制 reflow
+        veil.style.transition = `clip-path ${DURATION}ms ${EASE}`;
+        veil.style.clipPath = `circle(${maxR}px at ${cx}px ${cy}px)`;
 
-      const APERTURE_EASE = "cubic-bezier(0.77, 0, 0.175, 1)";
-      const APERTURE_DURATION = 700; // ms
+        // 圆已扩散、整屏被目标底色盖住的瞬间切换真正的主题（用户看不到硬切）
+        window.setTimeout(() => applyTheme(to), DURATION * 0.55);
 
-      // 破口原点固定在视口右上角（不再绑定手柄中心）
-      function apertureOrigin(): { cx: number; cy: number } {
-        return {
-          cx: window.innerWidth - 34,
-          cy: 34,
-        };
-      }
-
-      function openGame() {
-        if (!gamepadBtn || !gameOverlay || isAnimating) return;
-        isAnimating = true;
-
-        const { cx, cy } = apertureOrigin();
-
-        // 点击瞬间：顶栏提层（is-game-open）并让品牌/中栏/时钟同步淡出（is-game-full）
-        siteHeader?.classList.remove("is-hidden");
-        siteHeader?.classList.add("is-game-open");
-        siteHeader?.classList.add("is-game-full");
-
-        // 重置为从右上角开始的零半径圆
-        gameOverlay.style.transition = "none";
-        gameOverlay.style.clipPath = `circle(0px at ${cx}px ${cy}px)`;
-        gameOverlay.style.display = "flex";
-        gameOverlay.setAttribute("aria-hidden", "false");
-        postGame("cahier:enter"); // 进入游戏视图也保持 BGM 默认关闭
-
-        // 强制 reflow 后再开启动画
-        void gameOverlay.offsetWidth;
-
-        gameOverlay.style.transition = `clip-path ${APERTURE_DURATION}ms ${APERTURE_EASE}`;
-        gameOverlay.style.clipPath = `circle(160% at ${cx}px ${cy}px)`;
-
-        // 圆形铺满后，手柄再形变为"回到书桌"胶囊
+        // 铺满后移除揭示层（其底色已与新主题一致，无缝）
         window.setTimeout(() => {
-          isGameOpen = true;
-          isAnimating = false;
-          gamepadBtn.classList.add("is-return");
-          gamepadBtn.setAttribute("aria-label", "回到书桌");
-          gamepadBtn.title = "回到书桌";
-          // 关键：把键盘焦点交给游戏 iframe，否则方向键/空格/M/N 只会发到父页面
-          gameFrame?.focus();
-        }, APERTURE_DURATION);
+          veil.style.display = "none";
+          veil.style.clipPath = "circle(0px at 0 0)";
+          veil.setAttribute("aria-hidden", "true");
+          animating = false;
+        }, DURATION + 30);
       }
 
-      function closeGame() {
-        if (!gamepadBtn || !gameOverlay || isAnimating) return;
-        isAnimating = true;
-
-        const { cx, cy } = apertureOrigin();
-
-        // 胶囊→手柄形变；同时让桌面品牌/时钟随收束同步淡回（顶栏仍提层以呈现形变）
-        postGame("cahier:desk"); // 返回书桌：停止游戏 BGM
-        gamepadBtn.classList.remove("is-return");
-        siteHeader?.classList.remove("is-game-full");
-        gamepadBtn.setAttribute("aria-label", "进入游戏空间");
-        gamepadBtn.title = "进入游戏空间";
-
-        gameOverlay.style.transition = "none";
-        gameOverlay.style.clipPath = `circle(160% at ${cx}px ${cy}px)`;
-
-        void gameOverlay.offsetWidth;
-
-        gameOverlay.style.transition = `clip-path ${APERTURE_DURATION}ms ${APERTURE_EASE}`;
-        gameOverlay.style.clipPath = `circle(0px at ${cx}px ${cy}px)`;
-
-        window.setTimeout(() => {
-          isGameOpen = false;
-          isAnimating = false;
-          gameOverlay.style.display = "none";
-          gameOverlay.setAttribute("aria-hidden", "true");
-          siteHeader?.classList.remove("is-game-open");
-        }, APERTURE_DURATION);
-      }
-
-      gamepadBtn?.addEventListener("click", () => {
-        if (isGameOpen) closeGame();
-        else openGame();
-      });
-
-      // 点击游戏画面任意位置都把焦点留在 iframe 内，保证键盘操控持续可用
-      gameOverlay?.addEventListener("pointerdown", () => {
-        if (isGameOpen) window.setTimeout(() => gameFrame?.focus(), 0);
-      });
-      gameFrame?.addEventListener("load", () => {
-        if (isGameOpen) gameFrame.focus();
-      });
-
-      // ESC 键返回书桌（若焦点在游戏 iframe 内则交给游戏处理暂停，不抢键）
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && isGameOpen && document.activeElement !== gameFrame) closeGame();
-      });
+      toggleBtn?.addEventListener("click", toggleTheme);
+      // 初始化按钮/地址栏/iframe 为当前主题
+      reflectTheme(currentTheme());
+      // iframe（如 3D 书桌）加载后补发一次当前主题
+      window.addEventListener("load", () => reflectTheme(currentTheme()));
     </script>
   </body>
 </html>

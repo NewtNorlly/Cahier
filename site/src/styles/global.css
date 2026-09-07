@@ -111,6 +111,29 @@
     --story-accent: 223 63% 28%;
   }
 
+  /* ── 暗夜主题（深夜墨蓝，护眼柔白，天蓝青强调；不用纯黑、不偏靛紫） ── */
+  [data-theme="night"] {
+    --bg: 222 33% 9%;
+    --fg: 214 26% 88%;
+    --card: 222 27% 13%;
+    --card-fg: 214 26% 90%;
+    --secondary: 222 24% 17%;
+    --secondary-fg: 214 24% 88%;
+    --muted: 222 22% 19%;
+    --muted-fg: 218 15% 67%;
+    --accent: 215 52% 25%;
+    --accent-fg: 199 88% 73%;
+    --border: 222 18% 27%;
+    --sidebar-bg: 222 34% 11%;
+    --sidebar-fg: 214 24% 86%;
+    --sidebar-accent: 222 26% 19%;
+    --sidebar-accent-fg: 199 88% 73%;
+    --sidebar-border: 222 18% 25%;
+    --story-accent: 198 84% 68%;
+    /* 暗夜下阴影改为柔和黑，避免亮色调阴影发灰发白 */
+    --shadow: 0 18px 45px hsl(222 60% 2% / 0.55);
+  }
+
   /* ── 语义别名 ── */
   :root {
     --paper: hsl(var(--bg));
@@ -252,31 +275,11 @@
     pointer-events: none;
   }
 
-  /* 游戏空间打开时，顶栏（含"回到书桌"按钮）需浮于游戏覆盖层(z-index:200)之上 */
-  .site-header.is-game-open {
-    z-index: 300;
-    opacity: 1;
-    transform: translateY(0);
-    /* 游戏态顶栏透明、无背景干扰，只保留右侧胶囊入口 */
-    background: transparent;
-    box-shadow: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-
-  /* 游戏全屏时：品牌、中栏、时钟全部淡出，只留"回到书桌"（is-game-full） */
+  /* 顶栏各分区统一淡入淡出节奏（配合滚动自动隐藏） */
   .site-header__left,
   .site-header__center,
   .site-clock {
     transition: opacity 0.32s var(--ease-out), transform 0.32s var(--ease-out), visibility 0s linear 0.32s;
-  }
-  .site-header.is-game-full .site-header__left,
-  .site-header.is-game-full .site-header__center,
-  .site-header.is-game-full .site-clock {
-    opacity: 0;
-    transform: translateY(-8px);
-    visibility: hidden;
-    pointer-events: none;
   }
 
   .site-header:hover,
@@ -395,16 +398,15 @@
     min-width: 0;
   }
 
-  /* ── 游戏入口 · 手柄按钮（圆形 → 胶囊形变） ── */
-  .gamepad-portal {
+  /* ── 暗夜 / 白昼 主题切换按钮 ── */
+  .theme-toggle {
     position: relative;
-    display: grid;
-    place-items: center;
-    /* 固定几何尺寸，width/border-radius 才能被平滑插值（避免 auto 跳变） */
-    width: 2.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.42rem;
     height: 2.5rem;
-    padding: 0;
-    border-radius: 50%;
+    padding: 0 0.9rem;
+    border-radius: 999px;
     border: 1px solid hsl(var(--border) / 0.8);
     background: hsl(var(--card) / 0.7);
     color: hsl(var(--story-accent));
@@ -415,95 +417,62 @@
     backdrop-filter: blur(14px) saturate(1.4);
     -webkit-backdrop-filter: blur(14px) saturate(1.4);
     transition:
-      width 0.46s cubic-bezier(0.32, 0.72, 0, 1),
-      border-radius 0.46s cubic-bezier(0.32, 0.72, 0, 1),
       background-color 0.3s var(--ease-out),
       border-color 0.3s var(--ease-out),
+      color 0.3s var(--ease-out),
       box-shadow 0.3s var(--ease-out),
       transform 0.22s var(--ease-spring);
-    overflow: hidden;
-    will-change: width, border-radius;
   }
 
-  .gamepad-portal:hover {
-    transform: translateY(-1px) scale(1.05);
+  .theme-toggle:hover {
+    transform: translateY(-1px);
     box-shadow:
       inset 0 1px 0 hsl(var(--card) / 0.9),
       0 6px 18px hsl(var(--story-accent) / 0.22);
   }
 
-  .gamepad-portal:active {
-    transform: scale(0.94);
+  .theme-toggle:active {
+    transform: scale(0.95);
   }
 
-  .gamepad-portal__icon {
-    width: 1.3rem;
-    height: 1.3rem;
+  .theme-toggle__icon {
+    position: relative;
+    width: 1.22rem;
+    height: 1.22rem;
     flex-shrink: 0;
-    transition: opacity 0.22s var(--ease-out), transform 0.34s var(--ease-out);
   }
 
-  .gamepad-portal__label {
+  .theme-toggle__icon--sun,
+  .theme-toggle__icon--moon {
     position: absolute;
     inset: 0;
-    display: grid;
-    place-items: center;
-    padding: 0 1.15rem;
+    transition: opacity 0.28s var(--ease-out), transform 0.4s var(--ease-spring);
+  }
+
+  /* 白昼下显示月亮（点击进入暗夜）；暗夜下显示太阳（点击回到白昼） */
+  .theme-toggle__icon--sun { opacity: 0; transform: rotate(-90deg) scale(0.5); }
+  .theme-toggle__icon--moon { opacity: 1; transform: rotate(0) scale(1); }
+  [data-theme="night"] .theme-toggle__icon--sun { opacity: 1; transform: rotate(0) scale(1); }
+  [data-theme="night"] .theme-toggle__icon--moon { opacity: 0; transform: rotate(90deg) scale(0.5); }
+
+  .theme-toggle__label {
     font-family: var(--font-serif);
     font-size: 0.84rem;
     font-weight: 600;
     letter-spacing: 0.08em;
     color: hsl(var(--accent-fg));
     white-space: nowrap;
-    opacity: 0;
-    transform: scale(0.86);
-    transition: opacity 0.24s var(--ease-out), transform 0.34s var(--ease-out);
   }
 
-  /* "回到书桌" 状态：同一按钮由正圆横向拉伸为圆角胶囊 */
-  .gamepad-portal.is-return {
-    width: 7.4rem;
-    height: 2.5rem;
-    border-radius: 999px;
-    background: hsl(var(--accent));
-    border-color: hsl(var(--story-accent) / 0.28);
-    box-shadow: 0 6px 20px hsl(var(--story-accent) / 0.28);
-  }
-
-  .gamepad-portal.is-return .gamepad-portal__icon {
-    opacity: 0;
-    transform: scale(0.5) rotate(-30deg);
-  }
-
-  .gamepad-portal.is-return .gamepad-portal__label {
-    opacity: 1;
-    transform: scale(1);
-    /* 等胶囊展开后文字再淡入，更顺滑 */
-    transition: opacity 0.28s var(--ease-out) 0.16s, transform 0.34s var(--ease-out) 0.16s;
-  }
-
-  .gamepad-portal.is-return:hover {
-    background: hsl(var(--accent));
-    filter: brightness(1.06);
-  }
-
-  /* ── 游戏空间覆盖层 · Aperture Reveal ── */
-  .game-overlay {
+  /* ── 主题切换圆形破口揭示层 ── */
+  .theme-veil {
     position: fixed;
     inset: 0;
     z-index: 200;
     display: none;
-    align-items: stretch;
-    justify-content: stretch;
-    background: hsl(var(--bg));
+    pointer-events: none;
     clip-path: circle(0px at calc(100% - 34px) 34px);
-  }
-
-  .game-overlay__frame {
-    width: 100%;
-    height: 100%;
-    border: none;
-    background: #000;
+    will-change: clip-path;
   }
 
   .site-footer {
