@@ -7,7 +7,7 @@
 
 /* ─── Constants ─── */
 const W = 1600, H = 900;
-const DINO_URL = 'images/小恐龙-removebg-preview.png?v=20260828l';
+const DINO_URL = 'images/小恐龙-removebg-preview.webp?v=20260907b';
 const BGM_URL = 'bgm/white-cat.mp3';
 const GROUND_Y = 820;
 const GRAVITY = 0.5;
@@ -3198,18 +3198,18 @@ function init() {
   let loadDone = false;
   const allImgs = [
     { img: dinoImg, url: DINO_URL },
-    { img: hedgehogImg, url: 'images/刺猬-removebg-preview.png?v=20260828l' },
-    { img: batImg, url: 'images/bat.png?v=20260828l' },
-    { img: tomatoImg, url: 'images/tomato.png?v=20260828l' },
-    { img: balloonImg, url: 'images/balloon.png?v=20260828l' },
-    { img: platformImg, url: 'images/platform.png?v=20260828l' },
-    { img: portalImg, url: 'images/portal.png?v=20260828l' },
-    { img: islandImg, url: 'images/island.png?v=20260828l' },
-    { img: piranhaImg, url: 'images/piranha.png?v=20260828l' },
-    { img: koopaImg, url: 'images/koopa.png?v=20260828l' },
-    { img: hedgehogNewImg, url: 'images/hedgehog_new.png?v=20260828l' },
-    { img: bgStartImg, url: 'images/bg_start.png?v=20260828l' },
-    { img: bgCasualImg, url: 'images/bg_casual.png?v=20260828l' },
+    { img: hedgehogImg, url: 'images/刺猬-removebg-preview.webp?v=20260907b' },
+    { img: batImg, url: 'images/bat.webp?v=20260907b' },
+    { img: tomatoImg, url: 'images/tomato.webp?v=20260907b' },
+    { img: balloonImg, url: 'images/balloon.webp?v=20260907b' },
+    { img: platformImg, url: 'images/platform.webp?v=20260907b' },
+    { img: portalImg, url: 'images/portal.webp?v=20260907b' },
+    { img: islandImg, url: 'images/island.webp?v=20260907b' },
+    { img: piranhaImg, url: 'images/piranha.webp?v=20260907b' },
+    { img: koopaImg, url: 'images/koopa.webp?v=20260907b' },
+    { img: hedgehogNewImg, url: 'images/hedgehog_new.webp?v=20260907b' },
+    { img: bgStartImg, url: 'images/bg_start.webp?v=20260907b' },
+    { img: bgCasualImg, url: 'images/bg_casual.webp?v=20260907b' },
   ];
 
   let loaded = 0;

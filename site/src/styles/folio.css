@@ -1,19 +1,18 @@
 /* ════════════════════════════════════════════════════════════
-   Cahier · LaTeX 学术三栏文档体
-   左栏：引导问题 / 左侧笔记   中栏：文献原文（划线·高亮·公式·图）
-   右栏：手写批注转录文本                            钴蓝主题
+   Cahier · 康奈尔笔记本文档体
+   中栏：干净纸面（原文）   左/右栏：横线本（引导问题 / 手写批注）
+   暖纸色 · 细横线 · 红边线 · 留白优先 —— 清新、克制、像手账
    ════════════════════════════════════════════════════════════ */
 
-/* ── 文档封面（题录页） ── */
+/* ── 文档封面（题录页）── */
 .doc-cover {
   width: min(calc(100% - 2.5rem), 64rem);
   margin: clamp(2rem, 5vw, 4.5rem) auto 0;
   padding: clamp(2.2rem, 6vw, 4.5rem) clamp(1.6rem, 6vw, 5rem);
   background:
-    linear-gradient(180deg, hsl(var(--card) / 0.96), hsl(var(--secondary) / 0.4));
+    linear-gradient(180deg, #FDFBF6, #F6F1E6);
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow);
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -23,7 +22,7 @@
   content: "";
   position: absolute;
   inset: 0.9rem;
-  border: 1px solid hsl(var(--story-accent) / 0.22);
+  border: 1px dashed #E3DCCB;
   border-radius: calc(var(--radius-md) - 0.5rem);
   pointer-events: none;
 }
@@ -38,18 +37,18 @@
 
 .doc-cover__kicker {
   font-family: var(--font-latin);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   letter-spacing: 0.34em;
   text-transform: uppercase;
-  color: var(--vermillion-dark);
+  color: #A89F8E;
   margin-bottom: 1.1rem;
 }
 
 .doc-cover__title {
-  font-size: clamp(1.7rem, 3.4vw, 2.6rem);
+  font-size: clamp(1.6rem, 3.2vw, 2.4rem);
   font-weight: 600;
-  line-height: 1.4;
-  letter-spacing: 0.01em;
+  line-height: 1.45;
+  letter-spacing: 0.02em;
   color: var(--ink);
   max-width: 20em;
   margin: 0 auto;
@@ -57,17 +56,17 @@
 }
 
 .doc-cover__author {
-  margin-top: 1.3rem;
-  font-size: 1.05rem;
+  margin-top: 1.2rem;
+  font-size: 1rem;
   color: var(--ink-soft);
   letter-spacing: 0.06em;
 }
 
 .doc-cover__rule {
-  width: 4.5rem;
-  height: 2px;
-  margin: 1.8rem auto;
-  background: var(--accent-gradient);
+  width: 4rem;
+  height: 1.5px;
+  margin: 1.7rem auto;
+  background: #C9BFA9;
   border: 0;
   border-radius: 2px;
 }
@@ -78,25 +77,21 @@
   justify-content: center;
   gap: 0.5rem 1.6rem;
   color: var(--ink-soft);
-  font-size: 0.9rem;
-}
-
-.doc-cover__meta span {
-  position: relative;
+  font-size: 0.88rem;
 }
 
 .doc-cover__abstract {
   max-width: 46rem;
   margin: 2rem auto 0;
-  padding: 1.3rem 1.6rem;
+  padding: 1.2rem 1.5rem;
   text-align: justify;
   text-align-last: left;
-  background: hsl(var(--card) / 0.7);
+  background: hsl(var(--card) / 0.72);
   border: 1px solid var(--line-soft);
-  border-inline-start: 3px solid var(--vermillion);
+  border-inline-start: 3px solid #D8A79A;
   border-radius: var(--radius-sm);
-  font-size: 0.95rem;
-  line-height: 1.95;
+  font-size: 0.93rem;
+  line-height: 1.85;
   color: var(--ink-prose);
 }
 
@@ -105,35 +100,35 @@
   text-align: left;
   font-weight: 700;
   letter-spacing: 0.2em;
-  color: var(--vermillion-dark);
-  font-size: 0.82rem;
+  color: #A89F8E;
+  font-size: 0.78rem;
   margin-bottom: 0.5rem;
 }
 
 .doc-cover__keywords {
   margin-top: 1.2rem;
   text-align: left;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: var(--ink-soft);
 }
 
 .doc-cover__keywords b {
-  color: var(--vermillion-dark);
+  color: #A89F8E;
   letter-spacing: 0.1em;
   margin-right: 0.5rem;
 }
 
-/* ── 三栏文档体容器 ── */
+/* ── 文档体容器 ── */
 .doc-body {
   width: min(calc(100% - 2.5rem), 96rem);
   margin-inline: auto;
-  padding-top: clamp(2.2rem, 5vw, 4rem);
+  padding-top: clamp(2rem, 4.5vw, 3.6rem);
   display: flex;
   flex-direction: column;
-  gap: clamp(1.6rem, 3vw, 2.6rem);
+  gap: clamp(1.5rem, 3vw, 2.4rem);
 }
 
-/* 每一页 PDF = 一个 folio，三栏一行，批注与该页原文对齐 */
+/* 每一页 PDF = 一个 folio：中栏原文，左右横线本批注 */
 .folio {
   display: grid;
   grid-template-columns:
@@ -148,45 +143,44 @@
   min-width: 0;
 }
 
-/* 页码：落在中栏顶部，像学术期刊的页眉页码 */
+/* 页码：像笔记本页脚的手写页码 */
 .folio__pageno {
   grid-column: 2;
   grid-row: 1;
   justify-self: center;
   margin: 0 0 0.2rem;
-  font-family: var(--font-latin);
-  font-size: 0.78rem;
-  letter-spacing: 0.22em;
-  color: var(--ink-faint);
+  font-family: Georgia, var(--font-latin);
+  font-style: italic;
+  font-size: 0.76rem;
+  letter-spacing: 0.2em;
+  color: #B3AC9E;
 }
 
-/* 让三栏分别落在固定列、页码占顶部 */
 .folio__col--left { grid-column: 1; grid-row: 1 / span 2; align-self: start; }
 .folio__col--main { grid-column: 2; grid-row: 2; }
 .folio__col--right { grid-column: 3; grid-row: 1 / span 2; align-self: start; }
 
-/* ── 中栏：论文纸 ── */
+/* ── 中栏：干净纸面（原文）── */
 .folio__col--main {
-  background: hsl(var(--card) / 0.92);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  padding: clamp(1.5rem, 3vw, 2.9rem) clamp(1.5rem, 3.4vw, 3.2rem);
-  box-shadow: 0 8px 26px hsl(var(--fg) / 0.05);
+  background: #FEFDFB;
+  border: 1px solid #E8E5DB;
+  border-radius: 6px;
+  padding: clamp(1.4rem, 2.8vw, 2.6rem) clamp(1.4rem, 3.2vw, 3rem);
   color: var(--ink-prose);
   font-family: var(--font-serif);
-  font-size: 1.04rem;
-  line-height: 2.02;
+  font-size: 0.95rem;
+  line-height: 1.82;
 }
 
 .folio__col--main p {
-  margin-block: 0.7rem;
+  margin-block: 0.85em;
   text-align: justify;
   text-justify: inter-ideograph;
   text-indent: 2em;
   hyphens: auto;
 }
 
-/* 中栏内的标题、列表、公式不缩进 */
+/* 标题、列表、公式、图片不缩进 */
 .folio__col--main h1,
 .folio__col--main h2,
 .folio__col--main h3,
@@ -206,68 +200,69 @@
 
 .folio__col--main h2,
 .folio__col--main h3 {
-  margin: 2.2rem 0 0.9rem;
+  margin: 1.9rem 0 0.75rem;
   color: var(--ink);
   letter-spacing: 0.02em;
 }
 
 .folio__col--main h2 {
-  font-size: 1.28rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid hsl(var(--story-accent) / 0.3);
+  font-size: 1.14rem;
+  font-weight: 600;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid #E4E0D4;
 }
 
-.folio__col--main h3 { font-size: 1.14rem; }
+.folio__col--main h3 { font-size: 1.02rem; font-weight: 600; }
 .folio__col--main h4 {
-  margin: 1.6rem 0 0.6rem;
-  font-size: 1.04rem;
-  color: var(--vermillion-dark);
+  margin: 1.4rem 0 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #B4552D;
 }
 
 .folio__col--main ul,
 .folio__col--main ol {
   padding-left: 1.5em;
-  margin-block: 0.8rem;
+  margin-block: 0.7rem;
 }
 
-.folio__col--main li { margin-top: 0.32rem; text-align: justify; }
-.folio__col--main li::marker { color: var(--vermillion); }
-/* 多级列表缩进（讲稿圆点层级） */
+.folio__col--main li { margin-top: 0.28rem; text-align: justify; }
+.folio__col--main li::marker { color: #C9BFA9; }
 .folio__col--main ul ul,
 .folio__col--main ol ol,
 .folio__col--main ol ul,
-.folio__col--main ul ol { margin-block: 0.3rem; }
+.folio__col--main ul ol { margin-block: 0.28rem; }
 .folio__col--main li > ul,
 .folio__col--main li > ol { padding-left: 1.4em; }
 
-/* 高亮 / 红色下划线（手写痕迹） */
+/* 手写痕迹：荧光高亮 / 红色下划线 */
 .folio__col--main mark,
 .folio__col--main .md-highlight {
   padding: 0.04em 0.16em;
-  border-radius: 0.2em;
-  background: linear-gradient(180deg, transparent 0%, rgba(250, 214, 76, 0.4) 18%, rgba(250, 214, 76, 0.52) 100%);
+  border-radius: 0.18em;
+  background: linear-gradient(180deg, transparent 0%, rgba(248, 216, 96, 0.32) 18%, rgba(248, 216, 96, 0.45) 100%);
   color: inherit;
 }
 .folio__col--main u {
   text-decoration-thickness: 1.5px;
   text-underline-offset: 3px;
-  text-decoration-color: hsl(354 68% 52% / 0.85);
+  text-decoration-color: hsl(354 68% 52% / 0.8);
 }
 
 /* 公式 */
 .folio__col--main .katex-display {
-  margin: 1.2rem 0;
-  padding: 0.9rem 1rem;
+  margin: 1rem 0;
+  padding: 0.7rem 0.9rem;
   overflow-x: auto;
   overflow-y: hidden;
-  background: hsl(var(--muted) / 0.4);
-  border-radius: var(--radius-sm);
+  background: #F6F4EE;
+  border-radius: 6px;
 }
-.folio__col--main .katex { font-size: 1.06em; }
+.folio__col--main .katex { font-size: 1.02em; }
 
-/* 图片 figure（PDF 提取的印刷插图，webp） */
+/* 图片 figure */
 .folio-figure {
-  margin: 1.6rem 0;
+  margin: 1.4rem 0;
   text-align: center;
   text-indent: 0;
 }
@@ -276,93 +271,101 @@
   height: auto;
   margin: 0 auto;
   border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  box-shadow: 0 8px 22px hsl(var(--fg) / 0.1);
+  border-radius: 6px;
+  box-shadow: 0 6px 18px hsl(var(--fg) / 0.07);
   background: #fff;
 }
 .folio-figure figcaption {
-  margin-top: 0.6rem;
-  font-size: 0.85rem;
-  color: var(--ink-faint);
+  margin-top: 0.5rem;
+  font-size: 0.83rem;
+  color: #A89F8E;
   letter-spacing: 0.02em;
 }
 
-/* markdown 语法插入的正文印刷插图（remark 解析为 p > img.markdown-image） */
 .folio__col--main p:has(> img.markdown-image) {
   text-indent: 0;
   text-align: center;
-  margin: 1.5rem 0 0.4rem;
+  margin: 1.3rem 0 0.3rem;
 }
 .folio__col--main img.markdown-image {
   max-width: 100%;
   height: auto;
   margin: 0 auto;
-  border-radius: var(--radius-sm);
+  border-radius: 6px;
   border: 1px solid var(--line);
-  box-shadow: 0 8px 22px hsl(var(--fg) / 0.12);
+  box-shadow: 0 6px 18px hsl(var(--fg) / 0.08);
   background: #fff;
 }
 .folio__col--main .fig-caption {
   text-indent: 0 !important;
   text-align: center;
-  margin: 0 0 1.4rem;
-  font-size: 0.84rem;
+  margin: 0 0 1.2rem;
+  font-size: 0.82rem;
   line-height: 1.6;
-  color: var(--ink-faint);
+  color: #A89F8E;
   letter-spacing: 0.02em;
 }
 
 /* 作者单位 */
 .folio-affiliation {
   text-indent: 0 !important;
-  margin: 0.4rem 0 1rem;
-  font-size: 0.86rem;
-  color: var(--ink-faint);
+  margin: 0.3rem 0 0.9rem;
+  font-size: 0.84rem;
+  color: #A89F8E;
   letter-spacing: 0.02em;
 }
 
-/* 中栏内的脚注块（学术尾注） */
+/* 脚注：比正文更小、更疏、更浅 —— 脚注不是正文 */
 .folio-footnotes {
-  margin-top: 2.4rem;
-  padding: 1rem 1.1rem 1.1rem;
-  border-top: 1px solid var(--line-dark);
-  font-size: 0.82rem;
-  line-height: 1.72;
-  color: var(--ink-soft);
+  margin-top: 2rem;
+  padding: 0.9rem 1rem 0.95rem;
+  border-top: 1px dashed #DCD5C6;
+  font-size: 0.78rem;
+  line-height: 1.62;
+  color: #8C8578;
   text-align: justify;
 }
-.folio-footnotes p { text-indent: 0; margin-block: 0.4rem; }
+.folio-footnotes p { text-indent: 0; margin-block: 0.35rem; }
 .folio-footnotes__label {
   display: block;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.24em;
-  color: var(--ink-faint);
-  margin-bottom: 0.5rem;
+  color: #B3AC9E;
+  margin-bottom: 0.45rem;
 }
 
-/* ── 左右批注栏通用 ── */
+/* ── 左/右栏：横线本（康奈尔）── */
 .folio__col--left,
 .folio__col--right {
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
+  gap: 0.65rem;
   font-size: 0.84rem;
-  line-height: 1.7;
-  padding-top: 2.4rem; /* 与中栏正文首行大致对齐，避开页码行 */
+  line-height: 1.85;
+  padding-top: 2.5rem; /* 与中栏正文首行对齐 */
+  padding-left: 1.85rem;
+  padding-right: 0.9rem;
+  padding-bottom: 1.4rem;
+  color: #4A453C;
+  border-radius: 4px;
+  /* 横线纸：左侧红边线 + 细横线 */
+  background-color: #FBF8F1;
+  background-image:
+    linear-gradient(90deg, transparent 0, transparent 1.1rem, #E9C8BC 1.1rem, #E9C8BC 1.28rem, transparent 1.28rem),
+    repeating-linear-gradient(to bottom, transparent 0, transparent calc(1.85em - 1px), #E8E2D2 calc(1.85em - 1px), #E8E2D2 1.85em);
 }
 
-/* 批注卡片（callout 渲染为 aside.callout，这里覆盖默认 callout 样式） */
+/* 批注 callout —— 去掉卡片，文字直接坐在横线上 */
 .folio__col--left .callout,
 .folio__col--right .callout {
   margin: 0;
-  padding: 0.72rem 0.85rem 0.78rem 1rem;
-  border: 1px solid var(--line-soft);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  background: hsl(var(--card) / 0.82);
-  backdrop-filter: blur(4px);
-  box-shadow: 0 2px 10px hsl(var(--fg) / 0.04);
-  color: var(--ink-soft);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .folio__col--left .callout > :first-child,
@@ -370,150 +373,142 @@
 .folio__col--left .callout > :last-child,
 .folio__col--right .callout > :last-child { margin-bottom: 0; }
 .folio__col--left .callout p,
-.folio__col--right .callout p { margin-block: 0.32rem; }
+.folio__col--right .callout p { margin-block: 0.3rem; }
 .folio__col--left .callout ol,
 .folio__col--left .callout ul,
 .folio__col--right .callout ol,
-.folio__col--right .callout ul { padding-left: 1.25em; margin-block: 0.3rem; }
+.folio__col--right .callout ul { padding-left: 1.2em; margin-block: 0.3rem; }
 .folio__col--left .callout li,
-.folio__col--right .callout li { margin-top: 0.22rem; }
+.folio__col--right .callout li { margin-top: 0.2rem; }
 
 .callout-title {
   display: block;
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.16em;
-  margin-bottom: 0.38rem;
+  margin-bottom: 0.3rem;
 }
-/* 位置说明（原手写在何处） */
+
+/* 位置说明（原手写在何处）→ 淡灰小字 */
 .folio__col--right .callout em,
 .folio__col--left .callout em {
   display: block;
   font-size: 0.72rem;
   font-style: normal;
-  color: var(--ink-faint);
+  color: #B5A295;
   letter-spacing: 0.01em;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.15rem;
 }
 
-/* 左栏：黑色引导问题 → 钴蓝 */
-.folio__col--left .callout {
-  border-inline-start: 3px solid var(--vermillion);
-  border-left: 3px solid var(--vermillion);
-}
-.folio__col--left .callout .callout-title { color: var(--vermillion-dark); }
-.folio__col--left .callout li::marker { color: var(--vermillion); }
+/* 左栏：引导问题 —— 墨色正文 + 赭红标签 */
+.folio__col--left .callout .callout-title { color: #B4552D; }
+.folio__col--left .callout li::marker { color: #B4552D; }
 
-/* 右栏：红色手写批注的「工整转录文本」——楷体保留手写温度，但清晰可读 */
-.folio__col--right .callout {
-  border-inline-start: 3px solid hsl(354 68% 52% / 0.7);
-  border-left: 3px solid hsl(354 68% 52% / 0.7);
-  background: hsl(354 80% 98% / 0.72);
-}
-.folio__col--right .callout .callout-title { color: hsl(354 60% 42%); }
+/* 右栏：手写批注 —— 楷体 · 暗枣红墨 */
+.folio__col--right .callout .callout-title { color: #9A5148; }
 .folio__col--right .callout:not(.callout-question) {
   font-family: "KaiTi", "STKaiti", "楷体", var(--font-serif);
-  font-size: 0.91rem;
-  color: hsl(354 40% 28%);
+  font-size: 0.9rem;
+  color: #7E443C;
 }
 .folio__col--right .callout:not(.callout-question) em {
   font-family: var(--font-serif);
+  color: #B5A295;
 }
 
-/* 结构脉络星标 chip */
+/* 结构脉络星标 chip —— 浅纸色小标签 */
 .struct-chip {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  padding: 0.28rem 0.7rem;
+  padding: 0.22rem 0.65rem;
   border-radius: 999px;
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: hsl(38 90% 30%);
-  background: linear-gradient(180deg, rgba(252, 224, 130, 0.55), rgba(250, 214, 76, 0.4));
-  border: 1px solid rgba(214, 170, 40, 0.4);
-  margin-bottom: 0.4rem;
+  color: #7A6F5C;
+  background: #F3EFE4;
+  border: 1px solid #E3DCC8;
+  margin-bottom: 0.3rem;
 }
-.struct-chip::before { content: "★"; color: hsl(38 92% 45%); }
+.struct-chip::before { content: "★"; color: #B08A3E; }
 
 /* 空批注栏不渲染背景，保持留白 */
 .folio__col--left:empty,
 .folio__col--right:empty { visibility: hidden; }
 
-/* ── 讲稿专用：层级清晰的提纲（中栏） ── */
+/* ── 讲稿专用：层级清晰的提纲（中栏）── */
 .lecture-outline .outline-section-title {
-  margin: 1.8rem 0 0.7rem;
+  margin: 1.6rem 0 0.6rem;
   font-weight: 700;
-  color: var(--vermillion-dark);
-  font-size: 1.08rem;
+  color: #B4552D;
+  font-size: 1.02rem;
   letter-spacing: 0.02em;
 }
 .lecture-outline .outline-sub {
   font-weight: 600;
   color: var(--ink);
-  margin: 1rem 0 0.4rem;
+  margin: 0.9rem 0 0.35rem;
 }
 .lecture-outline ul { list-style: none; padding-left: 0; }
 .lecture-outline > ul > li {
   position: relative;
   padding-left: 1.3em;
-  margin-top: 0.5rem;
+  margin-top: 0.45rem;
 }
 .lecture-outline > ul > li::before {
   content: "";
   position: absolute;
   left: 0.25em;
-  top: 0.85em;
-  width: 0.42em;
-  height: 0.42em;
+  top: 0.8em;
+  width: 0.4em;
+  height: 0.4em;
   border-radius: 50%;
-  background: var(--vermillion);
+  background: #B4552D;
 }
 .lecture-outline li ul {
   list-style: none;
   padding-left: 1.1em;
-  margin-top: 0.35rem;
-  border-left: 1px dashed hsl(var(--story-accent) / 0.35);
+  margin-top: 0.3rem;
+  border-left: 1px dashed #DDD5C4;
   margin-left: 0.15em;
   padding-left: 0.9em;
 }
 .lecture-outline li ul li {
   position: relative;
   padding-left: 1em;
-  margin-top: 0.32rem;
+  margin-top: 0.28rem;
 }
 .lecture-outline li ul li::before {
   content: "";
   position: absolute;
   left: 0;
-  top: 0.78em;
+  top: 0.74em;
   width: 0.55em;
   height: 1px;
-  background: hsl(var(--story-accent) / 0.6);
+  background: #CFC5AE;
 }
 .lecture-outline li ul li ul li::before {
-  width: 0.4em;
-  height: 0.4em;
-  border: 1px solid hsl(var(--story-accent) / 0.7);
+  width: 0.38em;
+  height: 0.38em;
+  border: 1px solid #CFC5AE;
   background: transparent;
   border-radius: 50%;
-  top: 0.62em;
+  top: 0.58em;
 }
 
 /* ── 响应式 ── */
 @media (max-width: 1180px) {
   .folio {
     grid-template-columns: minmax(10.5rem, 0.9fr) minmax(0, 2.4fr) minmax(10.5rem, 0.9fr);
-    gap: 1.1rem;
+    gap: 1rem;
   }
 }
 
 @media (max-width: 920px) {
-  /* 平板/手机：单栏堆叠，正文优先，批注跟随其后 */
   .folio {
     grid-template-columns: minmax(0, 1fr);
-    gap: 1rem;
+    gap: 0.9rem;
   }
   .folio__pageno { grid-column: 1; grid-row: auto; }
   .folio__col--main { grid-column: 1; grid-row: auto; order: 1; }

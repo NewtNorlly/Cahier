@@ -173,7 +173,7 @@ html, body {
 }
 .start-bg {
   position: absolute; inset: 0;
-  background: url('images/bg_start.png') center/cover no-repeat;
+  background: url('images/bg_start.webp?v=20260907b') center/cover no-repeat;
   z-index: 0;
 }
 .start-bg::after {
