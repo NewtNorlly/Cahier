@@ -25,153 +25,190 @@ if (!note || note.draft) {
 }
 
 const { Content, headings } = await render(note.entry);
-const tableOfContents = headings
-  .filter((heading) => heading.depth === 2 || heading.depth === 3)
-  .slice(0, 24);
+// 页内导航：优先取「第 N 页」锚点，否则取二级/三级标题
+const pageAnchors = headings
+  .filter((h) => h.depth === 2)
+  .slice(0, 40);
 const repositoryUrl = `https://github.com/NewtNorlly/Cahier/blob/main/${encodePath(note.sourcePath)}`;
-const kindLabel = note.kind === "book" ? "文献笔记" : note.kind === "stats" ? "阅读统计" : "讲稿";
-const sourceLabel = note.kind === "book" ? "查看原始来源" : "查看原始文档";
-
-/* 返回导航：文献笔记回「文献笔记」，课程讲稿回「教学讲稿」；讲稿另带「返回上级」到该课程归档页 */
 const isLiterature = note.collectionName === "文献笔记";
+const kindLabel = isLiterature ? "文献笔记" : "教学讲稿";
+const sourceLabel = isLiterature ? "查看原始文献" : "查看原始讲稿";
+
 const homeTarget = isLiterature ? "literature" : "lectures";
 const parentUrl = isLiterature ? undefined : collectionUrl(note.collectionId);
+const isFolioDoc = true; // 新版统一为三栏文档体
+const eyebrow = isLiterature ? "文献笔记" : `教学讲稿 · ${note.collectionName}`;
 ---
 
 <BaseLayout
   title={note.title}
   description={note.description || `${note.collectionName}收录的${kindLabel}。`}
   canonicalPath={`/notes/${encodeURIComponent(note.id)}/`}
-  pageClass="article-page"
+  pageClass="article-page doc-page"
 >
   <div class="article-shell">
     <nav class="article-back" aria-label="返回导航">
       <a class="article-back__btn" href={`${withBase("/") + "#" + homeTarget}`}>返回首页</a>
-      {parentUrl && <a class="article-back__btn" href={parentUrl}>返回上级</a>}
+      {parentUrl && <a class="article-back__btn" href={parentUrl}>返回课程</a>}
     </nav>
   </div>
 
-  <header class="article-header">
-    <div class="article-shell article-header__grid">
-      <div>
-        <p class="eyebrow">{kindLabel} · {note.collectionName}</p>
+  <!-- 封面 Hero：左为生成的封面图，右为题录 -->
+  <header class="cover-hero">
+    <div class="article-shell cover-hero__grid">
+      <div class="cover-hero__art">
+        <Cover
+          cover={note.cover}
+          title={note.title}
+          eager
+          class="cover-hero__img"
+        />
+      </div>
+      <div class="cover-hero__meta">
+        <p class="eyebrow">{eyebrow}</p>
         <h1>{note.title}</h1>
+        {note.author && <p class="cover-hero__author">{note.author}</p>}
         {note.description && (
-          <p class="article-header__description">{note.description}</p>
+          <p class="cover-hero__desc">{note.description}</p>
         )}
         <div class="article-header__links">
           {note.sourceUrl && (
             <a href={note.sourceUrl} target="_blank" rel="noreferrer">{sourceLabel}</a>
           )}
-          <a href={repositoryUrl} target="_blank" rel="noreferrer">查看原始文档</a>
+          <a href={repositoryUrl} target="_blank" rel="noreferrer">查看 Markdown 源文件</a>
         </div>
-        {note.weread && (
-          <dl class="weread-facts" aria-label="阅读信息">
-            {note.weread.author && <div><dt>作者</dt><dd>{note.weread.author}</dd></div>}
-            {note.weread.progress && <div><dt>进度</dt><dd>{note.weread.progress}</dd></div>}
-            {note.weread.readingTime && <div><dt>时长</dt><dd>{note.weread.readingTime}</dd></div>}
-            {note.weread.lastReadDate && <div><dt>最后阅读</dt><dd>{note.weread.lastReadDate}</dd></div>}
-            {note.weread.noteCount !== undefined && <div><dt>划线</dt><dd>{note.weread.noteCount}</dd></div>}
-            {note.weread.reviewCount !== undefined && <div><dt>想法</dt><dd>{note.weread.reviewCount}</dd></div>}
-          </dl>
-        )}
       </div>
-
-      <Cover
-        cover={note.cover}
-        title={note.title}
-        eager
-        class="article-header__cover"
-      />
     </div>
   </header>
 
-  <div class="article-shell article-layout">
-    <aside class="article-aside" aria-label="文章目录">
-      <div class="article-aside__inner">
-        {tableOfContents.length > 0 ? (
-          <>
-            <p class="article-aside__label">本文目录</p>
-            <ol>
-              {tableOfContents.map((heading) => (
-                <li data-depth={heading.depth}>
-                  <a href={`#${heading.slug}`}>{heading.text}</a>
-                </li>
-              ))}
-            </ol>
-          </>
-        ) : (
-          <>
-            <p class="article-aside__label">档案信息</p>
-            <ul>
-              <li><a href={collectionUrl(note.collectionId)}>{note.collectionName}</a></li>
-            </ul>
-          </>
-        )}
-      </div>
-    </aside>
+  <!-- 页内快速导航（按 PDF 页） -->
+  {pageAnchors.length > 1 && (
+    <nav class="page-jump article-shell" aria-label="按页跳转">
+      {pageAnchors.map((h) => (
+        <a href={`#${h.slug}`}>{h.text.replace(/^第\s*/, "").replace(/\s*页$/, "")}</a>
+      ))}
+    </nav>
+  )}
 
-    <article class="prose">
+  <!-- 三栏文档体：左批注 / 中原文 / 右批注 -->
+  <div class="doc-body">
+    <article class:list={["doc-canvas", { "is-folio": isFolioDoc }]}>
       <Content />
     </article>
+  </div>
+
+  <div class="article-shell">
+    <div class="article-end">
+      <a class="article-back__btn" href={`${withBase("/") + "#" + homeTarget}`}>返回首页</a>
+      {parentUrl && <a class="article-back__btn" href={parentUrl}>返回「{note.collectionName}」</a>}
+    </div>
   </div>
 </BaseLayout>
 
 <style>
-  .weread-facts {
+  .cover-hero {
+    padding-block: clamp(2rem, 5vw, 4.2rem);
+    border-bottom: 1px solid var(--line-dark);
+  }
+
+  .cover-hero__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
-    gap: 0.8rem;
-    margin: 1.6rem 0 0;
+    grid-template-columns: minmax(15rem, 21rem) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(2rem, 6vw, 5.5rem);
   }
-  .weread-facts div {
-    background: color-mix(in srgb, var(--paper) 88%, white);
+
+  .cover-hero__art {
+    perspective: 1400px;
+  }
+
+  .cover-hero__img {
+    aspect-ratio: 3 / 4;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow:
+      0 2px 6px hsl(var(--fg) / 0.08),
+      0 24px 60px hsl(var(--fg) / 0.18);
+    transform: rotateY(-7deg) rotateX(2deg);
+    transition: transform 0.6s var(--ease-spring);
+  }
+
+  .cover-hero__img:hover {
+    transform: rotateY(0deg) rotateX(0deg);
+  }
+
+  .cover-hero__meta h1 {
+    margin-top: 0.9rem;
+    font-size: var(--title-large);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.35;
+    text-wrap: balance;
+  }
+
+  .cover-hero__author {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    color: var(--vermillion-dark);
+    letter-spacing: 0.05em;
+  }
+
+  .cover-hero__desc {
+    margin-top: 1.2rem;
+    max-width: 42rem;
+    color: var(--ink-soft);
+    line-height: 1.9;
+  }
+
+  .eyebrow {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    color: var(--vermillion-dark);
+  }
+
+  .page-jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding-top: 1.4rem;
+    padding-bottom: 0.2rem;
+  }
+
+  .page-jump a {
+    min-width: 2.3rem;
+    text-align: center;
+    padding: 0.32rem 0.6rem;
     border: 1px solid var(--line);
-    border-radius: 0.55rem;
-    padding: 0.85rem 0.95rem;
+    border-radius: 999px;
+    background: hsl(var(--card) / 0.7);
+    font-family: var(--font-latin);
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: all var(--duration-quick) var(--ease-out);
   }
-  .weread-facts dt { color: var(--ink-muted); font-size: 0.95rem; font-weight: 600; letter-spacing: 0.06em; }
-  .weread-facts dd { color: var(--ink); font-size: 1.15rem; font-weight: 600; margin: 0.3rem 0 0; }
+
+  .page-jump a:hover {
+    border-color: var(--vermillion);
+    color: var(--vermillion-dark);
+    background: hsl(var(--accent));
+  }
+
+  @media (max-width: 820px) {
+    .cover-hero__grid {
+      grid-template-columns: minmax(0, 1fr);
+      justify-items: center;
+      text-align: center;
+    }
+    .cover-hero__art {
+      width: min(16rem, 60vw);
+    }
+    .cover-hero__meta {
+      text-align: center;
+    }
+    .article-header__links {
+      justify-content: center;
+    }
+  }
 </style>
-
-<script>
-  const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>('.article-aside a[href^="#"]')];
-  const headings = tocLinks
-    .map((link) => {
-      const id = decodeURIComponent(link.hash.slice(1));
-      const heading = document.getElementById(id);
-      return heading ? { link, heading } : null;
-    })
-    .filter((item): item is { link: HTMLAnchorElement; heading: HTMLElement } => Boolean(item));
-
-  function setActiveHeading(id: string) {
-    headings.forEach(({ link, heading }) => {
-      const active = heading.id === id;
-      link.classList.toggle('is-active', active);
-      if (active) link.setAttribute('aria-current', 'location');
-      else link.removeAttribute('aria-current');
-    });
-  }
-
-  if (headings.length > 0) {
-    const initialHeading = headings.find(({ heading }) => `#${encodeURIComponent(heading.id)}` === location.hash);
-    setActiveHeading((initialHeading ?? headings[0]).heading.id);
-
-    headings.forEach(({ link, heading }) => {
-      link.addEventListener('click', () => setActiveHeading(heading.id));
-    });
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        const first = visible[0]?.target as HTMLElement | undefined;
-        if (first) setActiveHeading(first.id);
-      },
-      { rootMargin: '-12% 0px -72% 0px' },
-    );
-
-    headings.forEach(({ heading }) => observer.observe(heading));
-  }
-</script>

@@ -170,7 +170,8 @@ let gameState = 'loading'; // loading, start, playing, paused, over
 let mode = null, levelIdx = 0, handler = null;
 let score = 0, targetScore = 10, shields = 0;
 let careMode = false;
-let bgm = null, bgmPlaying = false, bgmEnabled = true;
+// Cahier 要求：BGM 无论何时都默认关闭，仅在本次会话内由用户手动开启
+let bgm = null, bgmPlaying = false, bgmEnabled = false;
 let dinoImg = new Image();
 let hedgehogImg = new Image();
 // 星露谷风格新素材
@@ -3151,6 +3152,12 @@ targetInput.addEventListener('change', () => {
 
 // Top controls
 soundBtn.addEventListener('click', toggleBGM);
+
+// Cahier 书桌空间通过 postMessage 控制 BGM：离开/进入游戏视图时都确保静音（默认关闭）
+window.addEventListener('message', (e) => {
+  const type = e.data && e.data.type;
+  if (type === 'cahier:desk' || type === 'cahier:enter') stopBGM();
+});
 flightBtn.addEventListener('click', () => {
   if (gameState === 'playing' && mode === 'casual' && handler && handler.activateFlight) {
     handler.activateFlight();
@@ -3179,12 +3186,11 @@ function init() {
   initBGM();
   updateSoundIcon();
 
-  // Load preferences
+  // Load preferences（语言偏好可恢复；BGM 固定默认关闭，不读取历史偏好自动播放）
   try {
     const sl = localStorage.getItem('dino_lang');
     if (sl && I18N[sl]) applyLanguage(sl); else applyLanguage('zh');
-    const sb = localStorage.getItem('dino_bgm');
-    if (sb !== null) bgmEnabled = sb === '1';
+    bgmEnabled = false;
     updateSoundIcon();
   } catch (e) { applyLanguage('zh'); }
 

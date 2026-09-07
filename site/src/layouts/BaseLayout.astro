@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import "katex/dist/katex.min.css";
 import { withBase } from "../lib/url";
 
 interface Props {
@@ -156,7 +157,16 @@ const canonicalUrl = canonicalPath !== false && Astro.site
       /* ════════ Aperture Reveal · 游戏空间入口/返回 ════════ */
       const gamepadBtn = document.getElementById("gamepadPortal") as HTMLButtonElement | null;
       const gameOverlay = document.getElementById("gameOverlay") as HTMLElement | null;
+      const gameFrame = document.getElementById("gameFrame") as HTMLIFrameElement | null;
       const siteHeader = document.getElementById("siteHeader");
+
+      function postGame(type: string) {
+        try {
+          gameFrame?.contentWindow?.postMessage({ type }, "*");
+        } catch {
+          /* iframe 尚未就绪时忽略 */
+        }
+      }
 
       let isGameOpen = false;
       let isAnimating = false;
@@ -164,11 +174,11 @@ const canonicalUrl = canonicalPath !== false && Astro.site
       const APERTURE_EASE = "cubic-bezier(0.77, 0, 0.175, 1)";
       const APERTURE_DURATION = 700; // ms
 
-      function buttonCenter(btn: HTMLElement): { cx: number; cy: number } {
-        const rect = btn.getBoundingClientRect();
+      // 破口原点固定在视口右上角（不再绑定手柄中心）
+      function apertureOrigin(): { cx: number; cy: number } {
         return {
-          cx: rect.left + rect.width / 2,
-          cy: rect.top + rect.height / 2,
+          cx: window.innerWidth - 34,
+          cy: 34,
         };
       }
 
@@ -176,29 +186,33 @@ const canonicalUrl = canonicalPath !== false && Astro.site
         if (!gamepadBtn || !gameOverlay || isAnimating) return;
         isAnimating = true;
 
-        const { cx, cy } = buttonCenter(gamepadBtn);
+        const { cx, cy } = apertureOrigin();
 
-        // 重置为从按钮中心开始的零半径圆
+        // 点击瞬间：顶栏提层（is-game-open）并让品牌/中栏/时钟同步淡出（is-game-full）
+        siteHeader?.classList.remove("is-hidden");
+        siteHeader?.classList.add("is-game-open");
+        siteHeader?.classList.add("is-game-full");
+
+        // 重置为从右上角开始的零半径圆
         gameOverlay.style.transition = "none";
         gameOverlay.style.clipPath = `circle(0px at ${cx}px ${cy}px)`;
         gameOverlay.style.display = "flex";
         gameOverlay.setAttribute("aria-hidden", "false");
+        postGame("cahier:enter"); // 进入游戏视图也保持 BGM 默认关闭
 
         // 强制 reflow 后再开启动画
         void gameOverlay.offsetWidth;
 
         gameOverlay.style.transition = `clip-path ${APERTURE_DURATION}ms ${APERTURE_EASE}`;
-        gameOverlay.style.clipPath = `circle(150% at ${cx}px ${cy}px)`;
+        gameOverlay.style.clipPath = `circle(160% at ${cx}px ${cy}px)`;
 
-        // 动画完成后切换按钮为"回到书桌"，并把顶栏提到覆盖层之上使其可点击
+        // 圆形铺满后，手柄再形变为"回到书桌"胶囊
         window.setTimeout(() => {
           isGameOpen = true;
           isAnimating = false;
           gamepadBtn.classList.add("is-return");
           gamepadBtn.setAttribute("aria-label", "回到书桌");
           gamepadBtn.title = "回到书桌";
-          siteHeader?.classList.remove("is-hidden");
-          siteHeader?.classList.add("is-game-open");
         }, APERTURE_DURATION);
       }
 
@@ -206,15 +220,17 @@ const canonicalUrl = canonicalPath !== false && Astro.site
         if (!gamepadBtn || !gameOverlay || isAnimating) return;
         isAnimating = true;
 
-        const { cx, cy } = buttonCenter(gamepadBtn);
+        const { cx, cy } = apertureOrigin();
 
-        // 先切换回手柄图标（此时覆盖层仍全屏，按钮视觉变化被覆盖层遮挡）
+        // 胶囊→手柄形变；同时让桌面品牌/时钟随收束同步淡回（顶栏仍提层以呈现形变）
+        postGame("cahier:desk"); // 返回书桌：停止游戏 BGM
         gamepadBtn.classList.remove("is-return");
+        siteHeader?.classList.remove("is-game-full");
         gamepadBtn.setAttribute("aria-label", "进入游戏空间");
         gamepadBtn.title = "进入游戏空间";
 
         gameOverlay.style.transition = "none";
-        gameOverlay.style.clipPath = `circle(150% at ${cx}px ${cy}px)`;
+        gameOverlay.style.clipPath = `circle(160% at ${cx}px ${cy}px)`;
 
         void gameOverlay.offsetWidth;
 

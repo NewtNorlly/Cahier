@@ -2,6 +2,7 @@
 
 @import "./modules.css";
 @import "./article.css" layer(pages);
+@import "./folio.css" layer(pages);
 
 /* 思源宋体 CN（本地字体，全站正文字体） */
 @font-face {
@@ -256,6 +257,26 @@
     z-index: 300;
     opacity: 1;
     transform: translateY(0);
+    /* 游戏态顶栏透明、无背景干扰，只保留右侧胶囊入口 */
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  /* 游戏全屏时：品牌、中栏、时钟全部淡出，只留"回到书桌"（is-game-full） */
+  .site-header__left,
+  .site-header__center,
+  .site-clock {
+    transition: opacity 0.32s var(--ease-out), transform 0.32s var(--ease-out), visibility 0s linear 0.32s;
+  }
+  .site-header.is-game-full .site-header__left,
+  .site-header.is-game-full .site-header__center,
+  .site-header.is-game-full .site-clock {
+    opacity: 0;
+    transform: translateY(-8px);
+    visibility: hidden;
+    pointer-events: none;
   }
 
   .site-header:hover,
@@ -374,13 +395,14 @@
     min-width: 0;
   }
 
-  /* ── 游戏入口 · 手柄按钮 ── */
+  /* ── 游戏入口 · 手柄按钮（圆形 → 胶囊形变） ── */
   .gamepad-portal {
     position: relative;
     display: grid;
     place-items: center;
-    width: 2.4rem;
-    height: 2.4rem;
+    /* 固定几何尺寸，width/border-radius 才能被平滑插值（避免 auto 跳变） */
+    width: 2.5rem;
+    height: 2.5rem;
     padding: 0;
     border-radius: 50%;
     border: 1px solid hsl(var(--border) / 0.8);
@@ -393,17 +415,21 @@
     backdrop-filter: blur(14px) saturate(1.4);
     -webkit-backdrop-filter: blur(14px) saturate(1.4);
     transition:
-      transform 0.2s var(--ease-spring),
-      background-color 0.2s var(--ease-out),
-      box-shadow 0.2s var(--ease-out),
-      width 0.25s var(--ease-spring),
-      border-radius 0.25s var(--ease-spring);
+      width 0.46s cubic-bezier(0.32, 0.72, 0, 1),
+      border-radius 0.46s cubic-bezier(0.32, 0.72, 0, 1),
+      background-color 0.3s var(--ease-out),
+      border-color 0.3s var(--ease-out),
+      box-shadow 0.3s var(--ease-out),
+      transform 0.22s var(--ease-spring);
     overflow: hidden;
+    will-change: width, border-radius;
   }
 
   .gamepad-portal:hover {
-    transform: scale(1.06);
-    background: hsl(var(--accent));
+    transform: translateY(-1px) scale(1.05);
+    box-shadow:
+      inset 0 1px 0 hsl(var(--card) / 0.9),
+      0 6px 18px hsl(var(--story-accent) / 0.22);
   }
 
   .gamepad-portal:active {
@@ -411,10 +437,10 @@
   }
 
   .gamepad-portal__icon {
-    width: 1.25rem;
-    height: 1.25rem;
+    width: 1.3rem;
+    height: 1.3rem;
     flex-shrink: 0;
-    transition: opacity 0.15s var(--ease-out);
+    transition: opacity 0.22s var(--ease-out), transform 0.34s var(--ease-out);
   }
 
   .gamepad-portal__label {
@@ -422,36 +448,43 @@
     inset: 0;
     display: grid;
     place-items: center;
+    padding: 0 1.15rem;
     font-family: var(--font-serif);
-    font-size: 0.82rem;
+    font-size: 0.84rem;
     font-weight: 600;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.08em;
     color: hsl(var(--accent-fg));
     white-space: nowrap;
     opacity: 0;
-    transition: opacity 0.15s var(--ease-out);
+    transform: scale(0.86);
+    transition: opacity 0.24s var(--ease-out), transform 0.34s var(--ease-out);
   }
 
-  /* "回到书桌" 状态：圆角胶囊 */
+  /* "回到书桌" 状态：同一按钮由正圆横向拉伸为圆角胶囊 */
   .gamepad-portal.is-return {
-    width: auto;
-    min-width: 6.5rem;
-    padding: 0 1.1rem;
+    width: 7.4rem;
+    height: 2.5rem;
     border-radius: 999px;
     background: hsl(var(--accent));
-    border-color: hsl(var(--story-accent) / 0.25);
+    border-color: hsl(var(--story-accent) / 0.28);
+    box-shadow: 0 6px 20px hsl(var(--story-accent) / 0.28);
   }
 
   .gamepad-portal.is-return .gamepad-portal__icon {
     opacity: 0;
+    transform: scale(0.5) rotate(-30deg);
   }
 
   .gamepad-portal.is-return .gamepad-portal__label {
     opacity: 1;
+    transform: scale(1);
+    /* 等胶囊展开后文字再淡入，更顺滑 */
+    transition: opacity 0.28s var(--ease-out) 0.16s, transform 0.34s var(--ease-out) 0.16s;
   }
 
   .gamepad-portal.is-return:hover {
-    background: hsl(var(--card) / 0.85);
+    background: hsl(var(--accent));
+    filter: brightness(1.06);
   }
 
   /* ── 游戏空间覆盖层 · Aperture Reveal ── */
@@ -463,7 +496,7 @@
     align-items: stretch;
     justify-content: stretch;
     background: hsl(var(--bg));
-    clip-path: circle(0px at 50% 50%);
+    clip-path: circle(0px at calc(100% - 34px) 34px);
   }
 
   .game-overlay__frame {

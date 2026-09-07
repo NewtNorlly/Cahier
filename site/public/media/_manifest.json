@@ -1,4 +1,129 @@
 {
-  "generatedAt": "2026-09-06T15:44:52.638Z",
-  "files": []
+  "generatedAt": "2026-09-07T01:56:15.228Z",
+  "files": [
+    {
+      "path": "德语/covers/german-480.webp",
+      "bytes": 6982
+    },
+    {
+      "path": "德语/covers/german-960_thumb.webp",
+      "bytes": 2318
+    },
+    {
+      "path": "德语/covers/german-960.webp",
+      "bytes": 18990
+    },
+    {
+      "path": "决策理论与方法/covers/decision-theory-480.webp",
+      "bytes": 8908
+    },
+    {
+      "path": "决策理论与方法/covers/decision-theory-960_thumb.webp",
+      "bytes": 2890
+    },
+    {
+      "path": "决策理论与方法/covers/decision-theory-960.webp",
+      "bytes": 24484
+    },
+    {
+      "path": "民事诉讼法/covers/civil-procedure-480.webp",
+      "bytes": 8210
+    },
+    {
+      "path": "民事诉讼法/covers/civil-procedure-960_thumb.webp",
+      "bytes": 2792
+    },
+    {
+      "path": "民事诉讼法/covers/civil-procedure-960.webp",
+      "bytes": 21800
+    },
+    {
+      "path": "脑图集/covers/brain-atlas-480.webp",
+      "bytes": 7754
+    },
+    {
+      "path": "脑图集/covers/brain-atlas-960_thumb.webp",
+      "bytes": 2692
+    },
+    {
+      "path": "脑图集/covers/brain-atlas-960.webp",
+      "bytes": 21544
+    },
+    {
+      "path": "社会保障学/covers/social-security-480.webp",
+      "bytes": 8254
+    },
+    {
+      "path": "社会保障学/covers/social-security-960_thumb.webp",
+      "bytes": 2684
+    },
+    {
+      "path": "社会保障学/covers/social-security-960.webp",
+      "bytes": 21912
+    },
+    {
+      "path": "土地资源管理/covers/land-resource-480.webp",
+      "bytes": 8776
+    },
+    {
+      "path": "土地资源管理/covers/land-resource-960_thumb.webp",
+      "bytes": 2782
+    },
+    {
+      "path": "土地资源管理/covers/land-resource-960.webp",
+      "bytes": 23768
+    },
+    {
+      "path": "文献笔记/covers/legal-zhishichanquan-480.webp",
+      "bytes": 12202
+    },
+    {
+      "path": "文献笔记/covers/legal-zhishichanquan-960_thumb.webp",
+      "bytes": 3932
+    },
+    {
+      "path": "文献笔记/covers/legal-zhishichanquan-960.webp",
+      "bytes": 32232
+    },
+    {
+      "path": "文献笔记/figures/masthead.webp",
+      "bytes": 29230
+    },
+    {
+      "path": "宪法/covers/constitution-480.webp",
+      "bytes": 7136
+    },
+    {
+      "path": "宪法/covers/constitution-960_thumb.webp",
+      "bytes": 2372
+    },
+    {
+      "path": "宪法/covers/constitution-960.webp",
+      "bytes": 19096
+    },
+    {
+      "path": "知识产权法基础理论/covers/ip-theory-480.webp",
+      "bytes": 8894
+    },
+    {
+      "path": "知识产权法基础理论/covers/ip-theory-960_thumb.webp",
+      "bytes": 2950
+    },
+    {
+      "path": "知识产权法基础理论/covers/ip-theory-960.webp",
+      "bytes": 24238
+    },
+    {
+      "path": "中国法制史/covers/legal-history-480.webp",
+      "bytes": 7598
+    },
+    {
+      "path": "中国法制史/covers/legal-history-960_thumb.webp",
+      "bytes": 2482
+    },
+    {
+      "path": "中国法制史/covers/legal-history-960.webp",
+      "bytes": 20796
+    }
+  ]
 }

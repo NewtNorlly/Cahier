@@ -26,9 +26,10 @@ const calloutLabels = {
   example: '示例',
   failure: '失败',
   faq: '问题',
+  hand: '手写批注',
   info: '信息',
   note: '笔记',
-  question: '问题',
+  question: '引导问题',
   quote: '引用',
   success: '完成',
   summary: '摘要',
@@ -283,16 +284,23 @@ function transformCallouts(tree) {
     const firstText = firstParagraph?.type === 'paragraph' ? firstParagraph.children?.[0] : undefined;
     if (firstText?.type !== 'text') return;
 
-    const match = firstText.value.match(/^\[!([a-z\d_-]+)\]([+-])?\s*(.*)$/iu);
+    // 标题行可能独占，也可能与正文在同段软换行：只匹配到首个换行
+    const match = firstText.value.match(/^\[!([a-z\d_-]+)\]([+-])?[ \t]*([^\n]*)/iu);
     if (!match) return;
 
     const type = match[1].toLocaleLowerCase('en-US');
     const title = match[3].trim() || calloutLabels[type] || type;
-    firstParagraph.children.splice(0, 1, {
-      type: 'strong',
-      children: [{ type: 'text', value: title }],
-      data: { hProperties: { className: ['callout-title'] } },
-    });
+    // 剥离标题行（含紧随换行），把剩余正文保留为独立 text 节点
+    const rest = firstText.value.replace(/^\[![a-z\d_-]+\][+-]?[^\n]*\n?/iu, '').trimStart();
+    const replacement = [
+      {
+        type: 'strong',
+        children: [{ type: 'text', value: title }],
+        data: { hProperties: { className: ['callout-title'] } },
+      },
+    ];
+    if (rest) replacement.push({ type: 'text', value: rest });
+    firstParagraph.children.splice(0, 1, ...replacement);
     node.data = {
       ...(node.data ?? {}),
       hName: 'aside',
