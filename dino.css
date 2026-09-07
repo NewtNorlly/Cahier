@@ -565,7 +565,8 @@ html, body {
 /* ═══════ Score HUD — Apple 毛玻璃胶囊 ═══════ */
 #score {
   position: fixed;
-  top: 16px; left: 20px;
+  top: 16px; left: 50%;
+  transform: translateX(-50%);
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
@@ -606,7 +607,8 @@ html, body {
 /* Level indicator */
 #level-indicator {
   position: fixed;
-  top: 16px; left: 20px;
+  top: 16px; left: 50%;
+  transform: translateX(-50%);
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
@@ -622,18 +624,17 @@ html, body {
 }
 #level-indicator[hidden] { display: none !important; }
 
-/* ═══════ Top controls ═══════ */
+/* ═══════ Top controls — 左上角：音乐开关 / 飞行模式 / 暂停 ═══════ */
 #top-controls {
   position: fixed;
-  top: 16px; left: 50%;
-  transform: translateX(-50%);
+  top: 16px; left: 16px;
   display: none;
-  gap: 10px;
+  gap: 8px;
+  align-items: center;
   z-index: 50;
 }
 .top-btn {
-  width: 42px; height: 42px;
-  border-radius: 50%;
+  border-radius: 999px;
   border: 1px solid var(--glass-border);
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
@@ -641,9 +642,10 @@ html, body {
   color: var(--text-primary);
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
+  gap: 6px;
+  padding: 7px 12px;
   box-shadow: var(--shadow-sm);
   transition: transform 0.2s var(--ease-spring), background 0.2s, box-shadow 0.2s;
-  padding: 0;
   overflow: hidden;
   position: relative;
 }
@@ -651,12 +653,21 @@ html, body {
 .top-btn:hover { background: rgba(255,255,255,0.95); transform: scale(1.08); box-shadow: var(--shadow); }
 .top-btn:active { transform: scale(0.88); transition: transform 0.1s var(--ease-out); }
 .top-btn-icon {
-  width: 26px;
-  height: 26px;
+  width: 22px;
+  height: 22px;
   display: block;
   object-fit: contain;
   pointer-events: none;
   transition: opacity 0.25s var(--ease-out), filter 0.25s var(--ease-out);
+}
+.top-btn-label {
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-cute);
+  color: var(--text-primary);
+  letter-spacing: 1px;
+  white-space: nowrap;
+  pointer-events: none;
 }
 .top-btn--muted .top-btn-icon {
   opacity: 0.4;
@@ -665,11 +676,12 @@ html, body {
 .top-btn--muted::after {
   content: '';
   position: absolute;
-  width: 28px;
+  left: 14px; top: 50%;
+  width: 24px;
   height: 2px;
   background: rgba(255,59,48,0.7);
   border-radius: 2px;
-  transform: rotate(-45deg);
+  transform: translateY(-50%) rotate(-45deg);
   pointer-events: none;
 }
 
@@ -756,7 +768,10 @@ body.care-mode .result-title { font-size: 36px; }
 body.care-mode .result-msg { font-size: 17px; }
 body.care-mode #score { font-size: 26px; padding: 10px 24px; }
 body.care-mode .score-label { font-size: 17px; }
-body.care-mode .top-btn { width: 48px; height: 48px; }
+body.care-mode .top-btn { padding: 10px 16px; gap: 8px; }
+body.care-mode .top-btn-icon { width: 26px; height: 26px; }
+body.care-mode .top-btn-label { font-size: 15px; }
+body.care-mode .top-btn--muted::after { left: 16px; width: 28px; }
 
 /* ═══════ Responsive: landscape phones ═══════ */
 @media (max-height: 500px) and (orientation: landscape) {

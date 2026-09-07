@@ -73,7 +73,7 @@ const I18N = {
     platformer_desc: '跳跃闯关，穿越管道，登上终点热气球',
     portal_desc: '利用传送门和跳床，到达右上角热气球',
     level_n: '第 {n} 关', casual_desc: '横版跑酷：躲避刺猬和蝙蝠，吃圣女果获得护盾',
-    flight: '飞行', mode_casual_settings: '休闲模式',
+    flight: '飞行', btn_music: '音乐开关', btn_flight: '飞行模式', btn_pause: '暂停', mode_casual_settings: '休闲模式',
     victory_maze: '成功走出迷宫！', victory_plat: '登上热气球，飞走啦！', victory_portal: '传送成功，完美通关！',
   },
   en: {
@@ -96,7 +96,7 @@ const I18N = {
     platformer_desc: 'Jump through pipes, reach the hot air balloon',
     portal_desc: 'Use portals & trampolines to reach the balloon',
     level_n: 'Level {n}', casual_desc: 'Runner: dodge hedgehogs & bats, collect tomatoes for shields',
-    flight: 'Fly', mode_casual_settings: 'Casual Mode',
+    flight: 'Fly', btn_music: 'Music', btn_flight: 'Flight', btn_pause: 'Pause', mode_casual_settings: 'Casual Mode',
     victory_maze: 'You escaped the maze!', victory_plat: 'Balloon escape!', victory_portal: 'Portal master!',
   },
   fr: {
@@ -119,7 +119,7 @@ const I18N = {
     platformer_desc: 'Sautez à travers les tuyaux, atteignez la montgolfière',
     portal_desc: 'Utilisez portails et trampolines',
     level_n: 'Niveau {n}', casual_desc: 'Course : évitez les obstacles, collectez des tomates',
-    flight: 'Vol', mode_casual_settings: 'Mode Décontracté',
+    flight: 'Vol', btn_music: 'Musique', btn_flight: 'Vol', btn_pause: 'Pause', mode_casual_settings: 'Mode Décontracté',
     victory_maze: 'Tu as réussi !', victory_plat: 'Montgolfière !', victory_portal: 'Maître des portails !',
   },
   de: {
@@ -142,7 +142,7 @@ const I18N = {
     platformer_desc: 'Springe durch Röhren zum Heißluftballon',
     portal_desc: 'Nutze Portale und Trampoline',
     level_n: 'Level {n}', casual_desc: 'Runner: Hindernissen ausweichen, Tomaten sammeln',
-    flight: 'Fliegen', mode_casual_settings: 'Gelegenheitsmodus',
+    flight: 'Fliegen', btn_music: 'Musik', btn_flight: 'Fliegen', btn_pause: 'Pause', mode_casual_settings: 'Gelegenheitsmodus',
     victory_maze: 'Du hast es geschafft!', victory_plat: 'Heißluftballon!', victory_portal: 'Portal-Meister!',
   }
 };

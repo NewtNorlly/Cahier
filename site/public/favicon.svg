@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7B93F8"/>
+      <stop offset="0.55" stop-color="#3D5AD6"/>
+      <stop offset="1" stop-color="#152A66"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.25" cy="0.18" r="0.9">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="doc" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E9EFFE"/>
+      <stop offset="1" stop-color="#D3DEFB"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded-square cobalt background -->
+  <rect x="0" y="0" width="512" height="512" rx="116" fill="url(#bg)"/>
+  <rect x="0" y="0" width="512" height="512" rx="116" fill="url(#glow)"/>
+
+  <!-- Laptop screen -->
+  <rect x="124" y="110" width="264" height="190" rx="24" fill="#FFFFFF"/>
+
+  <!-- Screen content: notebook document (Cahier hint) -->
+  <rect x="198" y="154" width="116" height="102" rx="12" fill="url(#doc)"/>
+  <rect x="288" y="154" width="26" height="26" fill="#FFFFFF"/>
+  <path d="M314 156 l14 0 q2 0 2 2 l0 14 q0 2 -2 2 l-14 0 q-2 0 -2 -2 l0 -14 q0 -2 2 -2 z" fill="#C6D4F7"/>
+  <line x1="214" y1="180" x2="288" y2="180" stroke="#1A3474" stroke-width="8" stroke-linecap="round" opacity="0.85"/>
+  <line x1="214" y1="204" x2="288" y2="204" stroke="#1A3474" stroke-width="8" stroke-linecap="round" opacity="0.6"/>
+  <line x1="214" y1="228" x2="264" y2="228" stroke="#1A3474" stroke-width="8" stroke-linecap="round" opacity="0.4"/>
+
+  <!-- Hinge -->
+  <rect x="106" y="296" width="300" height="16" rx="8" fill="#B9C9F2"/>
+
+  <!-- Laptop base (keyboard deck) -->
+  <path d="M84 312 H428 L402 386 Q397 398 384 398 H128 Q115 398 110 386 Z" fill="#FFFFFF"/>
+  <path d="M100 318 H412 L390 382 Q387 390 378 390 H134 Q125 390 122 382 Z" fill="#EAF0FE"/>
+</svg>
