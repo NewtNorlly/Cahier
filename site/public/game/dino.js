@@ -198,7 +198,9 @@ function resize() {
   canvas.width = W; canvas.height = H;
   confettiC.width = W; confettiC.height = H;
   const vw = window.innerWidth, vh = window.innerHeight;
-  const sc = Math.min(vw / W, vh / H);
+  // cover 式铺满：等比放大到完全覆盖视口（不变形、无黑边），超出部分居中裁切。
+  // 任意屏幕比例（手机竖屏/平板/电脑/网吧大屏）都不留黑边。
+  const sc = Math.max(vw / W, vh / H);
   const cw = Math.round(W * sc), ch = Math.round(H * sc);
   [canvas, confettiC].forEach(c => {
     c.style.width = cw + 'px'; c.style.height = ch + 'px';
@@ -248,7 +250,8 @@ function onKeyDown(e) {
   if (e.code === 'ArrowUp' || e.code === 'KeyW') { moveY = -1; if (handler && handler.onJump) handler.onJump(); }
   if (e.code === 'ArrowDown' || e.code === 'KeyS') moveY = 1;
   if (e.code === 'Space' && handler && handler.onJump) { e.preventDefault(); handler.onJump(); }
-  if (e.code === 'KeyF' && gameState === 'playing' && mode === 'casual' && handler && handler.activateFlight) { handler.activateFlight(); }
+  if ((e.code === 'KeyN' || e.code === 'KeyF') && gameState === 'playing' && mode === 'casual' && handler && handler.activateFlight) { handler.activateFlight(); }
+  if (e.code === 'KeyM') { e.preventDefault(); toggleBGM(); }
   if (e.code === 'Escape' && gameState === 'playing') pauseGame();
   else if (e.code === 'Escape' && gameState === 'paused') resumeGame();
 }
@@ -3233,7 +3236,17 @@ function init() {
       animFrame = requestAnimationFrame(loop);
     }, 300);
   }
-  allImgs.forEach(({ img, url }) => { img.onload = onOneLoaded; img.onerror = onOneLoaded; img.src = url; });
+  // 加载完成后先异步解码（decode），避免进入游戏首帧 drawImage 同步解码造成卡顿
+  allImgs.forEach(({ img, url }) => {
+    let counted = false;
+    const done = () => { if (!counted) { counted = true; onOneLoaded(); } };
+    img.onload = () => {
+      if (typeof img.decode === 'function') img.decode().then(done).catch(done);
+      else done();
+    };
+    img.onerror = done;
+    img.src = url;
+  });
   setTimeout(finishLoad, 5000);
 }
 

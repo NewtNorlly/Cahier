@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-09-07T08:36:17.968Z",
+  "generatedAt": "2026-09-07T11:34:35.041Z",
   "files": [
     {
-      "path": "_masthead_peek.png",
-      "bytes": 48965
+      "path": "_tools/_legal-cover.svg",
+      "bytes": 4099
     },
     {
       "path": "德语/covers/german-480.webp",
@@ -79,19 +79,19 @@
     },
     {
       "path": "文献笔记/covers/legal-zhishichanquan-480.webp",
-      "bytes": 7094
+      "bytes": 8300
     },
     {
       "path": "文献笔记/covers/legal-zhishichanquan-960_thumb.webp",
-      "bytes": 2190
+      "bytes": 3042
     },
     {
       "path": "文献笔记/covers/legal-zhishichanquan-960.webp",
-      "bytes": 18804
+      "bytes": 25440
     },
     {
       "path": "文献笔记/figures/masthead.webp",
-      "bytes": 29230
+      "bytes": 9284
     },
     {
       "path": "宪法/covers/constitution-480.webp",

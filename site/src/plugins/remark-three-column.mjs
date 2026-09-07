@@ -78,6 +78,50 @@ function makeFolio(label, cols) {
 
 const BOUNDARY_RE = /(<!--\s*(?:folio\s*[:：][^>]*?|\/\s*folio|col\s*[:：]\s*[LMRlmr])\s*-->)/;
 
+// 句末/收束标点：以这些字符结尾说明段落完整；否则是被分页切开的续段
+const END_PUNCT_RE = /[。！？!?…：；;”"’』）)】》\.．]\s*$/u;
+
+function nodeText(node) {
+  if (node.type === 'text') return node.value;
+  if (Array.isArray(node.children)) {
+    for (let i = node.children.length - 1; i >= 0; i -= 1) {
+      const t = nodeText(node.children[i]);
+      if (t) return t;
+    }
+  }
+  return '';
+}
+
+// 取一栏正文的结尾文本（跳过脚注 div 等 html 节点）
+function columnTailText(col) {
+  if (!col?.children) return '';
+  for (let i = col.children.length - 1; i >= 0; i -= 1) {
+    const n = col.children[i];
+    if (n.type === 'html') continue;
+    const t = nodeText(n);
+    if (t && t.trim()) return t.trim();
+  }
+  return '';
+}
+
+// 跨页续段：上一页中栏结尾无句末标点 → 本页中栏首个正文段不缩进
+function markContinuation(cols, prevTail) {
+  if (!prevTail || END_PUNCT_RE.test(prevTail)) return;
+  const main = cols.get('M');
+  if (!main) return;
+  const firstP = main.children.find((n) => n.type === 'paragraph');
+  if (!firstP) return;
+  const prev = firstP.data?.hProperties?.className ?? [];
+  const className = Array.isArray(prev) ? prev : [String(prev)];
+  firstP.data = {
+    ...(firstP.data ?? {}),
+    hProperties: {
+      ...(firstP.data?.hProperties ?? {}),
+      className: [...className, 'para-cont'],
+    },
+  };
+}
+
 function normalizeBoundaries(children) {
   // 把混在同一个 html 节点里的「边界注释 + 其他 HTML」拆成独立节点，
   // 保证 folio/col 边界一定能被状态机单独识别。
@@ -105,6 +149,7 @@ export function remarkThreeColumn() {
     let currentSide = null;
     let buckets = null; // Map L/M/R -> node[]
     let preFolio = []; // folio 开始前的游离节点
+    let prevMainTail = ''; // 上一 folio 中栏正文结尾文本（判跨页续段）
 
     const ensureCol = (side) => {
       if (!buckets.has(side)) buckets.set(side, makeCol(side, []));
@@ -152,7 +197,9 @@ export function remarkThreeColumn() {
         continue;
       }
       if (close && inFolio) {
+        markContinuation(buckets, prevMainTail);
         out.push(makeFolio(folioLabel, buckets));
+        prevMainTail = columnTailText(buckets.get('M'));
         inFolio = false;
         folioLabel = '';
         buckets = null;
@@ -165,6 +212,7 @@ export function remarkThreeColumn() {
 
     // 文件末尾若未闭合，自动收口
     if (inFolio && buckets) {
+      markContinuation(buckets, prevMainTail);
       const cols = new Map(buckets);
       out.push(makeFolio(folioLabel, cols));
     }

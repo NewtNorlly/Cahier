@@ -292,13 +292,17 @@ function transformCallouts(tree) {
     const title = match[3].trim() || calloutLabels[type] || type;
     // 剥离标题行（含紧随换行），把剩余正文保留为独立 text 节点
     const rest = firstText.value.replace(/^\[![a-z\d_-]+\][+-]?[^\n]*\n?/iu, '').trimStart();
-    const replacement = [
-      {
+    const replacement = [];
+    // 手写批注 / 引导问题：不再渲染「手写批注」「引导问题」小标签，开门见山直接呈现笔记正文
+    // （带括号的位置提示以 em 形式保留在正文中）
+    const silentTitle = type === 'hand' || type === 'question';
+    if (!silentTitle) {
+      replacement.push({
         type: 'strong',
         children: [{ type: 'text', value: title }],
         data: { hProperties: { className: ['callout-title'] } },
-      },
-    ];
+      });
+    }
     if (rest) replacement.push({ type: 'text', value: rest });
     firstParagraph.children.splice(0, 1, ...replacement);
     node.data = {

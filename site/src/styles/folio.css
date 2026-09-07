@@ -118,7 +118,7 @@
   margin-right: 0.5rem;
 }
 
-/* ── 文档体容器：四根竖线画在这里，贯穿所有页（左右连贯便签纸）── */
+/* ── 文档体容器：纯白原文纸 + 纯白连贯便签纸（左右各为中栏一半宽）── */
 .doc-body {
   width: min(calc(100% - 2.5rem), 96rem);
   margin-inline: auto;
@@ -126,15 +126,11 @@
   display: flex;
   flex-direction: column;
   gap: 0; /* 页间虚线由 .folio 自身 border-bottom 提供 */
-  /* 纯白纸面 + 四根竖线：
-     左便签纸侧边条(粉) · 中-左分隔线 · 中-右分隔线 · 右便签纸侧边条(蓝)
-     列宽 1:2:1 → 分隔线精确落在 25% / 75% */
+  /* 纯白纸面；仅以两条极淡灰竖线暗示中栏与便签纸的分界，不使用彩色 */
   background-color: #FFFFFF;
   background-image: linear-gradient(90deg,
-    #F3D8CB 0, #F3D8CB 3px, transparent 3px,
-    transparent calc(25% - 0.5px), #E9E4DA calc(25% - 0.5px), #E9E4DA 25%, transparent 25%,
-    transparent 75%, #E9E4DA 75%, #E9E4DA calc(75% + 0.5px), transparent calc(75% + 0.5px),
-    transparent calc(100% - 3px), #D5E2EE calc(100% - 3px), #D5E2EE 100%);
+    transparent calc(25% - 0.5px), #EDEDED calc(25% - 0.5px), #EDEDED 25%, transparent 25%,
+    transparent 75%, #EDEDED 75%, #EDEDED calc(75% + 0.5px), transparent calc(75% + 0.5px));
 }
 
 /* 每一页 PDF = 一个 folio：中栏原文纸，左右连贯便签纸 */
@@ -142,9 +138,9 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
   align-items: start;
-  /* 页内上下留白不切断竖线背景；页间以虚线分页 */
+  /* 页内上下留白不切断竖线背景；页间以虚线分页（左右便签纸在分页处同步断开） */
   padding: clamp(1rem, 2vw, 1.5rem) 0 clamp(1.6rem, 3vw, 2.2rem);
-  border-bottom: 1px dashed #E3DED2;
+  border-bottom: 1px dashed #E6E6E6;
 }
 .folio:last-child { border-bottom: 0; }
 
@@ -174,32 +170,36 @@
 .folio__col--left  { padding: clamp(1.3rem, 2.6vw, 2.4rem) 1.1rem 0 0.4rem; }
 .folio__col--right { padding: clamp(1.3rem, 2.6vw, 2.4rem) 0.4rem 0 1.1rem; }
 
-/* ── 中栏：干净白纸（原文）── */
+/* ── 中栏：纯白原文纸（无卡片边框/阴影，与便签纸同属一张纸面）── */
 .folio__col--main {
   background: #FFFFFF;
-  border: 1px solid #E4E0D4;
-  border-radius: 4px;
-  box-shadow: 0 2px 6px hsl(var(--fg) / 0.04), 0 14px 32px hsl(var(--fg) / 0.06);
-  padding: clamp(1.4rem, 2.8vw, 2.6rem) clamp(1.4rem, 3.2vw, 3rem);
-  color: var(--ink-prose);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: clamp(1.2rem, 2.4vw, 2.2rem) clamp(1.3rem, 3vw, 2.8rem);
+  color: #1F1C18;
   font-family: var(--font-serif);
-  font-size: 0.95rem;
-  line-height: 1.8;
+  font-size: 0.9rem;
+  line-height: 1.78;
 }
 
 .folio__col--main p {
-  margin-block: 0.85em;
+  margin-block: 0.72em;
   text-align: justify;
   text-justify: inter-ideograph;
   text-indent: 2em;
   hyphens: auto;
 }
 
+/* 跨页续段：上一页被切开的自然段，本页不再首行缩进 */
+.folio__col--main p.para-cont { text-indent: 0; }
+
 /* 标题、列表、公式、图片不缩进 */
 .folio__col--main h1,
 .folio__col--main h2,
 .folio__col--main h3,
 .folio__col--main h4,
+.folio__col--main h5,
 .folio__col--main ul,
 .folio__col--main ol,
 .folio__col--main blockquote,
@@ -215,25 +215,115 @@
 
 .folio__col--main h2,
 .folio__col--main h3 {
-  margin: 1.9rem 0 0.75rem;
-  color: var(--ink);
+  margin: 1.7rem 0 0.7rem;
+  color: #1F1C18;
   letter-spacing: 0.02em;
+  text-indent: 0;
 }
 
 .folio__col--main h2 {
-  font-size: 1.14rem;
-  font-weight: 600;
-  padding-bottom: 0.4rem;
-  border-bottom: 1px solid #E4E0D4;
+  font-size: 1.06rem;
+  font-weight: 700;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid #E6E6E6;
 }
 
-.folio__col--main h3 { font-size: 1.02rem; font-weight: 600; }
+.folio__col--main h3 { font-size: 1.02rem; font-weight: 700; }
 .folio__col--main h4 {
-  margin: 1.4rem 0 0.5rem;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #B4552D;
+  margin: 1.2rem 0 0.45rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #1F1C18;
 }
+.folio__col--main h5 {
+  margin: 0.95rem 0 0.4rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #2A2620;
+  letter-spacing: 0.01em;
+}
+
+/* ── 学术论文 PDF 视觉规范（法学文献专用语义类）── */
+/* 栏目眉题：·2021年《法学研究》论坛专题· 居中 */
+.folio__col--main .doc-kicker,
+.folio__col--main h4.doc-kicker {
+  text-align: center;
+  text-indent: 0;
+  font-weight: 700;
+  font-size: 0.92rem;
+  margin: 1.4rem 0 1rem;
+  letter-spacing: 0.04em;
+  color: #1F1C18;
+}
+/* 文章大标题：居中、加粗、大字 */
+.folio__col--main .doc-title,
+.folio__col--main h3.doc-title {
+  text-align: center;
+  text-indent: 0;
+  font-size: 1.34rem;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 1.6rem 0 0.8rem;
+  letter-spacing: 0.03em;
+  color: #161310;
+}
+/* 作者：右对齐 */
+.folio__col--main .doc-author,
+.folio__col--main h4.doc-author {
+  text-align: right;
+  text-indent: 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+  margin: 0.6rem 0 1.1rem;
+  color: #1F1C18;
+}
+/* 一级标题（前言 / 一、xxx）：居中 */
+.folio__col--main .doc-section,
+.folio__col--main h4.doc-section {
+  text-align: center;
+  text-indent: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 1.7rem 0 0.8rem;
+  letter-spacing: 0.12em;
+  color: #1F1C18;
+}
+/* 内容提要 / 关键词 引导词：黑体加重 */
+.folio__col--main .doc-lede { text-indent: 2em; font-size: 0.88rem; line-height: 1.78; }
+.folio__col--main .doc-lede strong,
+.folio__col--main p strong:first-child { font-weight: 700; }
+/* 编者按：小一号、两端对齐 */
+.folio__col--main .doc-editornote {
+  text-indent: 2em;
+  font-size: 0.82rem;
+  line-height: 1.74;
+  color: #33302A;
+  text-align: justify;
+  margin: 0.4rem 0 0.6rem;
+}
+/* 关键词：引导词黑体、词间全角空格、下划通栏细线 */
+.folio__col--main .doc-keywords {
+  text-indent: 0;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  padding-bottom: 0.55rem;
+  margin-bottom: 0.4rem;
+  border-bottom: 1px solid #4A453C;
+  word-spacing: 0.35em;
+}
+.folio__col--main .doc-keywords strong { font-weight: 700; word-spacing: 0; margin-right: 0.4em; }
+/* 英文 Abstract / Key Words（文末，小一号、两端对齐、上下细线） */
+.folio__col--main .doc-abstract {
+  text-indent: 0;
+  font-size: 0.8rem;
+  line-height: 1.72;
+  color: #33302A;
+  text-align: justify;
+  margin: 0.5rem 0;
+  font-family: Georgia, "Times New Roman", var(--font-serif);
+}
+.folio__col--main .doc-abstract + .doc-abstract { margin-top: 0.35rem; }
+.folio__col--main .doc-abstract strong { font-weight: 700; margin-right: 0.35em; }
 
 .folio__col--main ul,
 .folio__col--main ol {
@@ -242,7 +332,23 @@
 }
 
 .folio__col--main li { margin-top: 0.28rem; text-align: justify; }
-.folio__col--main li::marker { color: #C9BFA9; }
+.folio__col--main li::marker { color: #8A857A; }
+/* 列表项内换行产生的段落：字号与条目一致、间距收紧，避免“换一行字就变大/变松” */
+.folio__col--main li p { margin: 0.2rem 0; font-size: inherit; line-height: inherit; }
+
+/* 中栏 blockquote：用作「参会人/时间地点」题注，无左侧横线、无底色，小一号灰字 */
+.folio__col--main blockquote {
+  margin: 0.8em 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 0.84em;
+  line-height: 1.7;
+  color: #55504A;
+  text-align: justify;
+}
+.folio__col--main blockquote p { text-indent: 2em; margin-block: 0.4em; }
+.folio__col--main blockquote em { font-style: normal; }
 .folio__col--main ul ul,
 .folio__col--main ol ol,
 .folio__col--main ol ul,
@@ -274,6 +380,39 @@
   border-radius: 6px;
 }
 .folio__col--main .katex { font-size: 1.02em; }
+
+/* 学术三线表：仅上下框线 + 表头下细线，无竖线，清新克制 */
+.folio__col--main table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.1rem 0;
+  font-size: 0.86rem;
+  line-height: 1.6;
+  display: block;
+  overflow-x: auto;
+}
+.folio__col--main table thead,
+.folio__col--main table tbody { display: table; width: 100%; table-layout: auto; }
+.folio__col--main table th,
+.folio__col--main table td {
+  padding: 0.5rem 0.85rem;
+  text-align: left;
+  vertical-align: top;
+  border: 0;
+  text-indent: 0;
+}
+.folio__col--main table thead th {
+  font-weight: 700;
+  color: #1F1C18;
+  border-top: 1.6px solid #3A362F;
+  border-bottom: 1px solid #3A362F;
+  background: none;
+  white-space: nowrap;
+}
+.folio__col--main table tbody tr:last-child td { border-bottom: 1.6px solid #3A362F; }
+.folio__col--main table tbody tr:nth-child(even) { background: #FAF9F5; }
+.folio__col--main table th:first-child,
+.folio__col--main table td:first-child { white-space: nowrap; font-weight: 600; }
 
 /* 图片 figure */
 .folio-figure {
@@ -330,13 +469,13 @@
   letter-spacing: 0.02em;
 }
 
-/* 脚注：比正文更小、更疏、更浅 —— 脚注不是正文（学术规范：短横线分隔）*/
+/* 脚注：学术论文规范 —— 上方短横线、〔n〕编号悬挂缩进、小一号、每条独立成行 */
 .folio-footnotes {
-  margin-top: 2rem;
-  padding-top: 0.6rem;
-  font-size: 0.78rem;
-  line-height: 1.72;
-  color: #6F685C;
+  margin-top: 1.6rem;
+  padding-top: 0.5rem;
+  font-size: 0.74rem;
+  line-height: 1.66;
+  color: #3A362F;
   text-align: justify;
 }
 .folio-footnotes::before {
@@ -344,19 +483,27 @@
   display: block;
   width: 2.2em;
   height: 1px;
-  background: #B8B1A2;
-  margin-bottom: 0.75rem;
+  background: #8A857A;
+  margin-bottom: 0.65rem;
 }
-.folio-footnotes p { text-indent: 0; margin-block: 0.5rem; }
+.folio-footnotes p { text-indent: 0; margin-block: 0.34em; }
+/* 单条脚注：悬挂缩进，〔n〕突出、回行对齐 */
+.folio-footnotes .fn {
+  margin-block: 0.34em;
+  padding-left: 1.7em;
+  text-indent: -1.7em;
+}
 /* 脚注按条分行（fn-break 注入的 <br> 呈现为段间距） */
 .folio-footnotes br.fn-break {
   display: block;
   content: "";
-  margin-top: 0.5em;
+  margin-top: 0.42em;
 }
 .folio-footnotes__label {
   display: none; /* 页注小标题不展示，脚注直接按条分行 */
 }
+/* 脚注中的斜体书名（英文文献） */
+.folio-footnotes em, .folio-footnotes i { font-style: italic; }
 
 /* 脚注序号：右上角标（尊重学术论文视觉规范） */
 .fn-ref,
@@ -370,19 +517,20 @@
   text-decoration: none;
 }
 
-/* ── 左/右栏：连贯便签纸（纯白背景，无横线）── */
+/* ── 左/右栏：连贯便签纸（纯白，与正文同款宋体、墨黑，不使用花式字体与彩色）── */
 .folio__col--left,
 .folio__col--right {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
-  font-size: 0.84rem;
-  line-height: 1.85;
-  color: #4A453C;
+  gap: 0.55rem;
+  font-size: 0.86rem;
+  line-height: 1.78;
+  color: #1F1C18;
+  font-family: var(--font-serif);
   background: transparent; /* 竖线背景由 .doc-body 提供，贯穿所有页 */
 }
 
-/* 批注 callout —— 去掉卡片，文字直接坐在横线上 */
+/* 批注容器：无卡片、无边框、无底色，文字直接落在便签纸上 */
 .folio__col--left .callout,
 .folio__col--right .callout {
   margin: 0;
@@ -392,6 +540,8 @@
   background: transparent;
   box-shadow: none;
   backdrop-filter: none;
+  font-family: var(--font-serif);
+  color: #1F1C18;
 }
 
 .folio__col--left .callout > :first-child,
@@ -399,13 +549,16 @@
 .folio__col--left .callout > :last-child,
 .folio__col--right .callout > :last-child { margin-bottom: 0; }
 .folio__col--left .callout p,
-.folio__col--right .callout p { margin-block: 0.3rem; }
+.folio__col--right .callout p { margin-block: 0.28rem; color: #1F1C18; }
 .folio__col--left .callout ol,
 .folio__col--left .callout ul,
 .folio__col--right .callout ol,
-.folio__col--right .callout ul { padding-left: 1.2em; margin-block: 0.3rem; }
+.folio__col--right .callout ul { padding-left: 1.3em; margin-block: 0.28rem; color: #1F1C18; }
 .folio__col--left .callout li,
-.folio__col--right .callout li { margin-top: 0.2rem; }
+.folio__col--right .callout li { margin-top: 0.18rem; color: #1F1C18; }
+/* 笔记中的加粗/斜体保持墨色，不转彩 */
+.folio__col--left .callout strong,
+.folio__col--right .callout strong { color: #1F1C18; font-weight: 700; }
 
 .callout-title {
   display: block;
@@ -415,77 +568,58 @@
   margin-bottom: 0.3rem;
 }
 
-/* 位置说明（原手写在何处）→ 淡灰小字 */
+/* 位置说明（带括号的批注提示，如"（提要右侧…）"）→ 淡灰小字，唯一保留的弱提示 */
 .folio__col--right .callout em,
 .folio__col--left .callout em {
   display: block;
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   font-style: normal;
-  color: #B5A295;
+  color: #9A948A;
   letter-spacing: 0.01em;
-  margin-bottom: 0.15rem;
+  margin-bottom: 0.12rem;
 }
 
-/* 左栏：引导问题 —— 墨色正文 + 赭红标签 */
-.folio__col--left .callout .callout-title { color: #B4552D; }
-.folio__col--left .callout li::marker { color: #B4552D; }
+/* 左栏引导问题：与正文同款墨色，不使用赭红标记 */
+.folio__col--left .callout .callout-title { color: #1F1C18; }
+.folio__col--left .callout li::marker { color: #6B655C; }
+.folio__col--right .callout .callout-title { color: #1F1C18; }
 
-/* 右栏：手写批注 —— 楷体 · 暗枣红墨 */
-.folio__col--right .callout .callout-title { color: #9A5148; }
-.folio__col--right .callout:not(.callout-question) {
-  font-family: "KaiTi", "STKaiti", "楷体", var(--font-serif);
-  font-size: 0.9rem;
-  color: #7E443C;
-}
-.folio__col--right .callout:not(.callout-question) em {
-  font-family: var(--font-serif);
-  color: #B5A295;
-}
-
-/* 结构脉络星标 chip —— 浅纸色小标签 */
+/* 结构脉络标记：去胶囊色块，仅为普通墨色小字 */
 .struct-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.18rem 0.6rem;
-  border-radius: 999px;
-  font-size: 0.72rem;
+  display: block;
+  padding: 0;
+  border-radius: 0;
+  font-size: 0.8rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
-  color: #7A6F5C;
-  background: #F7F4EC;
-  border: 1px solid #E7E1D2;
-  margin-bottom: 0.4rem;
+  letter-spacing: 0.02em;
+  color: #1F1C18;
+  background: transparent;
+  border: 0;
+  margin: 0.5rem 0 0.15rem;
 }
-.struct-chip::before {
-  content: "";
-  width: 0.34em;
-  height: 0.34em;
-  border-radius: 50%;
-  background: #C7A875;
-}
+.struct-chip::before { content: none; }
 
 /* 空批注栏：便签纸始终呈现（连贯），内容为空时保持空栏 */
 /* 注：移动端单列时仍隐藏，见响应式 */
 
 /* ── 讲稿专用：层级清晰的提纲（中栏）── */
+.lecture-outline ul { list-style: none; }
 .lecture-outline .outline-section-title {
-  margin: 1.6rem 0 0.6rem;
+  margin: 1.5rem 0 0.55rem;
   font-weight: 700;
-  color: #B4552D;
-  font-size: 1.02rem;
+  color: #1F1C18;
+  font-size: 0.98rem;
   letter-spacing: 0.02em;
 }
 .lecture-outline .outline-sub {
   font-weight: 600;
-  color: var(--ink);
-  margin: 0.9rem 0 0.35rem;
+  color: #1F1C18;
+  margin: 0.85rem 0 0.3rem;
 }
-.lecture-outline ul { list-style: none; padding-left: 0; }
 .lecture-outline > ul > li {
   position: relative;
   padding-left: 1.3em;
-  margin-top: 0.45rem;
+  margin-top: 0.42rem;
 }
 .lecture-outline > ul > li::before {
   content: "";
@@ -495,20 +629,20 @@
   width: 0.4em;
   height: 0.4em;
   border-radius: 50%;
-  background: #B4552D;
+  background: #8A857A;
 }
 .lecture-outline li ul {
   list-style: none;
   padding-left: 1.1em;
   margin-top: 0.3rem;
-  border-left: 1px dashed #DDD5C4;
+  border-left: 1px dashed #DDDDDD;
   margin-left: 0.15em;
   padding-left: 0.9em;
 }
 .lecture-outline li ul li {
   position: relative;
   padding-left: 1em;
-  margin-top: 0.28rem;
+  margin-top: 0.26rem;
 }
 .lecture-outline li ul li::before {
   content: "";
@@ -517,12 +651,12 @@
   top: 0.74em;
   width: 0.55em;
   height: 1px;
-  background: #CFC5AE;
+  background: #B9B5AC;
 }
 .lecture-outline li ul li ul li::before {
   width: 0.38em;
   height: 0.38em;
-  border: 1px solid #CFC5AE;
+  border: 1px solid #B9B5AC;
   background: transparent;
   border-radius: 50%;
   top: 0.58em;

@@ -107,6 +107,8 @@ const canonicalUrl = canonicalPath !== false && Astro.site
         src={withBase("game/index.html")}
         title="恐龙快跑"
         loading="eager"
+        tabindex="-1"
+        allow="autoplay"
       ></iframe>
     </div>
 
@@ -214,6 +216,8 @@ const canonicalUrl = canonicalPath !== false && Astro.site
           gamepadBtn.classList.add("is-return");
           gamepadBtn.setAttribute("aria-label", "回到书桌");
           gamepadBtn.title = "回到书桌";
+          // 关键：把键盘焦点交给游戏 iframe，否则方向键/空格/M/N 只会发到父页面
+          gameFrame?.focus();
         }, APERTURE_DURATION);
       }
 
@@ -252,9 +256,17 @@ const canonicalUrl = canonicalPath !== false && Astro.site
         else openGame();
       });
 
-      // ESC 键返回书桌
+      // 点击游戏画面任意位置都把焦点留在 iframe 内，保证键盘操控持续可用
+      gameOverlay?.addEventListener("pointerdown", () => {
+        if (isGameOpen) window.setTimeout(() => gameFrame?.focus(), 0);
+      });
+      gameFrame?.addEventListener("load", () => {
+        if (isGameOpen) gameFrame.focus();
+      });
+
+      // ESC 键返回书桌（若焦点在游戏 iframe 内则交给游戏处理暂停，不抢键）
       document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && isGameOpen) closeGame();
+        if (event.key === "Escape" && isGameOpen && document.activeElement !== gameFrame) closeGame();
       });
     </script>
   </body>
