@@ -117,11 +117,20 @@ loader.load(
     const span = Math.max(size.x, size.y, size.z);
     const target = new THREE.Vector3(0, size.y * 0.45, 0);
     controls.target.copy(target);
-    const d = span * 1.25;
-    camera.position.set(d * 0.85, span * 0.8, d * 1.15);
-    camera.near = Math.max(span * 0.02, 0.01);
+    // 初始视角方向向量（从目标指向相机），保持不变
+    const dirX = 1.25 * 0.85;  // = 1.0625
+    const dirY = 0.8 - 0.45;   // = 0.35
+    const dirZ = 1.25 * 1.15;  // = 1.4375
+    // 初始距离缩到原来的 1/3，模型视觉上约 3 倍大；用户仍可滚轮自由缩放
+    const INIT_SCALE = 1 / 3;
+    camera.position.set(
+      target.x + span * dirX * INIT_SCALE,
+      target.y + span * dirY * INIT_SCALE,
+      target.z + span * dirZ * INIT_SCALE,
+    );
+    camera.near = Math.max(span * 0.01, 0.005);
     camera.far = span * 60;
-    controls.minDistance = span * 0.6;
+    controls.minDistance = span * 0.12;  // 允许用户继续放大到很近
     controls.maxDistance = span * 3.0;
     camera.updateProjectionMatrix();
     controls.update();
