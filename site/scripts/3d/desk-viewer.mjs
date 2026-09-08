@@ -49,13 +49,15 @@ ground.rotation.x = -Math.PI / 2;
 ground.receiveShadow = true;
 scene.add(ground);
 
-// ── 环绕控制：禁平移、限俯仰不翻底、阻尼惯性、缓慢自转 ──
+// ── 环绕控制：允许平移/旋转/缩放，阻尼惯性，缓慢自转（与 Lectures et Echos 一致） ──
 const controls = new OrbitControls(camera, canvas);
-controls.enablePan = false;
+controls.enablePan = true;
+controls.panSpeed = 1;
+controls.screenSpacePanning = true;
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
-controls.minPolarAngle = THREE.MathUtils.degToRad(10);
-controls.maxPolarAngle = THREE.MathUtils.degToRad(85);
+controls.minPolarAngle = THREE.MathUtils.degToRad(5);
+controls.maxPolarAngle = THREE.MathUtils.degToRad(175);
 controls.autoRotate = true;
 controls.autoRotateSpeed = 0.5;
 let resumeTimer = null;
