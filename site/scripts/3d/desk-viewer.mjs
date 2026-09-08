@@ -1,10 +1,9 @@
 /**
- * desk-viewer.mjs — 文献笔记首页 3D 书桌查看器
+ * desk-viewer.mjs — 文献笔记首页 3D 场景查看器
  * ────────────────────────────────────────────────────────────
- * 外置物体（非室内第一人称）：OrbitControls 环绕一张 L 型转角书桌，
- * 3/4 俯视、缓慢自转（拖拽时暂停、闲置后恢复）、禁止平移、限制俯仰与缩放。
- * 模型由 Desk.skp 经 openskp 导出为 desk.glb（毫米单位，这里 ×0.001 归一为米），
- * 桌面已在导出阶段改为天蓝 / 天青的明媚配色；白昼/暗夜随父页 data-theme 联动。
+ * 外置物体环绕查看：OrbitControls，缓慢自转（拖拽时暂停、闲置后恢复），
+ * 禁止平移、限制俯仰与缩放。模型异步加载，就绪后淡入，无加载遮罩与提示文字。
+ * 中性灯光与背景，不随站点明暗主题切换。
  * 由 esbuild 打包为 public/3d/desk.js（自包含，无运行时外链）。
  * ────────────────────────────────────────────────────────────
  */
@@ -12,72 +11,40 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
-// 两套灯光氛围：白昼（明媚浅天蓝）/ 暗夜（深蓝灰、降亮转冷）
-const THEMES = {
-  cobalt: {
-    bg: 0xe9f2fb,
-    hemiSky: 0xf2f9ff, hemiGround: 0xe7eef6, hemiIntensity: 1.1,
-    keyColor: 0xfff7ec, keyIntensity: 1.2,
-    fillColor: 0xbcdcf2, fillIntensity: 0.45,
-    exposure: 1.05,
-    shadow: 0.14,
-  },
-  night: {
-    bg: 0x0e1420,
-    hemiSky: 0x5a6b8c, hemiGround: 0x141a26, hemiIntensity: 1.0,
-    keyColor: 0xd2e4fb, keyIntensity: 1.05,
-    fillColor: 0x3d5278, fillIntensity: 0.5,
-    exposure: 1.1,
-    shadow: 0.22,
-  },
-};
-function resolveThemeKey() {
-  let key = (location.hash || '#cobalt').replace('#', '');
-  if (!THEMES[key]) {
-    try {
-      const t = parent.document.documentElement.getAttribute('data-theme');
-      if (t && THEMES[t]) key = t;
-    } catch { /* 跨域忽略 */ }
-  }
-  return THEMES[key] ? key : 'cobalt';
-}
-let themeKey = resolveThemeKey();
-let T = THEMES[themeKey];
-
 const canvas = document.getElementById('scene');
-const loading = document.getElementById('loading');
 const errorBox = document.getElementById('error');
 const errorText = document.getElementById('error-text');
 
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = T.exposure;
+renderer.toneMappingExposure = 1.0;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(T.bg);
+// 透明背景，让 HTML 层的柔和渐变底透出
+scene.background = null;
 
-const camera = new THREE.PerspectiveCamera(42, 1, 0.05, 100);
+const camera = new THREE.PerspectiveCamera(42, 1, 0.05, 200);
 
-// ── 灯光组：暖天光 + 柔和主光（投影）+ 冷补光 ──
-const hemi = new THREE.HemisphereLight(T.hemiSky, T.hemiGround, T.hemiIntensity);
+// ── 中性灯光：柔和天光 + 主光（投影）+ 补光 ──
+const hemi = new THREE.HemisphereLight(0xf5f7fa, 0xe2e6ea, 1.15);
 scene.add(hemi);
-const key = new THREE.DirectionalLight(T.keyColor, T.keyIntensity);
-key.position.set(3, 5, 4);
+const key = new THREE.DirectionalLight(0xfff8f0, 1.25);
+key.position.set(4, 6, 5);
 key.castShadow = true;
 key.shadow.mapSize.set(1024, 1024);
 key.shadow.bias = -0.0004;
 scene.add(key);
-const fill = new THREE.DirectionalLight(T.fillColor, T.fillIntensity);
-fill.position.set(-4, 2.5, -3);
+const fill = new THREE.DirectionalLight(0xc8d8e8, 0.5);
+fill.position.set(-5, 3, -4);
 scene.add(fill);
 
-// 接触阴影平面（透明，仅承接柔和阴影，让桌子“放得住”）
-const shadowMat = new THREE.ShadowMaterial({ opacity: T.shadow });
-const ground = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), shadowMat);
+// 接触阴影平面（透明，仅承接柔和阴影）
+const shadowMat = new THREE.ShadowMaterial({ opacity: 0.16 });
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), shadowMat);
 ground.rotation.x = -Math.PI / 2;
 ground.receiveShadow = true;
 scene.add(ground);
@@ -87,10 +54,10 @@ const controls = new OrbitControls(camera, canvas);
 controls.enablePan = false;
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
-controls.minPolarAngle = THREE.MathUtils.degToRad(12);
-controls.maxPolarAngle = THREE.MathUtils.degToRad(84);
+controls.minPolarAngle = THREE.MathUtils.degToRad(10);
+controls.maxPolarAngle = THREE.MathUtils.degToRad(85);
 controls.autoRotate = true;
-controls.autoRotateSpeed = 0.55;
+controls.autoRotateSpeed = 0.5;
 let resumeTimer = null;
 controls.addEventListener('start', () => {
   controls.autoRotate = false;
@@ -102,39 +69,18 @@ controls.addEventListener('end', () => {
 });
 canvas.style.touchAction = 'none';
 
-function applyTheme(k) {
-  if (!THEMES[k]) return;
-  themeKey = k;
-  T = THEMES[k];
-  scene.background = new THREE.Color(T.bg);
-  hemi.color.setHex(T.hemiSky);
-  hemi.groundColor.setHex(T.hemiGround);
-  hemi.intensity = T.hemiIntensity;
-  key.color.setHex(T.keyColor);
-  key.intensity = T.keyIntensity;
-  fill.color.setHex(T.fillColor);
-  fill.intensity = T.fillIntensity;
-  renderer.toneMappingExposure = T.exposure;
-  shadowMat.opacity = T.shadow;
-}
-window.addEventListener('message', (e) => {
-  if (e.data?.type === 'le-theme') applyTheme(e.data.theme);
-});
-
-// ── 加载书桌：毫米 → 米，水平居中、底部落在 y=0；按跨度取景 ──
+// ── 异步加载模型：就绪后淡入，无加载进度提示 ──
 const loader = new GLTFLoader();
 loader.load(
-  './desk.glb',
+  './still_life.glb',
   (gltf) => {
     const root = gltf.scene;
     root.updateMatrixWorld(true);
-    // 先按毫米整体缩放到米
-    const MM = 0.001;
-    root.scale.setScalar(MM);
-    root.updateMatrixWorld(true);
+
     const box = new THREE.Box3().setFromObject(root);
     const size = box.getSize(new THREE.Vector3());
     const center = box.getCenter(new THREE.Vector3());
+
     // 水平居中、底部归零
     root.position.x -= center.x;
     root.position.z -= center.z;
@@ -148,46 +94,42 @@ loader.load(
       const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
       for (const m of mats) {
         if (!m) continue;
-        // trimesh 导出的颜色在顶点色 COLOR_0 上，必须开启 vertexColors
+        // 顶点色支持
         if (obj.geometry?.attributes?.color) m.vertexColors = true;
-        // 镀铬/银件（mesh 名带 244_244 / 200_204）保留一点金属感，其余做干净微反光的哑光漆面
-        const isMetal = /_244_244|_200_204/.test(obj.name || '');
-        m.metalness = isMetal ? 0.55 : 0.08;
-        m.roughness = isMetal ? 0.32 : 0.42;
         m.needsUpdate = true;
       }
     });
     scene.add(root);
 
+    // 按模型整体跨度自动定相机距离/裁剪面/阴影范围
     const span = Math.max(size.x, size.y, size.z);
-    const target = new THREE.Vector3(0, size.y * 0.46, 0);
+    const target = new THREE.Vector3(0, size.y * 0.45, 0);
     controls.target.copy(target);
-    const d = span * 1.18;
-    camera.position.set(d * 0.92, span * 0.95, d * 1.18);
-    camera.near = span * 0.05;
-    camera.far = span * 40;
-    controls.minDistance = span * 0.7;
-    controls.maxDistance = span * 2.6;
+    const d = span * 1.25;
+    camera.position.set(d * 0.85, span * 0.8, d * 1.15);
+    camera.near = Math.max(span * 0.02, 0.01);
+    camera.far = span * 60;
+    controls.minDistance = span * 0.6;
+    controls.maxDistance = span * 3.0;
     camera.updateProjectionMatrix();
     controls.update();
-    // 阴影范围覆盖桌面
-    key.shadow.camera.left = -span; key.shadow.camera.right = span;
-    key.shadow.camera.top = span; key.shadow.camera.bottom = -span;
+
+    key.shadow.camera.left = -span * 1.5;
+    key.shadow.camera.right = span * 1.5;
+    key.shadow.camera.top = span * 1.5;
+    key.shadow.camera.bottom = -span * 1.5;
     key.shadow.camera.updateProjectionMatrix();
 
-    loading.hidden = true;
+    // 模型就绪：淡入画布
+    requestAnimationFrame(() => {
+      canvas.classList.add('is-ready');
+    });
   },
-  (xhr) => {
-    if (xhr.total) {
-      const pct = Math.round((xhr.loaded / xhr.total) * 100);
-      loading.textContent = `正在载入书桌 ${pct}%`;
-    }
-  },
+  undefined,
   (err) => {
     console.error(err);
-    loading.hidden = true;
     errorBox.hidden = false;
-    errorText.textContent = '书桌模型加载失败，请检查网络后刷新页面。';
+    errorText.textContent = '3D 模型加载失败，请检查网络后刷新页面。';
   },
 );
 

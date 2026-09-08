@@ -514,6 +514,9 @@
   margin-block: 0.34em;
   padding-left: 1.7em;
   text-indent: -1.7em;
+  /* 长 URL 任意位置断行，避免冲出栏界 */
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 /* 脚注按条分行（fn-break 注入的 <br> 呈现为段间距） */
 .folio-footnotes br.fn-break {

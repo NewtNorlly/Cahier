@@ -398,14 +398,15 @@
     min-width: 0;
   }
 
-  /* ── 暗夜 / 白昼 主题切换按钮 ── */
+  /* ── 暗夜 / 白昼 主题切换按钮（纯图标，无文字） ── */
   .theme-toggle {
     position: relative;
     display: inline-flex;
     align-items: center;
-    gap: 0.42rem;
+    justify-content: center;
+    width: 2.5rem;
     height: 2.5rem;
-    padding: 0 0.9rem;
+    padding: 0;
     border-radius: 999px;
     border: 1px solid hsl(var(--border) / 0.8);
     background: hsl(var(--card) / 0.7);
@@ -455,16 +456,7 @@
   [data-theme="night"] .theme-toggle__icon--sun { opacity: 1; transform: rotate(0) scale(1); }
   [data-theme="night"] .theme-toggle__icon--moon { opacity: 0; transform: rotate(90deg) scale(0.5); }
 
-  .theme-toggle__label {
-    font-family: var(--font-serif);
-    font-size: 0.84rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    color: hsl(var(--accent-fg));
-    white-space: nowrap;
-  }
-
-  /* ── 主题切换圆形破口揭示层 ── */
+  /* ── 主题切换圆形破口揭示层（不支持 View Transitions 时的降级方案） ── */
   .theme-veil {
     position: fixed;
     inset: 0;
@@ -473,6 +465,30 @@
     pointer-events: none;
     clip-path: circle(0px at calc(100% - 34px) 34px);
     will-change: clip-path;
+  }
+
+  /* ── View Transitions API：圆形破口主题切换（Chrome/Edge 111+） ── */
+  @supports (view-transition-name: root) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      mix-blend-mode: normal;
+      animation-duration: 0.65s;
+      animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    ::view-transition-old(root) {
+      animation-name: vt-hold;
+    }
+    ::view-transition-new(root) {
+      animation-name: vt-circle-reveal;
+    }
+    @keyframes vt-hold {
+      from { clip-path: circle(150% at var(--reveal-x, 100%) var(--reveal-y, 0%)); }
+      to   { clip-path: circle(150% at var(--reveal-x, 100%) var(--reveal-y, 0%)); }
+    }
+    @keyframes vt-circle-reveal {
+      from { clip-path: circle(0% at var(--reveal-x, 100%) var(--reveal-y, 0%)); }
+      to   { clip-path: circle(150% at var(--reveal-x, 100%) var(--reveal-y, 0%)); }
+    }
   }
 
   .site-footer {
