@@ -69,11 +69,23 @@ controls.addEventListener('end', () => {
 });
 canvas.style.touchAction = 'none';
 
-// ── 异步加载模型：就绪后淡入，无加载进度提示 ──
+// ── 异步加载模型：就绪后淡入，无加载进度提示；超时保护避免极端网络下一直空白 ──
 const loader = new GLTFLoader();
+let modelLoaded = false;
+
+// 超时保护：15秒未加载完成则强制显示画布（至少可见空场景与背景）
+const loadTimeout = setTimeout(() => {
+  if (!modelLoaded) {
+    console.warn('3D model loading timeout, showing canvas anyway');
+    canvas.classList.add('is-ready');
+  }
+}, 15000);
+
 loader.load(
   './still_life.glb',
   (gltf) => {
+    modelLoaded = true;
+    clearTimeout(loadTimeout);
     const root = gltf.scene;
     root.updateMatrixWorld(true);
 
@@ -127,7 +139,10 @@ loader.load(
   },
   undefined,
   (err) => {
+    modelLoaded = true;
+    clearTimeout(loadTimeout);
     console.error(err);
+    canvas.classList.add('is-ready'); // 至少显示背景
     errorBox.hidden = false;
     errorText.textContent = '3D 模型加载失败，请检查网络后刷新页面。';
   },
