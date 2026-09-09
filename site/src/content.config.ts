@@ -59,6 +59,7 @@ const notes = defineCollection({
       bookmarkCount: z.coerce.number().nullish(),
       author: z.string().nullish(),
       translator: z.string().nullish(),
+      date: dateish.nullish(),
       category: z.string().nullish(),
       publisher: z.string().nullish(),
       publishTime: dateish.nullish(),

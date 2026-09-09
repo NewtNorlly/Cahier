@@ -1,4 +1,4 @@
-import { getCatalog } from './catalog';
+import { getCatalog, compareNotesRecent } from './catalog';
 import type { Note } from './catalog';
 
 /**
@@ -10,7 +10,7 @@ import type { Note } from './catalog';
  * 展示层规则（不修改任何原始 md）：
  * 1. 从 category 字段提取学科门类名（"03法学" → "法学"）；
  * 2. 缺 category 的条目按标题关键词兜底归类；
- * 3. 所有条目按标题拼音排序。
+ * 3. 每个分类内部（以及「全部」视图）一律「最新文本排最前」（用户排放习惯）。
  */
 
 /** 未标注分类且兜底规则也未命中的条目统一归入「未分类」 */
@@ -80,16 +80,6 @@ export interface BookshelfData {
   totalBooks: number;
 }
 
-const collator = new Intl.Collator('zh-CN-u-co-pinyin', {
-  numeric: true,
-  sensitivity: 'base',
-});
-
-/** 按标题拼音排序 */
-export function compareByTitle(left: Note, right: Note): number {
-  return collator.compare(left.title, right.title);
-}
-
 /** 取文献的学科门类（优先 frontmatter.category，兜底关键词，最后「未分类」） */
 export function bookParentCategory(note: Note): string {
   const raw = (note.entry.data as Record<string, unknown>)?.category;
@@ -119,8 +109,8 @@ export async function getBookshelf(): Promise<BookshelfData> {
     grouped.set(category, list);
   }
 
-  // 每个分类内部：按标题拼音排序
-  for (const list of grouped.values()) list.sort(compareByTitle);
+  // 每个分类内部：最新文本排最前（时效降序，同日按标题拼音兜底）
+  for (const list of grouped.values()) list.sort(compareNotesRecent);
 
   const categories: BookshelfCategory[] = [];
   const added = new Set<string>();
@@ -145,8 +135,8 @@ export async function getBookshelf(): Promise<BookshelfData> {
     }
   }
 
-  // 「全部」视图：按标题拼音排序
-  const allBooks = [...books].sort(compareByTitle);
+  // 「全部」视图：跨分类按最新时间全局从新到旧
+  const allBooks = [...books].sort(compareNotesRecent);
 
   return { categories, allBooks, totalBooks: books.length };
 }

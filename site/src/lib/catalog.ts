@@ -52,6 +52,8 @@ export interface WereadMetadata {
 export interface Note {
   id: string;
   title: string;
+  /** 条目时效键（YYYY-MM-DD）：frontmatter date → 微信读书 lastReadDate/finishedDate/readingDate → publishTime；缺失为空串 */
+  date?: string;
   collectionId: string;
   collectionName: string;
   topics: TopicRef[];
@@ -143,6 +145,34 @@ function stringValue(value: unknown): string | undefined {
 
 function numberValue(value: unknown): number | undefined {
   return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
+}
+
+/** 统一取 YYYY-MM-DD 时效键：接受字符串或 Date，无法解析返回 undefined */
+function toDateString(value: unknown): string | undefined {
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    return trimmed ? trimmed.slice(0, 10) : undefined;
+  }
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    return value.toISOString().slice(0, 10);
+  }
+  return undefined;
+}
+
+/**
+ * 条目的「最新时间」排序键（用户排放习惯：任何分类/合集内最新文本排最前）。
+ * 优先级：frontmatter date（讲稿日期等）→ 微信读书 lastReadDate → finishedDate →
+ * readingDate → publishTime；都没有则空串（排序时落到末尾）。
+ */
+export function noteRecencyKey(data: RawData): string {
+  return (
+    toDateString(data.date) ??
+    toDateString(data.lastReadDate) ??
+    toDateString(data.finishedDate) ??
+    toDateString(data.readingDate) ??
+    toDateString(data.publishTime) ??
+    ''
+  );
 }
 
 function validHttpUrl(value: unknown): string | undefined {
@@ -305,7 +335,18 @@ function getTopicRefs(collectionName: string, topicNames: string[]): TopicRef[] 
   }));
 }
 
-function compareNotes(left: Note, right: Note): number {
+/**
+ * 条目排序（用户排放习惯）：最新文本排最前——时效键降序（YYYY-MM-DD 可直接字符串比较），
+ * 无日期的条目统一沉到最后；同日或都无日期时以标题拼音升序兜底，保证顺序稳定可复现。
+ */
+export function compareNotesRecent(left: Note, right: Note): number {
+  const lk = left.date ?? '';
+  const rk = right.date ?? '';
+  if (lk !== rk) {
+    if (!lk) return 1;
+    if (!rk) return -1;
+    return rk.localeCompare(lk);
+  }
   return collator.compare(left.title, right.title);
 }
 
@@ -325,6 +366,7 @@ async function buildCatalog(): Promise<Catalog> {
     return {
       id: stableId(title, sourcePath),
       title,
+      date: noteRecencyKey(entry.data),
       collectionId,
       collectionName,
       topics: getTopicRefs(collectionName, topicNames),
@@ -342,7 +384,7 @@ async function buildCatalog(): Promise<Catalog> {
   });
 
   const publishedNoteCount = allNotes.filter((note) => !note.draft).length;
-  const notes = (import.meta.env.PROD ? allNotes.filter((note) => !note.draft) : allNotes).sort(compareNotes);
+  const notes = (import.meta.env.PROD ? allNotes.filter((note) => !note.draft) : allNotes).sort(compareNotesRecent);
   const collectionMap = new Map<string, CollectionSummary>();
   const topicMap = new Map<string, TopicSummary>();
 
@@ -392,10 +434,10 @@ async function buildCatalog(): Promise<Catalog> {
     collection.topicCount = Array.from(topicMap.values()).filter(
       (topic) => topic.collectionId === collection.id,
     ).length;
-    collection.notes.sort(compareNotes);
+    collection.notes.sort(compareNotesRecent);
   }
 
-  for (const topic of topicMap.values()) topic.notes.sort(compareNotes);
+  for (const topic of topicMap.values()) topic.notes.sort(compareNotesRecent);
 
   const collections = Array.from(collectionMap.values()).sort((left, right) => {
     if (left.kind === 'library' && right.kind !== 'library') return 1;

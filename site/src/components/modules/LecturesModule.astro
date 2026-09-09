@@ -40,12 +40,13 @@ const letterGroups: LetterGroup[] = sortedLetters.map((letter) => ({
 
 const kindLabel = (_kind: string) => "课程";
 
-/* 相关文本：课程合集下的全部单篇讲稿，供搜索时作为第二类结果 */
+/* 相关文本：课程合集下的全部单篇讲稿，供搜索时作为第二类结果（最新优先） */
 interface ArticleHit {
   title: string;
   collection: string;
   href: string;
   thumb: string;
+  date: string;
 }
 const articleIndex: ArticleHit[] = collections
   .flatMap((col) =>
@@ -56,9 +57,17 @@ const articleIndex: ArticleHit[] = collections
         collection: col.name,
         href: noteUrl(note.id),
         thumb: note.cover?.thumbnailSrc ?? note.cover?.src ?? "",
+        date: note.date ?? "",
       })),
   )
-  .sort((a, b) => a.title.localeCompare(b.title, "zh-CN"));
+  .sort((a, b) => {
+    if (a.date !== b.date) {
+      if (!a.date) return 1;
+      if (!b.date) return -1;
+      return b.date.localeCompare(a.date);
+    }
+    return a.title.localeCompare(b.title, "zh-CN");
+  });
 ---
 
 <section
@@ -163,7 +172,7 @@ const articleIndex: ArticleHit[] = collections
   const textList = root?.querySelector<HTMLElement>("[data-text-list]") ?? null;
   const emptyEl = root?.querySelector<HTMLElement>("[data-blog-empty]") ?? null;
 
-  type ArticleHit = { title: string; collection: string; href: string; thumb: string };
+  type ArticleHit = { title: string; collection: string; href: string; thumb: string; date: string };
   let articleIndex: ArticleHit[] = [];
   try {
     const raw = root?.querySelector<HTMLScriptElement>("[data-article-index]")?.textContent ?? "[]";
