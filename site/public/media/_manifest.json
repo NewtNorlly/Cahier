@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-09T16:59:09.501Z",
+  "generatedAt": "2026-09-11T11:43:31.254Z",
   "files": [
     {
       "path": "_tools/_legal-cover.svg",
@@ -90,8 +90,72 @@
       "bytes": 25440
     },
     {
+      "path": "文献笔记/covers/mgmt-overseas-sea-2021-480.webp",
+      "bytes": 9336
+    },
+    {
+      "path": "文献笔记/covers/mgmt-overseas-sea-2021-960.webp",
+      "bytes": 25228
+    },
+    {
+      "path": "文献笔记/covers/mgmt-overseas-sector-2017-480.webp",
+      "bytes": 9032
+    },
+    {
+      "path": "文献笔记/covers/mgmt-overseas-sector-2017-960.webp",
+      "bytes": 24112
+    },
+    {
+      "path": "文献笔记/covers/mgmt-overseas-st-2020-480.webp",
+      "bytes": 9222
+    },
+    {
+      "path": "文献笔记/covers/mgmt-overseas-st-2020-960.webp",
+      "bytes": 24860
+    },
+    {
       "path": "文献笔记/figures/masthead.webp",
       "bytes": 9284
+    },
+    {
+      "path": "文献笔记/figures/sea-2021-fig1-location.webp",
+      "bytes": 86266
+    },
+    {
+      "path": "文献笔记/figures/sea-2021-fig2-kde-intent.webp",
+      "bytes": 83748
+    },
+    {
+      "path": "文献笔记/figures/sea-2021-fig3-kde-contract.webp",
+      "bytes": 83476
+    },
+    {
+      "path": "文献笔记/figures/sea-2021-fig4-kde-production.webp",
+      "bytes": 82488
+    },
+    {
+      "path": "文献笔记/figures/sector-2017-fig1.webp",
+      "bytes": 27608
+    },
+    {
+      "path": "文献笔记/figures/sector-2017-fig2.webp",
+      "bytes": 23354
+    },
+    {
+      "path": "文献笔记/figures/sector-2017-fig3.webp",
+      "bytes": 24120
+    },
+    {
+      "path": "文献笔记/figures/sector-2017-fig4.webp",
+      "bytes": 22684
+    },
+    {
+      "path": "文献笔记/figures/st-2020-fig1-variogram.webp",
+      "bytes": 8874
+    },
+    {
+      "path": "文献笔记/figures/st-2020-fig2-trend3d.webp",
+      "bytes": 85270
     },
     {
       "path": "宪法/covers/constitution-480.webp",
