@@ -549,8 +549,8 @@ $$
 <!--col:M-->
 #### How to build a utility function
 ¡ 函数曲线拟合法
-- 风险厌恶型：$U_R(x) = \dfrac{1 - e^{-x}}{1 - e^{-1}}$（其中 $e \approx 2.71828$）
-- 对数型：$u(x) = \ln(a + bx) + c$
+- 风险厌恶型（指数型）：$U(x) = 1 - e^{-x/R}$（其中 $e \approx 2.71828$，$R$ 为风险容忍参数）
+- 对数型：$u(x) = c + a\ln(x + b)$
 
 <!--col:R-->
 
@@ -591,7 +591,11 @@ $$
 ¡ According to EV：
 
 $$
-A - i \ge (A - i)P_f + (A - B)(1 - P_f) \;\Longrightarrow\; P_f \ge \frac{i}{B}
+\begin{aligned}
+A - i &\ge A - B\,p_f \\
+i &\le B\,p_f \\
+p_f &\ge \frac{i}{B}
+\end{aligned}
 $$
 
 - 根据保额 5000 元的财产，保费为 5 元计算，$P_f$ 应该大于 1/1000，才值得去保险。
@@ -609,13 +613,13 @@ $$
 ¡ According to EU：
 
 $$
-u(A-i)(1-P_f) + u(A-i)P_f \ge u(A-B)(1-P_f) + u(A)P_f
+p_f\cdot u(A-i) + (1-p_f)\cdot u(A-i) \ge p_f\,u(A-B) + (1-p_f)\cdot u(A)
 $$
 
 整理得：
 
 $$
-\frac{u(A-i) - u(A-B)}{u(A) - u(A-B)} \ge P_f
+p_f \ge \frac{u(A) - u(A-i)}{u(A) - u(A-B)}
 $$
 
 <!--col:R-->
