@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-12T16:33:32.043Z",
+  "generatedAt": "2026-09-13T04:33:50.984Z",
   "files": [
     {
       "path": "_tools/_legal-cover.svg",
@@ -18,44 +18,28 @@
       "bytes": 16496
     },
     {
-      "path": "法语/文本附件/generated-cover-2091e60c5ef5-480.webp",
-      "bytes": 13734
+      "path": "法语/covers/french-480.webp",
+      "bytes": 7648
     },
     {
-      "path": "法语/文本附件/generated-cover-2091e60c5ef5-960.webp",
-      "bytes": 55382
+      "path": "法语/covers/french-960_thumb.webp",
+      "bytes": 3616
     },
     {
-      "path": "法语/文本附件/generated-cover-5284f6b525a1-480.webp",
-      "bytes": 12698
+      "path": "法语/covers/french-960.webp",
+      "bytes": 20614
     },
     {
-      "path": "法语/文本附件/generated-cover-5284f6b525a1-960.webp",
-      "bytes": 49390
+      "path": "会计/covers/accounting-480.webp",
+      "bytes": 6954
     },
     {
-      "path": "法语/文本附件/generated-cover-5ee38899387e-480.webp",
-      "bytes": 13334
+      "path": "会计/covers/accounting-960_thumb.webp",
+      "bytes": 3304
     },
     {
-      "path": "法语/文本附件/generated-cover-5ee38899387e-960.webp",
-      "bytes": 53584
-    },
-    {
-      "path": "法语/文本附件/generated-cover-a5205561cb10-480.webp",
-      "bytes": 15088
-    },
-    {
-      "path": "法语/文本附件/generated-cover-a5205561cb10-960.webp",
-      "bytes": 59966
-    },
-    {
-      "path": "会计/文本附件/generated-cover-307eedf6cddd-480.webp",
-      "bytes": 15354
-    },
-    {
-      "path": "会计/文本附件/generated-cover-307eedf6cddd-960.webp",
-      "bytes": 60726
+      "path": "会计/covers/accounting-960.webp",
+      "bytes": 18944
     },
     {
       "path": "决策理论与方法/covers/decision-theory-480.webp",
@@ -119,15 +103,15 @@
     },
     {
       "path": "文献笔记/covers/legal-zhishichanquan-480.webp",
-      "bytes": 8300
+      "bytes": 18102
     },
     {
       "path": "文献笔记/covers/legal-zhishichanquan-960_thumb.webp",
-      "bytes": 3042
+      "bytes": 8274
     },
     {
       "path": "文献笔记/covers/legal-zhishichanquan-960.webp",
-      "bytes": 25440
+      "bytes": 48704
     },
     {
       "path": "文献笔记/covers/mgmt-overseas-sea-2021-480.webp",
@@ -210,36 +194,16 @@
       "bytes": 22300
     },
     {
-      "path": "英语/文本附件/generated-cover-0e4e53147d63-480.webp",
-      "bytes": 13868
+      "path": "英语/covers/english-480.webp",
+      "bytes": 7800
     },
     {
-      "path": "英语/文本附件/generated-cover-0e4e53147d63-960.webp",
-      "bytes": 53332
+      "path": "英语/covers/english-960_thumb.webp",
+      "bytes": 3828
     },
     {
-      "path": "英语/文本附件/generated-cover-35b3df8e8c9c-480.webp",
-      "bytes": 14460
-    },
-    {
-      "path": "英语/文本附件/generated-cover-35b3df8e8c9c-960.webp",
-      "bytes": 56808
-    },
-    {
-      "path": "英语/文本附件/generated-cover-6bee43f05dd0-480.webp",
-      "bytes": 14056
-    },
-    {
-      "path": "英语/文本附件/generated-cover-6bee43f05dd0-960.webp",
-      "bytes": 54894
-    },
-    {
-      "path": "英语/文本附件/generated-cover-6fa167a07f18-480.webp",
-      "bytes": 13714
-    },
-    {
-      "path": "英语/文本附件/generated-cover-6fa167a07f18-960.webp",
-      "bytes": 54344
+      "path": "英语/covers/english-960.webp",
+      "bytes": 21394
     },
     {
       "path": "知识产权法基础理论/covers/ip-theory-480.webp",

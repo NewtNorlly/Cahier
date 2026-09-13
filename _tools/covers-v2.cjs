@@ -68,6 +68,24 @@ const SPECS = [
     title: ['脑图集'], subtitle: 'BRAIN ATLAS',
     deco: 'wave',
   },
+  {
+    slug: 'accounting', dir: '会计', no: 'Nº 11', kind: '教学讲稿',
+    bg: '#e7edec', ink: '#2f4a50', accent: '#558089', sub: '#82999c',
+    title: ['会计'], subtitle: 'ACCOUNTING',
+    deco: 'ledger',
+  },
+  {
+    slug: 'french', dir: '法语', no: 'Nº 12', kind: '教学讲稿',
+    bg: '#eaeaf3', ink: '#3a3d63', accent: '#6670ab', sub: '#9294b5',
+    title: ['法语'], subtitle: 'FRANÇAIS',
+    deco: 'fleur',
+  },
+  {
+    slug: 'english', dir: '英语', no: 'Nº 13', kind: '教学讲稿',
+    bg: '#f2ede2', ink: '#3a3126', accent: '#7d6847', sub: '#9a8d74',
+    title: ['英语'], subtitle: 'ENGLISH',
+    deco: 'quill',
+  },
 ];
 
 function deco(d, ink, accent) {
@@ -142,6 +160,31 @@ function deco(d, ink, accent) {
       return `<g stroke="${accent}" stroke-width="2.4" fill="none" opacity="0.8">
         <path d="M240 660 Q300 600 360 660 T480 660 T600 660 T720 660"/>
         <path d="M240 720 Q300 660 360 720 T480 720 T600 720 T720 720" opacity="0.5"/>
+      </g>`;
+    case 'ledger': // 账簿分栏
+      return `<g stroke="${accent}" stroke-width="2" fill="none" opacity="0.78">
+        <line x1="300" y1="580" x2="660" y2="580"/>
+        <line x1="300" y1="800" x2="660" y2="800"/>
+        <line x1="300" y1="580" x2="300" y2="800"/>
+        <line x1="660" y1="580" x2="660" y2="800"/>
+        <line x1="420" y1="580" x2="420" y2="800" opacity="0.55"/>
+        <line x1="540" y1="580" x2="540" y2="800" opacity="0.55"/>
+      </g>`;
+    case 'fleur': // 鸢尾线稿
+      return `<g stroke="${accent}" stroke-width="2.4" fill="none" opacity="0.8">
+        <path d="M480 560 Q502 624 480 696 Q458 624 480 560"/>
+        <path d="M478 648 Q430 606 398 664 Q432 686 466 666"/>
+        <path d="M482 648 Q530 606 562 664 Q528 686 494 666"/>
+        <line x1="436" y1="704" x2="524" y2="704"/>
+        <path d="M470 704 L480 728 L490 704"/>
+      </g>`;
+    case 'quill': // 翎羽
+      return `<g stroke="${accent}" stroke-width="2.4" fill="none" opacity="0.8">
+        <path d="M430 800 Q470 660 560 560"/>
+        <path d="M560 560 Q600 640 520 700 Q470 720 440 700"/>
+        <line x1="540" y1="600" x2="480" y2="640" opacity="0.55"/>
+        <line x1="525" y1="630" x2="470" y2="665" opacity="0.55"/>
+        <line x1="510" y1="660" x2="465" y2="690" opacity="0.55"/>
       </g>`;
   }
 }
