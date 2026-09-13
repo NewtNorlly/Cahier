@@ -157,7 +157,7 @@ Case 2
 <!--col:L-->
 
 <!--col:M-->
-¡ 光滑的门板让人们推门，门上有把手使人产生"拉门"的倾向。
+¡ 光滑的门板让人们推门，门上有把手使人产生“拉门”的倾向。
 ¡ 球拍与球总价 1.1 元，球拍比球贵 1 元，问球拍的价格？
 ¡ 请说出文字的颜色：红 绿 白。
 
@@ -218,11 +218,11 @@ Benefits now / Costs later（收益在当下、成本在未来）。
 
 锚定是估计未知数量时，从一个初始值出发进行调整的认知倾向。不同起点会产生不同估计，并使最终判断偏向最初看到的数值。
 
-"Different starting points yield different estimates, which are biased toward the initial values" —— Tversky & Kahneman（1974）
+“Different starting points yield different estimates, which are biased toward the initial values” —— Tversky & Kahneman（1974）
 
 判断链条：① 初始数字进入视野；② 围绕锚点进行修正；③ 调整不足，估计偏向锚点。
 
-政府中的绩效数字与大数据，是否也会成为公共决策者设定标准时的"锚"？既有研究已在绩效评估、晋升建议、法律判断、谈判与经济估值等场景中观察到锚定效应。
+政府中的绩效数字与大数据，是否也会成为公共决策者设定标准时的“锚”？既有研究已在绩效评估、晋升建议、法律判断、谈判与经济估值等场景中观察到锚定效应。
 
 资料来源：Bellé, Cantarelli & Belardinelli（2018），Prospect Theory Goes Public: Experimental Evidence on Cognitive Biases in Public Policy and Management Decisions，Public Administration Review，pp. 830–831。
 
@@ -310,7 +310,7 @@ Benefits now / Costs later（收益在当下、成本在未来）。
 #### 01 · 概念界定
 安于现状效应：备选越多，越倾向不行动。
 
-当可行替代方案增加时，决策者反而更可能维持现状。即使新方案可能更优，更多选择也可能带来冲突、延迟与不作为。——据本文 Status Quo 部分译写，亦称为"多重替代效应"。
+当可行替代方案增加时，决策者反而更可能维持现状。即使新方案可能更优，更多选择也可能带来冲突、延迟与不作为。——据本文 Status Quo 部分译写，亦称为“多重替代效应”。
 
 选择如何被拖延：① 可选方案从一个变成多个；② 比较成本与选择冲突上升；③ 推迟选择，停留在当前方案。
 
