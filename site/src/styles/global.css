@@ -685,6 +685,8 @@
     line-height: 1.75;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .entry-card__topics {
