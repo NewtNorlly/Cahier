@@ -48,6 +48,15 @@ const SENTINELS: ReadonlyArray<readonly [string, string]> = [
 
 const CJK = /[一-鿿]/;
 
+/**
+ * 多音字「按词定音」覆盖表：哨兵比较只能按单字的*常用读音*归类，
+ * 遇到「会计(kuài，非常用 huì)」这类以多音字开头的名称会归错字母，
+ * 因此对已知词组显式指定首字母。匹配名称开头，长词写在前面优先命中。
+ */
+const POLYPHONE_WORD_INITIAL: ReadonlyArray<readonly [string, string]> = [
+  ['会计', 'K'], // kuài jì；Collator 按常用音 huì 会误归到 H
+];
+
 /** 取单个字符的拼音首字母；英文字母转大写；其余返回 '#' */
 export function pinyinInitial(char: string): string {
   const ch = Array.from(char)[0] ?? '';
@@ -67,8 +76,13 @@ export function pinyinInitial(char: string): string {
   return result;
 }
 
-/** 取一段文本首个有效字符的拼音首字母 */
+/** 取一段文本首个有效字符的拼音首字母（多音字按词组覆盖表优先定音） */
 export function pinyinInitialOf(text: string): string {
-  const first = Array.from(String(text ?? '').trim())[0] ?? '';
+  const trimmed = String(text ?? '').trim();
+  // 多音字按词定音优先（如「会计」读 kuài → K，而非按 huì 归 H）
+  for (const [word, letter] of POLYPHONE_WORD_INITIAL) {
+    if (trimmed.startsWith(word)) return letter;
+  }
+  const first = Array.from(trimmed)[0] ?? '';
   return pinyinInitial(first);
 }
