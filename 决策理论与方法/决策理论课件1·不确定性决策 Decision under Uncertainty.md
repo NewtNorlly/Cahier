@@ -338,7 +338,7 @@ Construct a decision matrices!!!
 ¡ Choose the alternative with the lowest maximal regret
 - to minimize maximal regret
 - introduced by Savage 萨维奇 (1951, p. 59).
-¡ Build a regret matrix from original matrix, and choose the alternative with the minimal "maximal regret".
+¡ Build a regret matrix from original matrix, and choose the alternative with the minimal “maximal regret”.
 
 <!--col:R-->
 

@@ -255,9 +255,9 @@ a blend of mathematics, statistics, economics, philosophy, management, psycholog
 <!--col:M-->
 #### Herbert Simon
 ¡ 2022 年是 Herbert Simon《Administrative Behavior: A Study of Decision-Making Processes in Administrative Organizations》一书发表 75 周年。（1947–2022）
-¡ The Royal Swedish Academy of Sciences, which awarded Herbert Simon the Nobel Prize in Economics in 1978, considered Administrative Behavior to be "epoch-making."
+¡ The Royal Swedish Academy of Sciences, which awarded Herbert Simon the Nobel Prize in Economics in 1978, considered Administrative Behavior to be “epoch-making.”
    1978 年获诺贝尔经济学奖，《管理行为》被认为是划时代巨作。
-¡ When PAR selected its half-century's "Great Books" in public administration for its own 50th anniversary, Administrative Behavior was selected as the overwhelming winner by a panel of 20 experts
+¡ When PAR selected its half-century's “Great Books” in public administration for its own 50th anniversary, Administrative Behavior was selected as the overwhelming winner by a panel of 20 experts
 
 《管理行为》将决策置于分析的中心，并考察个人如何在某些组织框架或环境中做出决策，其结论主要有两点：
 
