@@ -66,6 +66,8 @@ Shi.jing@hust.edu.cn
 <!--col:M-->
 #### Prospect Theory
 
+![Kahneman 与 Tversky 发表于 Econometrica（1979）的 Prospect Theory：An Analysis of Decision under Risk 论文首页|640](./figures/c3-p05-econometrica.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -77,6 +79,12 @@ Shi.jing@hust.edu.cn
 <!--col:M-->
 Kahneman's Nobel Prize diploma
 Kahneman & Tversky
+
+![Kahneman 的诺贝尔奖证书|480](./figures/c3-p06-nobel-diploma.webp)
+
+![Daniel Kahneman 肖像|180](./figures/c3-p06-kahneman.webp)
+
+![Amos Tversky 肖像|180](./figures/c3-p06-tversky.webp)
 
 <!--col:R-->
 
@@ -93,6 +101,8 @@ Kahneman & Tversky
 ¡ Case II 有两个选择，（A）肯定损失 1000，（B）50% 可能性损失 2000，50% 可能性没有损失。你会选择哪一个呢？大部分人都选择 D：风险偏好。
 
 参照点效应 anchoring effect：人在面临获得时，往往小心翼翼，不愿冒风险；而在面对损失时，人人都成了冒险家了。
+
+![赌场轮盘（风险与概率决策情境）|200](./figures/c3-p07-roulette.webp)
 
 <!--col:R-->
 
@@ -351,6 +361,8 @@ The Value Function：价值函数以 Gains（获得）与 Losses（损失）为�
 
 “理性”提示：过去的已经无法挽回，而应该从现在出发根据实际需要做出决定，考虑在没有付出成本或者付出成本比较低的情况下你会如何决策。
 
+![沉没成本误区的示意配图|280](./figures/c3-p24-sunk-cost-baby.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -486,6 +498,9 @@ The Value Function：价值函数以 Gains（获得）与 Losses（损失）为�
 <!--col:L-->
 
 <!--col:M-->
+推荐阅读：《别做正常的傻瓜》。
+
+![《别做正常的傻瓜》（奚恺元）|300](./figures/c3-p33-book-fool.webp)
 
 <!--col:R-->
 

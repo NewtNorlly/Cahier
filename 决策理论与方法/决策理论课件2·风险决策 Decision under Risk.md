@@ -250,6 +250,8 @@ Hilton 决策树回溯结果：四个方案 Not buying / A / B / A & B，各自�
 
 <!--col:M-->
 
+![建厂决策（1）的决策树：决策节点引出建大厂（年收益 100，10 年，64*10）等方案分支与状态节点|720](./figures/c2-p16-factory-tree1.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -281,6 +283,8 @@ Hilton 决策树回溯结果：四个方案 Not buying / A / B / A & B，各自�
 <!--col:M-->
 建小厂、前三年销路好时后七年的期望收益计算：$(40 \times 0.9 + 10 \times 0.1) \times 7$；连同前三年及追加部分的整体回溯：$259 \times 0.7 + 70 \times 0.3 + 31 \times 3$。
 
+![建厂决策（2）的多级决策树（前三年/后七年分阶段回溯）|720](./figures/c2-p18-factory-tree2.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -305,6 +309,8 @@ Hilton 决策树回溯结果：四个方案 Not buying / A / B / A & B，各自�
 
 <!--col:M-->
 扩建分支回溯：追加投资 −140，收益 616，相关状态概率 0.1。
+
+![建厂决策（3）的决策树：先建小厂，三年后视销路决定是否追加投资 140 万元扩建|720](./figures/c2-p20-factory-tree3.webp)
 
 <!--col:R-->
 
@@ -378,6 +384,8 @@ Hilton 决策树回溯结果：四个方案 Not buying / A / B / A & B，各自�
 
 报酬序列：$2^0 = 1$ 元、$2^1 = 2$ 元、$2^2 = 4$ 元……
 
+![圣彼得堡游戏的报酬：从 1 元硬币起，每多一次正面翻倍|160](./figures/c2-p25-one-yuan.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -448,7 +456,7 @@ $$
 - Compare \$10 for a child versus Bill Gates
 ¡ Use utilities in decision matrix instead of object payoffs
 
-（主观价值 Subjective value 与客观价值 Objective value 的关系曲线：边际效用递减）
+![边际效用递减曲线：纵轴效用（Subjective value），横轴财富（Objective value），随财富增加效用增速放缓|360](./figures/c2-p29-utility-curve.webp)
 
 <!--col:R-->
 
@@ -785,6 +793,8 @@ $$
 $$
 0.11\,u(100) < 0.1\,u(150) + 0.01\,u(0)
 $$
+
+![Maurice Allais（莫里斯·阿莱，1988 年诺贝尔经济学奖）|140](./figures/c2-p48-allais.webp)
 
 <!--col:R-->
 

@@ -23,19 +23,17 @@
  *   <!--col:L-->…第 2 带左注…<!--col:M-->…第 2 带原文…<!--col:R-->…
  *   <!--/folio-->
  *
- * 每一带（band）都是独立的三栏网格行：带内三栏顶部对齐，
- * 因此批注会出现在其呼应原文「差不多的高度」，而不是一律堆在页首。
- * 不写 <!--band--> 时整页退化为单带（与旧版结构等价）。
- *
- * 输出 mdast（hast 阶段渲染为）：
- *   <section class="folio" data-page="第 1 页">
- *     <div class="folio__band" data-band="1">
- *       <div class="folio__col folio__col--L">…</div>
- *       <div class="folio__col folio__col--M">…</div>
- *       <div class="folio__col folio__col--R">…</div>
- *     </div>
- *     <p class="folio__pageno">第 1 页</p>
- *   </section>
+ * ── 均衡分页机制（出版社编书式收高）────────────────────────
+ * 源文档按 PDF 页硬切 `<!--folio-->`，会出现：
+ *   · 末页只剩一两句（矮页 191–500px）；
+ *   · 散页也偏矮，与健康页（800–1000px）忽矮忽高。
+ * 本插件在输出阶段做一次**只搬页界、不动一字**的重排：
+ *   1. 估算每个 folio 的视觉重量（中栏正文字符 + 图片权重）；
+ *   2. 以全文中位重量为目标，贪心把过矮的 folio 并进相邻 folio，
+ *      任一页不超过目标的 1.45 倍（避免撑成高塔）；
+ *   3. 重排后按新页序重新标注「跨页续段」（para-cont），并顺序重编页码。
+ * 仅作用于教学讲稿（非「文献笔记」目录）；文献笔记排版已定型，只修
+ * 「新 folio 开启却未闭合上一页」的结构 bug，不做重量重排。
  * ────────────────────────────────────────────────────────────
  */
 
@@ -78,20 +76,24 @@ function makeBand(buckets, bandIndex) {
   };
 }
 
+function makePageno(label) {
+  return {
+    type: 'folioPageNo',
+    data: {
+      hName: 'p',
+      hProperties: { className: ['folio__pageno'], 'aria-hidden': 'true' },
+    },
+    children: [{ type: 'text', value: label }],
+  };
+}
+
 function makeFolio(label, bandBucketList) {
   const children = [];
   bandBucketList.forEach((buckets, index) => {
     children.push(makeBand(buckets, index + 1));
   });
   if (label && label.trim()) {
-    children.push({
-      type: 'folioPageNo',
-      data: {
-        hName: 'p',
-        hProperties: { className: ['folio__pageno'], 'aria-hidden': 'true' },
-      },
-      children: [{ type: 'text', value: label.trim() }],
-    });
+    children.push(makePageno(label.trim()));
   }
   return {
     type: 'folio',
@@ -134,17 +136,20 @@ function columnTailText(col) {
   return '';
 }
 
-// 跨页续段：上一页中栏结尾无句末标点 → 本页首个中栏正文段不缩进
-function markContinuation(bandList, prevTail) {
+function isMainCol(node) {
+  return Array.isArray(node?.data?.hProperties?.className)
+    && node.data.hProperties.className.includes('folio__col--main');
+}
+
+/* ── 跨页续段标注（重排后统一执行）── */
+function paraContinue(firstBand, prevTail) {
   if (!prevTail || END_PUNCT_RE.test(prevTail)) return;
-  const firstBuckets = bandList[0];
-  if (!firstBuckets) return;
-  const main = firstBuckets.get('M');
-  if (!main) return;
-  const firstP = main.children.find((n) => n.type === 'paragraph');
+  const main = firstBand?.children?.find(isMainCol);
+  const firstP = main?.children?.find((n) => n.type === 'paragraph');
   if (!firstP) return;
   const prev = firstP.data?.hProperties?.className ?? [];
   const className = Array.isArray(prev) ? prev : [String(prev)];
+  if (className.includes('para-cont')) return;
   firstP.data = {
     ...(firstP.data ?? {}),
     hProperties: {
@@ -152,6 +157,111 @@ function markContinuation(bandList, prevTail) {
       className: [...className, 'para-cont'],
     },
   };
+}
+
+// 清掉所有既有的 para-cont（重排后会重新计算）
+function stripParaCont(folios) {
+  for (const folio of folios) {
+    for (const child of folio.children) {
+      if (child.type !== 'folioBand') continue;
+      for (const col of child.children) {
+        for (const n of col.children ?? []) {
+          if (n.type === 'paragraph' && Array.isArray(n.data?.hProperties?.className)
+              && n.data.hProperties.className.includes('para-cont')) {
+            n.data.hProperties.className = n.data.hProperties.className.filter((c) => c !== 'para-cont');
+          }
+        }
+      }
+    }
+  }
+}
+
+function applyContinuation(folios) {
+  let prevTail = '';
+  for (const folio of folios) {
+    const bands = folio.children.filter((c) => c.type === 'folioBand');
+    paraContinue(bands[0], prevTail);
+    const lastBand = bands[bands.length - 1];
+    const lastMain = lastBand?.children?.find(isMainCol);
+    prevTail = columnTailText(lastMain);
+  }
+}
+
+/* ── 均衡分页：重量估算 + 贪心合并矮页 ── */
+function walk(node, fn) {
+  fn(node);
+  if (Array.isArray(node.children)) for (const c of node.children) walk(c, fn);
+}
+
+// 每个 folio 的视觉重量 ∝ 中栏正文去空白字符数 + 图片权重
+// （一张插图约等于半屏高，按 550 字符当量计入）
+function folioWeight(folioNode) {
+  let chars = 0;
+  let images = 0;
+  for (const child of folioNode.children) {
+    if (child.type !== 'folioBand') continue;
+    const main = child.children.find(isMainCol);
+    if (!main) continue;
+    walk(main, (n) => {
+      if (n.type === 'text') chars += n.value.replace(/\s/g, '').length;
+      else if (n.type === 'image') images += 1;
+      else if (n.type === 'html' && typeof n.value === 'string'
+        && /<img|markdown-image|<figure/i.test(n.value)) images += 1;
+    });
+  }
+  return chars + images * 550;
+}
+
+// 贪心把过矮的 folio 并进相邻 folio；任一页不超过目标的 maxRatio 倍，末页矮页回并前一页
+function rebalanceFolios(folios) {
+  if (folios.length <= 3) return folios;
+  const weights = folios.map(folioWeight);
+  const sorted = [...weights].sort((a, b) => a - b);
+  const median = sorted[Math.floor(sorted.length / 2)] || 1;
+  const target = median;
+  const MAX = target * 1.45;
+  const MIN = target * 0.5;
+
+  const groups = [];
+  let cur = null;
+  for (let i = 0; i < folios.length; i += 1) {
+    if (!cur) {
+      cur = { idx: [i], w: weights[i] };
+    } else if (cur.w + weights[i] <= MAX) {
+      cur.idx.push(i);
+      cur.w += weights[i];
+    } else {
+      groups.push(cur);
+      cur = { idx: [i], w: weights[i] };
+    }
+  }
+  if (cur) groups.push(cur);
+
+  // 末页矮页：并回前一页（若合并不撑爆）
+  while (groups.length >= 2) {
+    const last = groups[groups.length - 1];
+    const prev = groups[groups.length - 2];
+    if (last.w < MIN && prev.w + last.w <= MAX) {
+      prev.idx.push(...last.idx);
+      prev.w += last.w;
+      groups.pop();
+    } else break;
+  }
+  // 全程只有一页（无可重排）→ 原样
+  if (groups.length <= 1) return folios;
+
+  return groups.map((g, gi) => {
+    const bands = g.idx.flatMap((i) => folios[i].children.filter((c) => c.type === 'folioBand'));
+    const label = `第${gi + 1}页`;
+    return {
+      type: 'folio',
+      data: {
+        hName: 'section',
+        hProperties: { className: ['folio'], 'data-page': label },
+      },
+      children: [...bands, makePageno(label)],
+    };
+  });
 }
 
 function normalizeBoundaries(children) {
@@ -173,8 +283,12 @@ function normalizeBoundaries(children) {
 }
 
 export function remarkThreeColumn() {
-  return (tree) => {
+  return (tree, file) => {
     tree.children = normalizeBoundaries(tree.children);
+    // 文献笔记排版已定型：只修结构 bug，不做重量重排
+    const isLiterature = typeof file?.path === 'string'
+      && file.path.replace(/\\/g, '/').includes('/文献笔记/');
+
     const out = [];
     let inFolio = false;
     let folioLabel = '';
@@ -182,7 +296,6 @@ export function remarkThreeColumn() {
     let buckets = null; // Map L/M/R -> node[]（当前带）
     let bands = null; // 已闭合的带（Map 列表）
     let preFolio = []; // folio 开始前的游离节点
-    let prevMainTail = ''; // 上一 folio 中栏正文结尾文本（判跨页续段）
 
     const ensureCol = (side) => {
       if (!buckets.has(side)) buckets.set(side, makeCol(side, []));
@@ -213,6 +326,12 @@ export function remarkThreeColumn() {
       currentSide = null;
     };
 
+    // 收口当前 folio：输出为一个 folio section
+    const flushFolio = () => {
+      closeBand();
+      out.push(makeFolio(folioLabel, bands));
+    };
+
     for (const node of tree.children) {
       if (node.type !== 'html' || typeof node.value !== 'string') {
         pushCurrent(node);
@@ -225,6 +344,9 @@ export function remarkThreeColumn() {
       const band = raw.match(BAND_BREAK);
 
       if (open) {
+        // ★容错：新 folio 开启而上一 folio 未闭合 → 先收口上一 folio，
+        //   避免旧版「直接重置 buckets 静默丢弃前一页」的结构 bug。
+        if (inFolio) flushFolio();
         flushPre();
         inFolio = true;
         folioLabel = open[1];
@@ -243,11 +365,7 @@ export function remarkThreeColumn() {
         continue;
       }
       if (close && inFolio) {
-        closeBand();
-        markContinuation(bands, prevMainTail);
-        out.push(makeFolio(folioLabel, bands));
-        const lastMain = bands[bands.length - 1]?.get('M');
-        prevMainTail = columnTailText(lastMain);
+        flushFolio();
         inFolio = false;
         folioLabel = '';
         buckets = null;
@@ -261,9 +379,7 @@ export function remarkThreeColumn() {
 
     // 文件末尾若未闭合，自动收口
     if (inFolio && buckets && bands) {
-      closeBand();
-      markContinuation(bands, prevMainTail);
-      out.push(makeFolio(folioLabel, bands));
+      flushFolio();
     }
     // 全文没有任何 folio 标记 → 自动包成单页三栏
     // （中栏 = 全部内容；左右便签纸为空但同样呈现，保证笔记栏连贯）
@@ -274,6 +390,34 @@ export function remarkThreeColumn() {
       preFolio = [];
     }
     flushPre();
+
+    /* ── 输出后处理：均衡分页（仅教学讲稿）── */
+    const folios = out.filter((n) => n.type === 'folio');
+    if (folios.length) {
+      stripParaCont(folios);
+      const finalFolios = (!isLiterature && folios.length > 3)
+        ? rebalanceFolios(folios)
+        : folios;
+      applyContinuation(finalFolios);
+      if (finalFolios !== folios) {
+        // 合并后 folio 数量变少：把首个原 folio 的位置换成全部重排后的 folio，
+        // 跳过其余原 folio，非 folio 节点（页首/页尾游离节点）保持原位。
+        const rebuilt = [];
+        let inserted = false;
+        for (const node of out) {
+          if (node.type === 'folio') {
+            if (!inserted) {
+              rebuilt.push(...finalFolios);
+              inserted = true;
+            }
+          } else {
+            rebuilt.push(node);
+          }
+        }
+        out.length = 0;
+        out.push(...rebuilt);
+      }
+    }
 
     tree.children = out;
     return tree;

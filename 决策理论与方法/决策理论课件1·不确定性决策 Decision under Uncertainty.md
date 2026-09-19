@@ -47,6 +47,8 @@ Shi.jing@hust.edu.cn
 ¡ Core concepts
 - In 1738, Daniel Bernoulli proposed the concept of the utility and expected utility, used to explain gambling and insurance expectations
 
+![Daniel Bernoulli（丹尼尔·伯努利）肖像|240](./figures/c1-p03-bernoulli.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -60,6 +62,12 @@ Shi.jing@hust.edu.cn
 - After the 1920s, Decision theory separated from game theory
 - 1944, Von Neumann（冯·诺依曼） and Oskar Morgenstern（摩根斯坦） proposed von Neumann-Morgenstern utility（效用值运算定理）
 - 1950, L. J. Savage（萨维奇） established Bayesian decision theory
+
+![Von Neumann（冯·诺依曼）|180](./figures/c1-p04-von-neumann.webp)
+
+![Oskar Morgenstern（摩根斯坦）|300](./figures/c1-p04-morgenstern.webp)
+
+![L. J. Savage（萨维奇）|240](./figures/c1-p04-savage.webp)
 
 <!--col:R-->
 
@@ -77,6 +85,12 @@ Shi.jing@hust.edu.cn
   - Allais Paradox: show defect of expected utility theory
 - 2002, Daniel Kahneman
   - for having integrated insights from psychological research into economic science, especially concerning human judgment and decision-making under uncertainty
+
+![Herbert Simon（西蒙，1978）|200](./figures/c1-p05-simon.webp)
+
+![Maurice Allais（阿莱，1988）|180](./figures/c1-p05-allais.webp)
+
+![Daniel Kahneman（卡尼曼，2002）|200](./figures/c1-p05-kahneman.webp)
 
 <!--col:R-->
 
@@ -96,6 +110,8 @@ Shi.jing@hust.edu.cn
 
 到最后，这种假设发展成了经济学家的信仰。
 
+![Richard Thaler（理查德·塞勒，2017 年诺贝尔经济学奖）|360](./figures/c1-p06-thaler.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -105,6 +121,13 @@ Shi.jing@hust.edu.cn
 <!--col:L-->
 
 <!--col:M-->
+推荐阅读：Richard Thaler 的三本著作。
+
+![《赢家的诅咒》（The Winner's Curse）|300](./figures/c1-p07-book-winners-curse.webp)
+
+![《助推》（Nudge）|240](./figures/c1-p07-book-nudge.webp)
+
+![《“错误”的行为》（Misbehaving）|240](./figures/c1-p07-book-misbehaving.webp)
 
 <!--col:R-->
 
@@ -116,6 +139,8 @@ Shi.jing@hust.edu.cn
 
 <!--col:M-->
 Decisions under certainty
+
+![不确定性决策的隐喻：在不确定中收拾行装前行|240](./figures/c1-p08-luggage.webp)
 
 <!--col:R-->
 
@@ -130,6 +155,8 @@ Decisions under certainty
 ¡ 演唱会时间：2013 年 03 月 30 日
 ¡ 演唱会场馆：武汉光谷体育馆
 ¡ 演唱会票价：280\380\480\680\880\1080 元
+
+![林宥嘉“神游”巡回演唱会武汉站|240](./figures/c1-p09-concert.webp)
 
 <!--col:R-->
 
@@ -160,6 +187,8 @@ Decisions under certainty
 ¡ The city planned to find a place to build a new airport
 ¡ Possible addresses are A / B
 ¡ Hilton wants to expand and build a new hotel Nearby.
+
+![希尔顿酒店|420](./figures/c1-p11-hilton.webp)
 
 <!--col:R-->
 

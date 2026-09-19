@@ -40,6 +40,8 @@ by Richard H. Thaler & Cass R. Sunstein
 #### Every Decision can be Nudged
 ¡ the researchers were able to increase or decrease selection of specific foods by 25%, just by rearranging them.
 
+![自助餐厅自助取餐台：仅靠重新排列食物位置即可助推选择|640](./figures/c4-p03-cafeteria.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -68,6 +70,8 @@ by Richard H. Thaler & Cass R. Sunstein
 <!--col:M-->
 Case 1
 
+![“Don't Mess With Texas”警示牌：以反垃圾标语助推不乱扔垃圾|640](./figures/c4-p05-dont-mess-tx.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -79,6 +83,8 @@ Case 1
 <!--col:M-->
 Case 2
 
+![夜间行人天桥（首尔麻浦大桥自杀干预助推案例）|640](./figures/c4-p06-mapo-bridge.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -88,6 +94,8 @@ Case 2
 <!--col:L-->
 
 <!--col:M-->
+
+![麻浦大桥相关助推宣传画面（KSPO 等公共机构合作宣传）|720](./figures/c4-p07-ksp-bridge.webp)
 
 <!--col:R-->
 
@@ -118,6 +126,8 @@ Case 2
 ¡ Organize the context in which people make decisions
 ¡ An effective design enables people to easily focus on the right things and make meaningful evaluations.
 
+![2000 年美国大选“蝴蝶选票”：选票排版（选择架构）误导了部分选民|720](./figures/c4-p09-ballot-2000.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -128,6 +138,8 @@ Case 2
 
 <!--col:M-->
 #### How we think: 2 systems
+
+![“哪张桌子更长？”视错觉：直觉系统快速给出答案，反思系统才会度量|480](./figures/c4-p10-table-illusion.webp)
 
 <!--col:R-->
 
@@ -186,6 +198,10 @@ Case 2
 
 <!--col:M-->
 Benefits now / Costs later（收益在当下、成本在未来）。
+
+![冰淇淋自助：当下的味觉享受（benefit now）|720](./figures/c4-p14-gelato.webp)
+
+![减肥卡通：远期的健康代价（cost later）|300](./figures/c4-p14-diet-cartoon.webp)
 
 <!--col:R-->
 
@@ -272,6 +288,8 @@ Benefits now / Costs later（收益在当下、成本在未来）。
 
 资料来源：Bellé, Cantarelli & Belardinelli（2018），Experiment 6 与 Figure 3，p. 835。DOI: 10.1111/puar.12960。
 
+![图 3：低锚组（31.82 天）与高锚组（53.62 天）建议最长回复期限均值，误差线为 95% CI|640](./figures/c4-p18-anchoring-chart.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -297,6 +315,8 @@ Benefits now / Costs later（收益在当下、成本在未来）。
 <!--col:L-->
 
 <!--col:M-->
+
+![手机充值中心界面：默认推荐档位（10/20/30 元）作为选择架构的默认项示例|280](./figures/c4-p20-recharge.webp)
 
 <!--col:R-->
 
@@ -360,6 +380,10 @@ Benefits now / Costs later（收益在当下、成本在未来）。
 
 资料来源：Bellé, Cantarelli & Belardinelli（2018），Experiments 8–9 与 Figures 5–6，pp. 835–836。DOI: 10.1111/puar.12960。
 
+![实验 8：替代承包商数量与继续选择现状的比例|480](./figures/c4-p23-statusquo-chart1.webp)
+
+![实验 9：可用修复程序数量与维持原定招标行动的比例|360](./figures/c4-p23-statusquo-chart2.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -372,6 +396,8 @@ Benefits now / Costs later（收益在当下、成本在未来）。
 #### Availability Bias
 ¡ We are much more scared of vivid and easily imagined threats (like plane crashes or tornadoes), than we are of ordinary but much more common dangers (like asthma attacks).
 - We are 20x more likely to die of asthma attack than tornado, so if we were purely rational, we'd be 20x more scared of asthma than tornadoes.
+
+![空难现场：生动、易想象的威胁让人过度恐惧|480](./figures/c4-p24-plane-crash.webp)
 
 <!--col:R-->
 
@@ -386,6 +412,8 @@ Benefits now / Costs later（收益在当下、成本在未来）。
 ¡ Based on the beauty pageant contestants you've seen in the media lately, you might think that ALL of them are dumb as a post. (That's not true.)
 ¡ If you wore your old hat during two games which your team won, you might assume that it's a lucky hat, and that if you don't wear it during the next game, your team will lose. (Sorry, there's no connection.)
 
+![选美比赛参赛者：媒体曝光让我们以为“都很笨”，其实并非如此|360](./figures/c4-p25-beauty.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -398,6 +426,8 @@ Benefits now / Costs later（收益在当下、成本在未来）。
 #### Unrealistic Optimism
 ¡ In one study the authors conducted, 90% of their students predicted they would finish in the top 2 percentiles in their class.
 
+![多数人高估自己：正态分布曲线与“90% 的学生预测自己名列前茅”|480](./figures/c4-p26-optimism-curve.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -407,6 +437,10 @@ Benefits now / Costs later（收益在当下、成本在未来）。
 <!--col:L-->
 
 <!--col:M-->
+
+![冲浪主题简笔画（过于自信与乐观的生活隐喻）|240](./figures/c4-p27-doodle.webp)
+
+![冲浪者：人们总以为自己比平均水平更安全、更幸运|420](./figures/c4-p27-surfers.webp)
 
 <!--col:R-->
 
@@ -422,6 +456,8 @@ Benefits now / Costs later（收益在当下、成本在未来）。
 ¡ 从劳东燕所了解的电诈案件来看，如果犯罪分子拿到受骗人的姓名、手机号、身份证和人脸识别的视频，基本上受骗人银行账户里的钱，对方就能如入无人之境那般转走。去年发生过好几起这样的案件，诈骗分子利用银行人脸识别系统的漏洞，同时截获了手机的验证码，转走被害人账户里的存款。
 
 https://mp.weixin.qq.com/s/JSdFShw_0FlvcHUXlHo8tA
+
+![“清华刑法学教授险被电信诈骗”相关新闻截图|560](./figures/c4-p28-fraud-news.webp)
 
 <!--col:R-->
 
@@ -453,6 +489,8 @@ https://mp.weixin.qq.com/s/JSdFShw_0FlvcHUXlHo8tA
 ¡ Mappings means how we translate data about an option into what it actually means for us
 - like translating kilowatts of energy into dollars on the electricity bill
 
+![把用电量即时换算为金额的电表/气表设备|480](./figures/c4-p30-energy-meter.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -463,6 +501,8 @@ https://mp.weixin.qq.com/s/JSdFShw_0FlvcHUXlHo8tA
 
 <!--col:M-->
 Default
+
+![新泽西州驾照上的器官捐献默认勾选（Default）示例|720](./figures/c4-p31-nj-license.webp)
 
 <!--col:R-->
 
@@ -501,6 +541,8 @@ Default
 #### Feedback
 ¡ This device is designed to give you feedback about your energy usage as you are using it. It is also mapping your usage to money, targeting your loss aversion, and it plans to tap into vast social pressures by broadcasting your usage statistics to Facebook and Twitter.
 
+![书架与电价计量屏：把使用量即时反馈给用户|420](./figures/c4-p34-bookshelf.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -512,6 +554,8 @@ Default
 <!--col:M-->
 #### Expect Error
 ¡ Make plan for the errors
+
+![路面上的“LOOK RIGHT”提示：为行人看错方向这一常见错误预先设计提示|480](./figures/c4-p35-look-right.webp)
 
 <!--col:R-->
 

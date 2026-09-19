@@ -109,6 +109,8 @@ Shi.jing@hust.edu.cn
 - 数据分析能够挖掘个人隐形信息
 Case: Political ads and voters' profiling
 
+![剑桥分析（Cambridge Analytica）利用数据挖掘进行政治广告与选民画像|720](./figures/c0-p06-cambridge-analytica.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -122,6 +124,10 @@ Case: Political ads and voters' profiling
 - 大量传统生产方式将被替代
 Case: AI replaces human beings？！
 
+![2025 世界人工智能大会 WAIC“智能时代 同球共济”|480](./figures/c0-p07-waic-ai.webp)
+
+![2025 世界人形机器人运动会|720](./figures/c0-p07-robot-games.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -132,6 +138,16 @@ Case: AI replaces human beings？！
 
 <!--col:M-->
 个人层面：AIGC 的人格权侵权
+
+![AIGC 相关案例：AI 配音祝福、AI 合成艺人、AI 取代真人演员、AI 音乐创作等短视频截图|720](./figures/c0-p08-aigc-a.webp)
+
+![AI 合成艺人|560](./figures/c0-p08-aigc-b.webp)
+
+![AI 会取代真人演员吗|560](./figures/c0-p08-aigc-c.webp)
+
+![AIGC 如何赋能音乐创作|560](./figures/c0-p08-aigc-d.webp)
+
+![AI 确实比人强|560](./figures/c0-p08-aigc-e.webp)
 
 <!--col:R-->
 
@@ -146,6 +162,8 @@ Case: AI replaces human beings？！
 - 2025 年 8 月 1 日，香港《稳定币条例》开始实施
 Case: Cryptocurrency
 
+![稳定币立法相关新闻（美国 GENIUS 法案、香港《稳定币条例》）|640](./figures/c0-p09-stablecoin.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -158,6 +176,8 @@ Case: Cryptocurrency
 #### NFT 资本新玩法
 - NFT 平台 Ezek 宣布将于 2022 年 1 月与周杰伦与好友共创潮牌 PHANTACi 合作发售 NFT 项目 PhantaBear（幻影熊），单价 0.26ETH，发售当天火爆非凡，1 万件幻影熊不到一个小时售罄，总价达 6200 万元。
 个人层面：数字藏品投资炒作（骗局）
+
+![周杰伦 PHANTACi 联名 PhantaBear（幻影熊）NFT 系列|720](./figures/c0-p10-phantabear-nft.webp)
 
 <!--col:R-->
 
@@ -174,6 +194,8 @@ Case: Cryptocurrency
 杭州互联网法院最终判令被告立即删除涉案平台上发布的“胖虎打疫苗”NFT 作品，同时赔偿原告经济损失及合理费用合计 4000 元。
 
 个人层面：数字藏品保护的相关法规
+
+![“我不是胖虎”系列与“胖虎打疫苗”NFT 侵权案|640](./figures/c0-p11-fat-tiger-nft.webp)
 
 <!--col:R-->
 
@@ -194,6 +216,8 @@ Case: Cryptocurrency
 
 罢工已超 100 天，好莱坞究竟在抵制什么？覃思，三联生活周刊，2023-08-24
 
+![好莱坞编剧与演员罢工现场（华纳影城 GATE 4 外聚集的人群）|720](./figures/c0-p12-hollywood-strike.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -205,6 +229,10 @@ Case: Cryptocurrency
 <!--col:M-->
 国家层面：科技战
 
+![雷蒙多“华为继续高研发将受严惩”相关新闻截图|640](./figures/c0-p13-huawei-techwar.webp)
+
+![校园与科技战相关新闻配图|560](./figures/c0-p13-campus.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -215,6 +243,10 @@ Case: Cryptocurrency
 
 <!--col:M-->
 国家层面：人才战
+
+![华为海思芯片与 HarmonyOS 鸿蒙标志|720](./figures/c0-p14-harmonyos-chip.webp)
+
+![人才争夺相关配图|640](./figures/c0-p14-talent-war.webp)
 
 <!--col:R-->
 
@@ -231,6 +263,8 @@ Case: Cryptocurrency
 - 用户可透过 Discord 的机器人指令进行操作。
 
 社会层面：纷繁大量无从辨别真伪的信息
+
+![信息洪流与算法推荐下的大众|720](./figures/c0-p15-midjourney.webp)
 
 <!--col:R-->
 
@@ -266,6 +300,8 @@ a blend of mathematics, statistics, economics, philosophy, management, psycholog
 
 西蒙还开创了人工智能和计算机科学的研究，将计算机视为改善人类决策的工具，例如，通过充当专家系统 expert system。
 
+![Herbert Simon 肖像|240](./figures/c0-p17-simon.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -275,6 +311,8 @@ a blend of mathematics, statistics, economics, philosophy, management, psycholog
 <!--col:L-->
 
 <!--col:M-->
+
+![Guest editorial：Bounded Rationality, Satisficing, Artificial Intelligence, and Decision-Making in Public Administration（Herbert Simon 决策流程示意图：确定目标→拟定方案→选择方案→实施方案→问题解决）|720](./figures/c0-p18-satisficing-flow.webp)
 
 <!--col:R-->
 
@@ -357,6 +395,8 @@ Importance of information
 5. Selection of a strategy for performance
 6. Implementation of the decision
 
+![决策过程流程图：问题分析→确定目标→拟定方案→选择方案→实施方案→问题解决（含修订目标、补充方案、修正方案、反馈、追踪决策）|640](./figures/c0-p23-decision-flow.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -367,6 +407,10 @@ Importance of information
 
 <!--col:M-->
 1. Identification of the problem
+
+![出行人群与交通需求（识别问题：谁在为买车决策、解决什么问题）|640](./figures/c0-p24-crowd.webp)
+
+![红色敞篷轿车与决策情境|640](./figures/c0-p24-red-car.webp)
 
 <!--col:R-->
 
@@ -384,6 +428,8 @@ Importance of information
 - Durability
 - Comfortability
 - Appearance
+
+![各标准的重要性权重表：价格 10、油耗 8、耐用性 6、舒适性 5、外形 4|480](./figures/c0-p25-criteria-table.webp)
 
 <!--col:R-->
 
@@ -413,6 +459,8 @@ Importance of information
 4. Evaluation
 ¡ Step 1
 
+![Step 1：各备选方案在价格、油耗、耐用性、舒适性、外形上的原始评分（大众 GOLF、本田飞度、东风标致 307、现代伊兰特）|720](./figures/c0-p27-eval-step1.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -424,6 +472,8 @@ Importance of information
 <!--col:M-->
 4. Evaluation (cont.)
 ¡ Step 2
+
+![Step 2：按重要性加权后的各方案得分与总分（大众 GOLF 222、本田飞度 260、东风标致 307 218、现代伊兰特 229）|720](./figures/c0-p28-eval-step2.webp)
 
 <!--col:R-->
 

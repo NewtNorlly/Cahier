@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-13T04:33:50.984Z",
+  "generatedAt": "2026-09-19T12:31:23.310Z",
   "files": [
     {
       "path": "_tools/_legal-cover.svg",
@@ -54,6 +54,302 @@
       "bytes": 40600
     },
     {
+      "path": "决策理论与方法/figures/c0-p06-cambridge-analytica.webp",
+      "bytes": 21324
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p07-robot-games.webp",
+      "bytes": 14404
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p07-waic-ai.webp",
+      "bytes": 67118
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p08-aigc-a.webp",
+      "bytes": 24260
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p08-aigc-b.webp",
+      "bytes": 17968
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p08-aigc-c.webp",
+      "bytes": 26298
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p08-aigc-d.webp",
+      "bytes": 24552
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p08-aigc-e.webp",
+      "bytes": 29394
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p09-stablecoin.webp",
+      "bytes": 29608
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p10-phantabear-nft.webp",
+      "bytes": 81038
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p11-fat-tiger-nft.webp",
+      "bytes": 22200
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p12-hollywood-strike.webp",
+      "bytes": 78620
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p13-campus.webp",
+      "bytes": 57214
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p13-huawei-techwar.webp",
+      "bytes": 18868
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p14-harmonyos-chip.webp",
+      "bytes": 57638
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p14-talent-war.webp",
+      "bytes": 24714
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p15-midjourney.webp",
+      "bytes": 56158
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p17-simon.webp",
+      "bytes": 5816
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p18-satisficing-flow.webp",
+      "bytes": 16946
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p23-decision-flow.webp",
+      "bytes": 18604
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p24-crowd.webp",
+      "bytes": 19570
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p24-red-car.webp",
+      "bytes": 10326
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p25-criteria-table.webp",
+      "bytes": 19594
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p27-eval-step1.webp",
+      "bytes": 24146
+    },
+    {
+      "path": "决策理论与方法/figures/c0-p28-eval-step2.webp",
+      "bytes": 24506
+    },
+    {
+      "path": "决策理论与方法/figures/c1-p03-bernoulli.webp",
+      "bytes": 68590
+    },
+    {
+      "path": "决策理论与方法/figures/c1-p04-morgenstern.webp",
+      "bytes": 43000
+    },
+    {
+      "path": "决策理论与方法/figures/c1-p04-savage.webp",
+      "bytes": 34870
+    },
+    {
+      "path": "决策理论与方法/figures/c1-p04-von-neumann.webp",
+      "bytes": 6468
+    },
+    {
+      "path": "决策理论与方法/figures/c1-p05-allais.webp",
+      "bytes": 7474
+    },
+    {
+      "path": "决策理论与方法/figures/c1-p05-kahneman.webp",
+      "bytes": 5816
+    },
+    {
+      "path": "决策理论与方法/figures/c1-p05-simon.webp",
+      "bytes": 9234
+    },
+    {
+      "path": "决策理论与方法/figures/c1-p06-thaler.webp",
+      "bytes": 165274
+    },
+    {
+      "path": "决策理论与方法/figures/c1-p07-book-misbehaving.webp",
+      "bytes": 10846
+    },
+    {
+      "path": "决策理论与方法/figures/c1-p07-book-nudge.webp",
+      "bytes": 10056
+    },
+    {
+      "path": "决策理论与方法/figures/c1-p07-book-winners-curse.webp",
+      "bytes": 40206
+    },
+    {
+      "path": "决策理论与方法/figures/c1-p08-luggage.webp",
+      "bytes": 10672
+    },
+    {
+      "path": "决策理论与方法/figures/c1-p09-concert.webp",
+      "bytes": 10366
+    },
+    {
+      "path": "决策理论与方法/figures/c1-p11-hilton.webp",
+      "bytes": 13238
+    },
+    {
+      "path": "决策理论与方法/figures/c2-p16-factory-tree1.webp",
+      "bytes": 10250
+    },
+    {
+      "path": "决策理论与方法/figures/c2-p18-factory-tree2.webp",
+      "bytes": 11710
+    },
+    {
+      "path": "决策理论与方法/figures/c2-p20-factory-tree3.webp",
+      "bytes": 9810
+    },
+    {
+      "path": "决策理论与方法/figures/c2-p25-one-yuan.webp",
+      "bytes": 8858
+    },
+    {
+      "path": "决策理论与方法/figures/c2-p29-utility-curve.webp",
+      "bytes": 2492
+    },
+    {
+      "path": "决策理论与方法/figures/c2-p48-allais.webp",
+      "bytes": 2914
+    },
+    {
+      "path": "决策理论与方法/figures/c3-p05-econometrica.webp",
+      "bytes": 58444
+    },
+    {
+      "path": "决策理论与方法/figures/c3-p06-kahneman.webp",
+      "bytes": 3378
+    },
+    {
+      "path": "决策理论与方法/figures/c3-p06-nobel-diploma.webp",
+      "bytes": 40000
+    },
+    {
+      "path": "决策理论与方法/figures/c3-p06-tversky.webp",
+      "bytes": 4506
+    },
+    {
+      "path": "决策理论与方法/figures/c3-p07-roulette.webp",
+      "bytes": 5274
+    },
+    {
+      "path": "决策理论与方法/figures/c3-p24-sunk-cost-baby.webp",
+      "bytes": 10152
+    },
+    {
+      "path": "决策理论与方法/figures/c3-p33-book-fool.webp",
+      "bytes": 31356
+    },
+    {
+      "path": "决策理论与方法/figures/c4-p03-cafeteria.webp",
+      "bytes": 58138
+    },
+    {
+      "path": "决策理论与方法/figures/c4-p05-dont-mess-tx.webp",
+      "bytes": 12632
+    },
+    {
+      "path": "决策理论与方法/figures/c4-p06-mapo-bridge.webp",
+      "bytes": 35420
+    },
+    {
+      "path": "决策理论与方法/figures/c4-p07-ksp-bridge.webp",
+      "bytes": 12890
+    },
+    {
+      "path": "决策理论与方法/figures/c4-p09-ballot-2000.webp",
+      "bytes": 75656
+    },
+    {
+      "path": "决策理论与方法/figures/c4-p10-table-illusion.webp",
+      "bytes": 6248
+    },
+    {
+      "path": "决策理论与方法/figures/c4-p14-diet-cartoon.webp",
+      "bytes": 22436
+    },
+    {
+      "path": "决策理论与方法/figures/c4-p14-gelato.webp",
+      "bytes": 87388
+    },
+    {
+      "path": "决策理论与方法/figures/c4-p18-anchoring-chart.webp",
+      "bytes": 5638
+    },
+    {
+      "path": "决策理论与方法/figures/c4-p20-recharge.webp",
+      "bytes": 50672
+    },
+    {
+      "path": "决策理论与方法/figures/c4-p23-statusquo-chart1.webp",
+      "bytes": 7854
+    },
+    {
+      "path": "决策理论与方法/figures/c4-p23-statusquo-chart2.webp",
+      "bytes": 8598
+    },
+    {
+      "path": "决策理论与方法/figures/c4-p24-plane-crash.webp",
+      "bytes": 41038
+    },
+    {
+      "path": "决策理论与方法/figures/c4-p25-beauty.webp",
+      "bytes": 6742
+    },
+    {
+      "path": "决策理论与方法/figures/c4-p26-optimism-curve.webp",
+      "bytes": 12572
+    },
+    {
+      "path": "决策理论与方法/figures/c4-p27-doodle.webp",
+      "bytes": 24362
+    },
+    {
+      "path": "决策理论与方法/figures/c4-p27-surfers.webp",
+      "bytes": 73164
+    },
+    {
+      "path": "决策理论与方法/figures/c4-p28-fraud-news.webp",
+      "bytes": 59442
+    },
+    {
+      "path": "决策理论与方法/figures/c4-p30-energy-meter.webp",
+      "bytes": 24438
+    },
+    {
+      "path": "决策理论与方法/figures/c4-p31-nj-license.webp",
+      "bytes": 102678
+    },
+    {
+      "path": "决策理论与方法/figures/c4-p34-bookshelf.webp",
+      "bytes": 22072
+    },
+    {
+      "path": "决策理论与方法/figures/c4-p35-look-right.webp",
+      "bytes": 56910
+    },
+    {
       "path": "民事诉讼法/covers/civil-procedure-480.webp",
       "bytes": 10892
     },
@@ -102,16 +398,32 @@
       "bytes": 54626
     },
     {
+      "path": "网络工程师/covers/network-engineer-480.webp",
+      "bytes": 4976
+    },
+    {
+      "path": "网络工程师/covers/network-engineer-960.webp",
+      "bytes": 10490
+    },
+    {
+      "path": "网络技术/covers/network-tech-480.webp",
+      "bytes": 4748
+    },
+    {
+      "path": "网络技术/covers/network-tech-960.webp",
+      "bytes": 10342
+    },
+    {
       "path": "文献笔记/covers/legal-zhishichanquan-480.webp",
-      "bytes": 18102
+      "bytes": 8300
     },
     {
       "path": "文献笔记/covers/legal-zhishichanquan-960_thumb.webp",
-      "bytes": 8274
+      "bytes": 3042
     },
     {
       "path": "文献笔记/covers/legal-zhishichanquan-960.webp",
-      "bytes": 48704
+      "bytes": 25440
     },
     {
       "path": "文献笔记/covers/mgmt-overseas-sea-2021-480.webp",
@@ -180,6 +492,10 @@
     {
       "path": "文献笔记/figures/st-2020-fig2-trend3d.webp",
       "bytes": 85270
+    },
+    {
+      "path": "文献笔记/figures/xuanyuanxue-gongminhua-960.webp",
+      "bytes": 133600
     },
     {
       "path": "宪法/covers/constitution-480.webp",
