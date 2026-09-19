@@ -327,3 +327,12 @@
   color: var(--ink-soft);
   font-size: var(--text-min);
 }
+
+/* 文章详情页：页脚不重复站名牌（Cahier / 文献笔记·教学讲稿｜个人学术档案）
+   与「内容以仓库原始文件为准 / 查看 GitHub 仓库」来源声明；
+   首页与全局导航品牌保留，仅详情页隐藏。页脚装饰动图见 .foot-scene。 */
+.article-page .site-footer__title,
+.article-page .site-footer__note,
+.article-page .site-footer__meta {
+  display: none;
+}

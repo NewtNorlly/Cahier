@@ -23,17 +23,18 @@
  *   <!--col:L-->…第 2 带左注…<!--col:M-->…第 2 带原文…<!--col:R-->…
  *   <!--/folio-->
  *
- * ── 均衡分页机制（出版社编书式收高）────────────────────────
+ * ── A4 纸感分页（出版社编书式收高 + 超高页优雅拆分）──────────
  * 源文档按 PDF 页硬切 `<!--folio-->`，会出现：
  *   · 末页只剩一两句（矮页 191–500px）；
- *   · 散页也偏矮，与健康页（800–1000px）忽矮忽高。
+ *   · 某些页一大坨（超高页），与健康页忽高忽矮。
  * 本插件在输出阶段做一次**只搬页界、不动一字**的重排：
- *   1. 估算每个 folio 的视觉重量（中栏正文字符 + 图片权重）；
- *   2. 以全文中位重量为目标，贪心把过矮的 folio 并进相邻 folio，
- *      任一页不超过目标的 1.45 倍（避免撑成高塔）；
- *   3. 重排后按新页序重新标注「跨页续段」（para-cont），并顺序重编页码。
- * 仅作用于教学讲稿（非「文献笔记」目录）；文献笔记排版已定型，只修
- * 「新 folio 开启却未闭合上一页」的结构 bug，不做重量重排。
+ *   1. 把所有「带（band）」按原文顺序拍平，估算每带视觉重量
+ *      （中栏正文字符 + 图片权重）；
+ *   2. 以「原文档平均页密度」为目标重装页：任一页不超过目标 1.3 倍
+ *      （超高页装不下就优雅翻页拆开），低于 0.55 倍视为矮页合并；
+ *   3. 一带是三栏对齐最小单元，不在带内拆（保护 L/M/R 垂直对齐）；
+ *   4. 重排后按新页序重新标注「跨页续段」（para-cont），并顺序重编页码。
+ * 教学讲稿与文献笔记都过同一套；结构容错（新 folio 未闭合上一页）照常。
  * ────────────────────────────────────────────────────────────
  */
 
@@ -187,71 +188,88 @@ function applyContinuation(folios) {
   }
 }
 
-/* ── 均衡分页：重量估算 + 贪心合并矮页 ── */
+/* ── A4 纸感分页：按带估算重量 ── */
 function walk(node, fn) {
   fn(node);
   if (Array.isArray(node.children)) for (const c of node.children) walk(c, fn);
 }
 
-// 每个 folio 的视觉重量 ∝ 中栏正文去空白字符数 + 图片权重
+// 单个带（band）的视觉重量：中栏正文字符 + 图片权重
 // （一张插图约等于半屏高，按 550 字符当量计入）
-function folioWeight(folioNode) {
+function bandWeight(bandNode) {
   let chars = 0;
   let images = 0;
-  for (const child of folioNode.children) {
-    if (child.type !== 'folioBand') continue;
-    const main = child.children.find(isMainCol);
-    if (!main) continue;
-    walk(main, (n) => {
-      if (n.type === 'text') chars += n.value.replace(/\s/g, '').length;
-      else if (n.type === 'image') images += 1;
-      else if (n.type === 'html' && typeof n.value === 'string'
-        && /<img|markdown-image|<figure/i.test(n.value)) images += 1;
-    });
-  }
+  const main = (bandNode.children ?? []).find(isMainCol);
+  if (!main) return 0;
+  walk(main, (n) => {
+    if (n.type === 'text') chars += n.value.replace(/\s/g, '').length;
+    else if (n.type === 'image') images += 1;
+    else if (n.type === 'html' && typeof n.value === 'string'
+      && /<img|markdown-image|<figure/i.test(n.value)) images += 1;
+  });
   return chars + images * 550;
 }
 
-// 贪心把过矮的 folio 并进相邻 folio；任一页不超过目标的 maxRatio 倍，末页矮页回并前一页
+/* ── A4 纸感分页：拍平 → 按带重装页 ──
+   源文档按 PDF 页硬切，会出现矮页（一两句）与超高页（一大坨）。
+   这里把所有「带」按原文顺序拍平，再以「平均页密度」为目标、
+   每页不超过目标 1.3 倍、低于 0.55 倍视为矮页：
+     · 贪心装带：下一带会撑过上限 → 优雅翻页（超高页自然被拆开）；
+     · 末页矮页回并前一页（合并不撑爆时）。
+   一带是三栏对齐的最小单元，不在带内拆（避免破坏 L/M/R 垂直对齐）；
+   单带本身超高则保留为一页（可接受的优雅下限）。
+   仅搬页界、不动一字；重排后统一重编页码与跨页续段。 */
 function rebalanceFolios(folios) {
   if (folios.length <= 3) return folios;
-  const weights = folios.map(folioWeight);
-  const sorted = [...weights].sort((a, b) => a - b);
-  const median = sorted[Math.floor(sorted.length / 2)] || 1;
-  const target = median;
-  const MAX = target * 1.45;
-  const MIN = target * 0.5;
 
-  const groups = [];
-  let cur = null;
-  for (let i = 0; i < folios.length; i += 1) {
-    if (!cur) {
-      cur = { idx: [i], w: weights[i] };
-    } else if (cur.w + weights[i] <= MAX) {
-      cur.idx.push(i);
-      cur.w += weights[i];
-    } else {
-      groups.push(cur);
-      cur = { idx: [i], w: weights[i] };
+  // 1. 拍平成有序带（保留原文阅读顺序）
+  const bands = [];
+  for (const f of folios) {
+    for (const c of f.children) {
+      if (c.type === 'folioBand') bands.push(c);
     }
   }
-  if (cur) groups.push(cur);
+  if (bands.length <= 3) return folios;
 
-  // 末页矮页：并回前一页（若合并不撑爆）
-  while (groups.length >= 2) {
-    const last = groups[groups.length - 1];
-    const prev = groups[groups.length - 2];
+  // 2. 目标页重 ≈ 原文档平均页密度（总量 ÷ 原页数）
+  const weights = bands.map(bandWeight);
+  const totalW = weights.reduce((a, b) => a + b, 0);
+  const target = (totalW / folios.length) || 1;
+  const MAX = target * 1.3;
+  const MIN = target * 0.55;
+
+  // 3. 贪心把带装进页：装到下一带会超 MAX 就翻页
+  const pages = [];
+  let cur = { bands: [], w: 0 };
+  for (let i = 0; i < bands.length; i += 1) {
+    if (cur.bands.length === 0) {
+      cur.bands.push(bands[i]);
+      cur.w += weights[i];
+    } else if (cur.w + weights[i] <= MAX) {
+      cur.bands.push(bands[i]);
+      cur.w += weights[i];
+    } else {
+      pages.push(cur);
+      cur = { bands: [bands[i]], w: weights[i] };
+    }
+  }
+  if (cur.bands.length) pages.push(cur);
+
+  // 4. 末页矮页：并回前一页（若合并不撑爆）
+  while (pages.length >= 2) {
+    const last = pages[pages.length - 1];
+    const prev = pages[pages.length - 2];
     if (last.w < MIN && prev.w + last.w <= MAX) {
-      prev.idx.push(...last.idx);
+      prev.bands.push(...last.bands);
       prev.w += last.w;
-      groups.pop();
+      pages.pop();
     } else break;
   }
   // 全程只有一页（无可重排）→ 原样
-  if (groups.length <= 1) return folios;
+  if (pages.length <= 1) return folios;
 
-  return groups.map((g, gi) => {
-    const bands = g.idx.flatMap((i) => folios[i].children.filter((c) => c.type === 'folioBand'));
+  // 5. 重建成 folio（顺序重编页码）
+  return pages.map((p, gi) => {
     const label = `第${gi + 1}页`;
     return {
       type: 'folio',
@@ -259,7 +277,7 @@ function rebalanceFolios(folios) {
         hName: 'section',
         hProperties: { className: ['folio'], 'data-page': label },
       },
-      children: [...bands, makePageno(label)],
+      children: [...p.bands, makePageno(label)],
     };
   });
 }
@@ -285,9 +303,6 @@ function normalizeBoundaries(children) {
 export function remarkThreeColumn() {
   return (tree, file) => {
     tree.children = normalizeBoundaries(tree.children);
-    // 文献笔记排版已定型：只修结构 bug，不做重量重排
-    const isLiterature = typeof file?.path === 'string'
-      && file.path.replace(/\\/g, '/').includes('/文献笔记/');
 
     const out = [];
     let inFolio = false;
@@ -391,13 +406,11 @@ export function remarkThreeColumn() {
     }
     flushPre();
 
-    /* ── 输出后处理：均衡分页（仅教学讲稿）── */
+    /* ── 输出后处理：A4 纸感均衡分页（教学讲稿与文献笔记都过）── */
     const folios = out.filter((n) => n.type === 'folio');
     if (folios.length) {
       stripParaCont(folios);
-      const finalFolios = (!isLiterature && folios.length > 3)
-        ? rebalanceFolios(folios)
-        : folios;
+      const finalFolios = rebalanceFolios(folios);
       applyContinuation(finalFolios);
       if (finalFolios !== folios) {
         // 合并后 folio 数量变少：把首个原 folio 的位置换成全部重排后的 folio，

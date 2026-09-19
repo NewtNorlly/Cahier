@@ -5,7 +5,6 @@ import Cover from "../../components/Cover.astro";
 import { getCatalog, getNoteById } from "../../lib/catalog";
 import {
   collectionUrl,
-  encodePath,
   withBase,
 } from "../../lib/url";
 
@@ -29,15 +28,12 @@ const { Content, headings } = await render(note.entry);
 const pageAnchors = headings
   .filter((h) => h.depth === 2)
   .slice(0, 40);
-const repositoryUrl = `https://github.com/NewtNorlly/Cahier/blob/main/${encodePath(note.sourcePath)}`;
 const isLiterature = note.collectionName === "文献笔记";
 const kindLabel = isLiterature ? "文献笔记" : "教学讲稿";
-const sourceLabel = isLiterature ? "查看原始文献" : "查看原始讲稿";
 
 const homeTarget = isLiterature ? "literature" : "lectures";
 const parentUrl = isLiterature ? undefined : collectionUrl(note.collectionId);
 const isFolioDoc = true; // 新版统一为三栏文档体
-const eyebrow = isLiterature ? "文献笔记" : `教学讲稿 · ${note.collectionName}`;
 ---
 
 <BaseLayout
@@ -65,18 +61,11 @@ const eyebrow = isLiterature ? "文献笔记" : `教学讲稿 · ${note.collecti
         />
       </div>
       <div class="cover-hero__meta">
-        <p class="eyebrow">{eyebrow}</p>
         <h1>{note.title}</h1>
         {note.author && <p class="cover-hero__author">{note.author}</p>}
         {note.description && (
           <p class="cover-hero__desc">{note.description}</p>
         )}
-        <div class="article-header__links">
-          {note.sourceUrl && (
-            <a href={note.sourceUrl} target="_blank" rel="noreferrer">{sourceLabel}</a>
-          )}
-          <a href={repositoryUrl} target="_blank" rel="noreferrer">查看 Markdown 源文件</a>
-        </div>
       </div>
     </div>
   </header>
@@ -158,13 +147,6 @@ const eyebrow = isLiterature ? "文献笔记" : `教学讲稿 · ${note.collecti
     max-width: 42rem;
     color: var(--ink-soft);
     line-height: 1.9;
-  }
-
-  .eyebrow {
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.22em;
-    color: #B4552D;
   }
 
   .page-jump {

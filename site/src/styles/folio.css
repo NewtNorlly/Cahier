@@ -189,7 +189,10 @@
   /* 水平内边距逐带保留；纵向留白只落在整页首/末带，保证带与带之间行距自然 */
   padding: 0 clamp(1.3rem, 3vw, 2.8rem);
   color: #1F1C18;
-  font-family: var(--font-serif);
+  /* 中栏正文：西文 Times New Roman，中文衬线宋体（思源宋体优先、系统宋体回退），纸感学院派 */
+  font-family: "Times New Roman", "Liberation Serif", "Source Han Serif CN",
+    "思源宋体 CN", "Source Han Serif SC", "Songti SC", "STSong", "SimSun",
+    "Noto Serif CJK SC", serif;
   font-size: 0.9rem;
   line-height: 1.78;
 }

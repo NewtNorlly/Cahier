@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-19T12:31:23.310Z",
+  "generatedAt": "2026-09-19T14:24:52.697Z",
   "files": [
     {
       "path": "_tools/_legal-cover.svg",
@@ -403,7 +403,7 @@
     },
     {
       "path": "网络工程师/covers/network-engineer-960.webp",
-      "bytes": 10490
+      "bytes": 9050
     },
     {
       "path": "网络技术/covers/network-tech-480.webp",
@@ -411,7 +411,7 @@
     },
     {
       "path": "网络技术/covers/network-tech-960.webp",
-      "bytes": 10342
+      "bytes": 8696
     },
     {
       "path": "文献笔记/covers/legal-zhishichanquan-480.webp",
@@ -448,6 +448,10 @@
     {
       "path": "文献笔记/covers/mgmt-overseas-st-2020-960.webp",
       "bytes": 24860
+    },
+    {
+      "path": "文献笔记/covers/xuanyuanxue-gongminhua-960.webp",
+      "bytes": 10914
     },
     {
       "path": "文献笔记/figures/masthead.webp",
@@ -492,10 +496,6 @@
     {
       "path": "文献笔记/figures/st-2020-fig2-trend3d.webp",
       "bytes": 85270
-    },
-    {
-      "path": "文献笔记/figures/xuanyuanxue-gongminhua-960.webp",
-      "bytes": 133600
     },
     {
       "path": "宪法/covers/constitution-480.webp",
