@@ -194,33 +194,99 @@ function walk(node, fn) {
   if (Array.isArray(node.children)) for (const c of node.children) walk(c, fn);
 }
 
-// 单个带（band）的视觉重量：中栏正文字符 + 图片权重
-// （一张插图约等于半屏高，按 550 字符当量计入）
+// 单个带（band）的视觉高度估算（像素）：
+// 中栏正文按行折算（约 47 字/行 × 25.6px/行），并给标题/段/列表项等
+// 结构性块各加固定块高（标题与段距是脚注+提纲密集页的高度主因，
+// 只数字符会严重低估）。图片/插图按一块约 230px 计入。
 function bandWeight(bandNode) {
-  let chars = 0;
-  let images = 0;
+  let px = 0;
   const main = (bandNode.children ?? []).find(isMainCol);
   if (!main) return 0;
   walk(main, (n) => {
-    if (n.type === 'text') chars += n.value.replace(/\s/g, '').length;
-    else if (n.type === 'image') images += 1;
-    else if (n.type === 'html' && typeof n.value === 'string'
-      && /<img|markdown-image|<figure/i.test(n.value)) images += 1;
+    if (n.type === 'text') {
+      const c = (n.value || '').replace(/\s/g, '').length;
+      px += (c / 47) * 25.6; // 正文行高
+    } else if (n.type === 'heading') {
+      px += 64;
+    } else if (n.type === 'paragraph') {
+      px += 30;
+    } else if (n.type === 'listItem') {
+      px += 26;
+    } else if (n.type === 'list') {
+      px += 14;
+    } else if (n.type === 'blockquote') {
+      px += 32;
+    } else if (n.type === 'image') {
+      px += 230;
+    } else if (n.type === 'html' && typeof n.value === 'string') {
+      const v = n.value;
+      if (/<img|markdown-image|<figure/i.test(v)) px += 230;
+      // 学术论文多用原始 HTML 块（doc-title/abstract/led 等）：剥标签计文本行
+      const text = v.replace(/<[^>]+>/g, '');
+      const c = text.replace(/\s/g, '').length;
+      px += (c / 47) * 25.6;
+      if (/<p|<h[1-6]|<blockquote|<li|<ul|<ol/i.test(v)) px += 28;
+    }
   });
-  return chars + images * 550;
+  return px;
 }
 
-/* ── A4 纸感分页：拍平 → 按带重装页 ──
-   源文档按 PDF 页硬切，会出现矮页（一两句）与超高页（一大坨）。
-   这里把所有「带」按原文顺序拍平，再以「平均页密度」为目标、
-   每页不超过目标 1.3 倍、低于 0.55 倍视为矮页：
-     · 贪心装带：下一带会撑过上限 → 优雅翻页（超高页自然被拆开）；
-     · 末页矮页回并前一页（合并不撑爆时）。
-   一带是三栏对齐的最小单元，不在带内拆（避免破坏 L/M/R 垂直对齐）；
-   单带本身超高则保留为一页（可接受的优雅下限）。
+/* ── A4 纸感分页：拍平 → 按固定版心容量重装页 ──
+   桌面端 .folio 现已被 CSS 固化为同一宽 × 同一高（横版 A4，短:长=1:√2，
+   实测基准 --paper-w 1536 / --paper-h 1086）。分页改为「固定模子灌内容」：
+     · 每个纸页有固定版心容量 FIXED（中栏正文字符 + 图片权重当量）；
+     · 贪心把带装进页：下一带会撑过容量 → 满一页就翻页；
+     · 图片/公式/脚注所在的带当前页放不下 → 整体推下一页（上方留白可接受）；
+     · 允许页内留白、末页不满（不再回并末页）；
+     · 一带是三栏对齐的最小单元，不在带内拆（保护 L/M/R 垂直对齐）；
+       跨页续段由 para-cont 标注（取消次页首行缩进）。
    仅搬页界、不动一字；重排后统一重编页码与跨页续段。 */
+/* ── 段中拆带：单带超过版心容量时，按中栏子块重量切成多块（段中翻页合法）。
+   L/R 侧栏只留在首块，后续块侧栏置空；脚注/图片等整块随其所在子块走。 */
+function splitBand(band, chunkWeight) {
+  const cols = band.children ?? [];
+  const main = cols.find(isMainCol);
+  if (!main || !Array.isArray(main.children) || main.children.length <= 1) return [band];
+  const childW = (node) => {
+    let px = 0;
+    walk(node, (n) => {
+      if (n.type === 'text') px += ((n.value || '').replace(/\s/g, '').length / 47) * 25.6;
+      else if (n.type === 'heading') px += 64;
+      else if (n.type === 'paragraph') px += 30;
+      else if (n.type === 'listItem') px += 26;
+      else if (n.type === 'list') px += 14;
+      else if (n.type === 'blockquote') px += 32;
+      else if (n.type === 'image') px += 230;
+      else if (n.type === 'html' && typeof n.value === 'string') {
+        const v = n.value;
+        if (/<img|markdown-image|<figure/i.test(v)) px += 230;
+        const text = v.replace(/<[^>]+>/g, '');
+        px += (text.replace(/\s/g, '').length / 47) * 25.6;
+        if (/<p|<h[1-6]|<blockquote|<li|<ul|<ol/i.test(v)) px += 28;
+      }
+    });
+    return px;
+  };
+  const chunks = [];
+  let cur = []; let curW = 0;
+  for (const node of main.children) {
+    const w = childW(node);
+    if (cur.length && curW + w > chunkWeight) { chunks.push(cur); cur = []; curW = 0; }
+    cur.push(node); curW += w;
+  }
+  if (cur.length) chunks.push(cur);
+  if (chunks.length === 1) return [band];
+  return chunks.map((ch, idx) => {
+    const newCols = cols.map((c) => {
+      if (isMainCol(c)) return { ...c, children: ch };
+      return idx === 0 ? c : { ...c, children: [] };
+    });
+    return { ...band, children: newCols };
+  });
+}
+
 function rebalanceFolios(folios) {
-  if (folios.length <= 3) return folios;
+  if (folios.length <= 1) return folios;
 
   // 1. 拍平成有序带（保留原文阅读顺序）
   const bands = [];
@@ -229,43 +295,46 @@ function rebalanceFolios(folios) {
       if (c.type === 'folioBand') bands.push(c);
     }
   }
-  if (bands.length <= 3) return folios;
+  if (bands.length <= 1) return folios;
 
-  // 2. 目标页重 ≈ 原文档平均页密度（总量 ÷ 原页数）
+  // 2. 固定版心容量：一页中栏可容纳的视觉重量（字符 + 图片当量）。
+  //    实测一页纸版心约可排 ~1800 中文字，留约 15% 余量取 1600，避免溢出定高纸页。
+  const FIXED = 650;
   const weights = bands.map(bandWeight);
-  const totalW = weights.reduce((a, b) => a + b, 0);
-  const target = (totalW / folios.length) || 1;
-  const MAX = target * 1.3;
-  const MIN = target * 0.55;
+  // 段中拆带：单带超过版心容量 → 切成 ~650 的多块，避免独占一页撑高纸页
+  const CHUNK = 640;
+  const exploded = [];
+  for (let i = 0; i < bands.length; i += 1) {
+    if (weights[i] > CHUNK) exploded.push(...splitBand(bands[i], CHUNK));
+    else exploded.push(bands[i]);
+  }
+  bands.length = 0;
+  bands.push(...exploded);
+  const w2 = bands.map(bandWeight);
+  if (process.env.CAHIER_DEBUG) {
+    console.error('[dbg] bands=', bands.length, 'weights=', JSON.stringify(w2.map(w => Math.round(w))));
+  }
 
-  // 3. 贪心把带装进页：装到下一带会超 MAX 就翻页
+  // 3. 贪心把带装进页：装到下一带会撑过 FIXED 就翻页（满一页就翻页）
   const pages = [];
   let cur = { bands: [], w: 0 };
   for (let i = 0; i < bands.length; i += 1) {
+    const wi = w2[i];
     if (cur.bands.length === 0) {
       cur.bands.push(bands[i]);
-      cur.w += weights[i];
-    } else if (cur.w + weights[i] <= MAX) {
+      cur.w += wi;
+    } else if (cur.w + wi <= FIXED) {
       cur.bands.push(bands[i]);
-      cur.w += weights[i];
+      cur.w += wi;
     } else {
       pages.push(cur);
-      cur = { bands: [bands[i]], w: weights[i] };
+      cur = { bands: [bands[i]], w: wi };
     }
   }
   if (cur.bands.length) pages.push(cur);
 
-  // 4. 末页矮页：并回前一页（若合并不撑爆）
-  while (pages.length >= 2) {
-    const last = pages[pages.length - 1];
-    const prev = pages[pages.length - 2];
-    if (last.w < MIN && prev.w + last.w <= MAX) {
-      prev.bands.push(...last.bands);
-      prev.w += last.w;
-      pages.pop();
-    } else break;
-  }
-  // 全程只有一页（无可重排）→ 原样
+  // 4. 允许页内留白、末页不满 → 不做末页回并。
+  //    全程只有一页（无可重排）→ 原样。
   if (pages.length <= 1) return folios;
 
   // 5. 重建成 folio（顺序重编页码）

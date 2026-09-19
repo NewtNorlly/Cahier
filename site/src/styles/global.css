@@ -539,20 +539,33 @@
      一幅 1600px 的学院意象剪影横向重复 3 次；轨道匀速左移一个剪影宽度即回到原位，
      故首尾真正无缝。双主题配色由 --foot-line/--foot-fill 驱动，随 data-theme 联动。 */
   .foot-scene {
+    position: relative;
     overflow: hidden;
     height: clamp(120px, 15vw, 190px);
     margin-top: 2.5rem;
-    /* 顶部羽化，与页脚文字柔和衔接 */
+    /* 顶部羽化，与正文柔和衔接 */
     -webkit-mask-image: linear-gradient(180deg, transparent, #000 26%);
             mask-image: linear-gradient(180deg, transparent, #000 26%);
   }
 
+  .foot-scene__layer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  .foot-scene__layer--far  { bottom: 56px; opacity: 0.7; }
+  .foot-scene__layer--mid  { bottom: 18px; }
+  .foot-scene__layer--near { bottom: 0; }
+
   .foot-scene__track {
     display: flex;
     width: max-content;
-    animation: foot-scroll 90s linear infinite;
     will-change: transform;
   }
+  .foot-scene__track--far  { animation: foot-scroll 120s linear infinite; }
+  .foot-scene__track--mid  { animation: foot-scroll 80s  linear infinite; }
+  .foot-scene__track--near { animation: foot-scroll 55s  linear infinite; }
 
   .foot-scene__svg {
     display: block;

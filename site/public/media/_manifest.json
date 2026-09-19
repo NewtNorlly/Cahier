@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-19T14:24:52.697Z",
+  "generatedAt": "2026-09-19T15:29:30.962Z",
   "files": [
     {
       "path": "_tools/_legal-cover.svg",
@@ -402,16 +402,24 @@
       "bytes": 4976
     },
     {
+      "path": "网络工程师/covers/network-engineer-960-480.webp",
+      "bytes": 5672
+    },
+    {
       "path": "网络工程师/covers/network-engineer-960.webp",
-      "bytes": 9050
+      "bytes": 19788
     },
     {
       "path": "网络技术/covers/network-tech-480.webp",
       "bytes": 4748
     },
     {
+      "path": "网络技术/covers/network-tech-960-480.webp",
+      "bytes": 4408
+    },
+    {
       "path": "网络技术/covers/network-tech-960.webp",
-      "bytes": 8696
+      "bytes": 18372
     },
     {
       "path": "文献笔记/covers/legal-zhishichanquan-480.webp",

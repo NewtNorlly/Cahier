@@ -4,6 +4,16 @@
    暖纸色 · 细横线 · 红边线 · 留白优先 —— 清新、克制、像手账
    ════════════════════════════════════════════════════════════ */
 
+/* ── 统一纸页基准 token（1920 视口无头实测固化）──
+   实测邵科论文：.doc-body / .folio 全站统一宽 1536px，中栏 768px；
+   中间健康页高 ≈1086–1128px。横版 A4 短边:长边 = 1:√2，
+   故 --paper-h = --paper-w / √2 ≈ 1086px。桌面端每个 .folio 严格套用
+   同一宽 × 同一高，页脚/页码固定在纸页底部同一基线。 */
+:root {
+  --paper-w: 1536px;
+  --paper-h: calc(var(--paper-w) / 1.41421356237); /* ≈1086px */
+}
+
 /* ── 文档封面（题录页）── */
 .doc-cover {
   width: min(calc(100% - 2.5rem), 64rem);
@@ -138,9 +148,16 @@
 .folio {
   display: flex;
   flex-direction: column;
-  /* 页内上下留白不切断竖线背景；页间以虚线分页（左右便签纸在分页处同步断开） */
-  padding: clamp(1rem, 2vw, 1.5rem) 0 clamp(1.6rem, 3vw, 2.2rem);
-  border-bottom: 1px dashed #E6E6E6;
+  /* 桌面端：统一竖长 A4 纸页（中栏纸宽 768 × √2 ≈ 1086px 版心高），
+     内容不足页底自然留白、页码贴纸底；窄屏降级在响应式里放开 */
+  min-height: var(--paper-h);
+  /* 清晰纸边：极细边 + 柔和纸影 + 页间 gutter，取代孤零零虚线，
+     滚动一页页像 A4 纸；透明底，继承 .doc-body 纸底与三栏引导竖线 */
+  border: 1px solid #E7E2D6;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px hsl(40 22% 40% / 0.05), 0 12px 28px hsl(40 22% 40% / 0.08);
+  margin: 0 auto clamp(1.6rem, 3vw, 2.6rem);
+  padding: clamp(1.2rem, 2.4vw, 1.8rem) clamp(0.8rem, 2vw, 1.6rem) clamp(1.6rem, 3vw, 2.2rem);
 }
 .folio:last-child { border-bottom: 0; }
 
@@ -700,6 +717,8 @@
   .folio {
     gap: 0;
     padding: 0.6rem 0 1.4rem;
+    /* 窄屏单列纸卷降级：放开固定纸页高，内容自然流式排 */
+    height: auto;
   }
   /* 每带内部单列堆叠：先原文，再左注、右注，使批注紧跟其呼应段落 */
   .folio__band {
@@ -754,7 +773,7 @@
     transparent calc(25% - 0.5px), #28303f calc(25% - 0.5px), #28303f 25%, transparent 25%,
     transparent 75%, #28303f 75%, #28303f calc(75% + 0.5px), transparent calc(75% + 0.5px));
 }
-[data-theme="night"] .folio { border-bottom-color: #28303f; }
+[data-theme="night"] .folio { border-color: #2c3547; box-shadow: 0 1px 2px hsl(222 30% 10% / 0.3), 0 12px 28px hsl(222 30% 10% / 0.35); }
 [data-theme="night"] .folio__pageno { color: #6b7488; }
 
 /* 中栏正文与各级标题：墨色 → 柔白 */
