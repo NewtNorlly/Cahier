@@ -25,11 +25,11 @@ Shi.jing@hust.edu.cn
 
 <!--col:M-->
 #### Outline
-¡ Decision under risk analysis
-- Expected value theory
-¡ Decision tree
-- Expected utility theory
-- The limitation of expected value/utility theory
+- Decision under risk analysis
+  - Expected value theory
+- Decision tree
+  - Expected utility theory
+  - The limitation of expected value/utility theory
 
 <!--col:R-->
 
@@ -41,7 +41,7 @@ Shi.jing@hust.edu.cn
 
 <!--col:M-->
 #### Expected value theory
-¡ Expectation-maximization approach（最大期望值）
+- Expectation-maximization approach（最大期望值）
 Calculate the expected value of each alternative and choose the maximal one
 
 <!--col:R-->
@@ -73,15 +73,15 @@ Calculate the expected value of each alternative and choose the maximal one
 
 <!--col:M-->
 #### Expectation-maximization approach
-¡ Expected monetary value（EMV）
-- The EMV of alternative $i$ should be:
+- Expected monetary value（EMV）
+  - The EMV of alternative $i$ should be:
 
 $$
 \text{EMV}_i = \sum_{j=1}^{n} R_{ij}\, p_j, \qquad i = 1,2,\cdots,m
 $$
 
-- $R_{ij}$ represents the outcome of alter. $i$ under state of nature $j$
-- $p_j$ represents the probability of state of nature $j$
+  - $R_{ij}$ represents the outcome of alter. $i$ under state of nature $j$
+  - $p_j$ represents the probability of state of nature $j$
 
 <!--col:R-->
 
@@ -115,9 +115,9 @@ $$
 
 <!--col:M-->
 #### Application scenario of EMV
-¡ Not for an one time decision
-- EMV is an average value that the decision maker can get assume the decision-making problem is repeated
-- Flip a coin, when you get a head you get 1 million and otherwise you lose 1 million, the EMV of this game is 0
+- Not for an one time decision
+  - EMV is an average value that the decision maker can get assume the decision-making problem is repeated
+  - Flip a coin, when you get a head you get 1 million and otherwise you lose 1 million, the EMV of this game is 0
 
 <!--col:R-->
 
@@ -147,13 +147,13 @@ alternative A is very risky
 
 <!--col:M-->
 #### Decision tree
-¡ A method for representation of the decision problem.
-- decision node（□）
-- status node（○）
-- result node（△）
-- The branches
-  - leaving each round node represent the different states of nature
-  - leaving each square node represent the different decision alternatives.
+- A method for representation of the decision problem.
+  - decision node（□）
+  - status node（○）
+  - result node（△）
+  - The branches
+    - leaving each round node represent the different states of nature
+    - leaving each square node represent the different decision alternatives.
 
 <!--col:R-->
 
@@ -219,8 +219,8 @@ Hilton 决策树回溯结果：四个方案 Not buying / A / B / A & B，各自�
 
 <!--col:M-->
 #### Multi-stage decision
-¡ a decision contains two or more pending decision problems
-- Contains multiple decision nodes
+- a decision contains two or more pending decision problems
+  - Contains multiple decision nodes
 
 <!--col:R-->
 
@@ -232,8 +232,8 @@ Hilton 决策树回溯结果：四个方案 Not buying / A / B / A & B，各自�
 
 <!--col:M-->
 #### Factory decision（1）
-¡ 为生产某产品，计划建厂。如果建大厂，需要投资 300 万元，如果建小厂，需要投资 160 万元，都是使用 10 年。每年的收益值如下表所示。
-¡ 应选择哪个方案？
+- 为生产某产品，计划建厂。如果建大厂，需要投资 300 万元，如果建小厂，需要投资 160 万元，都是使用 10 年。每年的收益值如下表所示。
+- 应选择哪个方案？
 
 | 自然状态 | 概率 | 建大厂 | 建小厂 |
 | --- | --- | --- | --- |
@@ -262,10 +262,10 @@ Hilton 决策树回溯结果：四个方案 Not buying / A / B / A & B，各自�
 
 <!--col:M-->
 #### Factory decision（2）
-¡ 若分前三年和后七年考虑：
-- 前三年销路好的概率为 0.7
-- 若前三年销路好，则后七年销路好的概率是 0.9
-- 若前三年销路差，则后七年销路肯定差
+- 若分前三年和后七年考虑：
+  - 前三年销路好的概率为 0.7
+  - 若前三年销路好，则后七年销路好的概率是 0.9
+  - 若前三年销路差，则后七年销路肯定差
 
 | 自然状态 | 概率 | 建大厂 | 建小厂 |
 | --- | --- | --- | --- |
@@ -295,9 +295,9 @@ Hilton 决策树回溯结果：四个方案 Not buying / A / B / A & B，各自�
 
 <!--col:M-->
 #### Factory decision（3）
-¡ 对建小厂方案进行改动
-- 先建小厂，如销路好，三年后决策是否扩建，扩建需追加投资 140 万元，扩建后可使用七年，每年的收益与大厂相同
-- 将该方案与建大厂的方案比较，优劣如何？
+- 对建小厂方案进行改动
+  - 先建小厂，如销路好，三年后决策是否扩建，扩建需追加投资 140 万元，扩建后可使用七年，每年的收益与大厂相同
+  - 将该方案与建大厂的方案比较，优劣如何？
 
 <!--col:R-->
 
@@ -322,10 +322,10 @@ Hilton 决策树回溯结果：四个方案 Not buying / A / B / A & B，各自�
 
 <!--col:M-->
 #### Practice: market decision
-¡ 某国内公司考虑是否将一产品打入美国市场。
-¡ 打入美国市场，可能有竞争产品介入，有竞争产品介入的概率为 0.7，没有竞争产品介入的概率为 0.3。
-- 如果无竞争产品介入的话，该公司采取高、中、低三种价格策略的获利情况分别为：65 万元、45 万元、25 万元。
-- 如果有竞争产品介入的话，该公司也可以采取高、中、低三种价格策略。
+- 某国内公司考虑是否将一产品打入美国市场。
+- 打入美国市场，可能有竞争产品介入，有竞争产品介入的概率为 0.7，没有竞争产品介入的概率为 0.3。
+  - 如果无竞争产品介入的话，该公司采取高、中、低三种价格策略的获利情况分别为：65 万元、45 万元、25 万元。
+  - 如果有竞争产品介入的话，该公司也可以采取高、中、低三种价格策略。
 
 <!--col:R-->
 
@@ -362,11 +362,11 @@ Hilton 决策树回溯结果：四个方案 Not buying / A / B / A & B，各自�
 
 <!--col:M-->
 #### Expected utility theory
-¡ 1. the limitation of EMV
-¡ 2. concepts of utility
-¡ 3. utility function
-¡ 4. how to build utility function
-¡ 5. application of EU in insurance
+- 1. the limitation of EMV
+- 2. concepts of utility
+- 3. utility function
+- 4. how to build utility function
+- 5. application of EU in insurance
 
 <!--col:R-->
 
@@ -378,9 +378,9 @@ Hilton 决策树回溯结果：四个方案 Not buying / A / B / A & B，各自�
 
 <!--col:M-->
 #### St. Petersburg game
-¡ A game you need pay to play
-¡ Rule: In each round, you can flip a coin until a tail come out. And you get the award
-¡ Q: how much would you like to pay for ONE round?
+- A game you need pay to play
+- Rule: In each round, you can flip a coin until a tail come out. And you get the award
+- Q: how much would you like to pay for ONE round?
 
 报酬序列：$2^0 = 1$ 元、$2^1 = 2$ 元、$2^2 = 4$ 元……
 
@@ -401,9 +401,9 @@ $$
 \text{EV} = \frac{1}{2}\times 1 + \frac{1}{4}\times 2 + \frac{1}{8}\times 4 + \frac{1}{16}\times 8 + \frac{1}{32}\times 16 + \cdots = \frac{1}{2}+\frac{1}{2}+\frac{1}{2}+\cdots = \infty
 $$
 
-¡ The expected winnings would be a fair price
-- The chance of ending the game on the kth toss (i.e., the chance of getting $k-1$ heads in a row) is $1/2^k$
-- If the game ends on the kth toss, the winnings would be $2^{k-1}$
+- The expected winnings would be a fair price
+  - The chance of ending the game on the kth toss (i.e., the chance of getting $k-1$ heads in a row) is $1/2^k$
+  - If the game ends on the kth toss, the winnings would be $2^{k-1}$
 
 So you should be willing to pay any price to play this game of chance
 
@@ -417,11 +417,11 @@ So you should be willing to pay any price to play this game of chance
 
 <!--col:M-->
 #### St. Petersburg paradox
-¡ The paradox is that nobody's going to pay more than a few Yuan to play
-¡ To see why, and for a good time, call http://www.mathematik.com/Petersburg/Petersburg.html click
-¡ Explanations
-- Small probability
-  - Gains over $2^5 = 32$, Prob. = $1/2^6 = 0.0156$
+- The paradox is that nobody's going to pay more than a few Yuan to play
+- To see why, and for a good time, call http://www.mathematik.com/Petersburg/Petersburg.html click
+- Explanations
+  - Small probability
+    - Gains over $2^5 = 32$, Prob. = $1/2^6 = 0.0156$
 
 <!--col:R-->
 
@@ -433,10 +433,10 @@ So you should be willing to pay any price to play this game of chance
 
 <!--col:M-->
 #### Explanations (cont.)
-¡ Bankrolls are actually finite, no one can pay you the large gain
-- can't buy what's not sold
-- $2^{29} = 536,870,912$
-- When n can not be larger than 29, the EV you can get is only $\frac{1}{2}\times 29$
+- Bankrolls are actually finite, no one can pay you the large gain
+  - can't buy what's not sold
+  - $2^{29} = 536,870,912$
+  - When n can not be larger than 29, the EV you can get is only $\frac{1}{2}\times 29$
 
 $$
 2^0\times\frac{1}{2} + 2^1\times\frac{1}{4} + 2^2\times\frac{1}{8} + \cdots + 2^n\times\frac{1}{2^{n+1}} + \cdots = \infty
@@ -452,9 +452,9 @@ $$
 
 <!--col:M-->
 #### Daniel Bernoulli's explanation
-¡ Law of diminishing marginal utility
-- Compare \$10 for a child versus Bill Gates
-¡ Use utilities in decision matrix instead of object payoffs
+- Law of diminishing marginal utility
+  - Compare \$10 for a child versus Bill Gates
+- Use utilities in decision matrix instead of object payoffs
 
 ![边际效用递减曲线：纵轴效用（Subjective value），横轴财富（Objective value），随财富增加效用增速放缓|360](./figures/c2-p29-utility-curve.webp)
 
@@ -468,9 +468,9 @@ $$
 
 <!--col:M-->
 #### Definition of utility
-¡ Utility refers to the degree of satisfaction
-- Reflect the attitude of decision makers toward profit, loss and risk
-- Have both objectivity and subjectivity
+- Utility refers to the degree of satisfaction
+  - Reflect the attitude of decision makers toward profit, loss and risk
+  - Have both objectivity and subjectivity
 
 <!--col:R-->
 
@@ -482,10 +482,10 @@ $$
 
 <!--col:M-->
 #### Objectivity of utility
-¡ Based on the objective status of decision maker
-- The same thing for different decision-makers has different utility value because of the different status
-¡ 一个面包对某饥肠辘辘者来说有救人一命的效用，而对于一位刚刚饱餐离座的人来说可能是负担。
-¡ 同样 1000 元人民币，对于一贫如洗者与某腰缠万贯者的效用值也具有显著差别。
+- Based on the objective status of decision maker
+  - The same thing for different decision-makers has different utility value because of the different status
+- 一个面包对某饥肠辘辘者来说有救人一命的效用，而对于一位刚刚饱餐离座的人来说可能是负担。
+- 同样 1000 元人民币，对于一贫如洗者与某腰缠万贯者的效用值也具有显著差别。
 
 <!--col:R-->
 
@@ -497,9 +497,9 @@ $$
 
 <!--col:M-->
 #### Subjectivity of utility
-¡ Utility value is the spiritual value of decision makers, depending on the values and attitudes to risk.
-- Gambling
-- Stock market
+- Utility value is the spiritual value of decision makers, depending on the values and attitudes to risk.
+  - Gambling
+  - Stock market
 
 <!--col:R-->
 
@@ -510,10 +510,10 @@ $$
 <!--col:L-->
 
 <!--col:M-->
-¡ 假设你初到深圳闯荡，赤手空拳，身无分文，刚到深圳就中了个奖，要求你必须二选一
-- （A）确定的获得 1000 元人民币；
-- （B）抛硬币，抛到正面朝上，你能得到 2000 元。抛到反面朝上，什么也得不到。
-¡ 你会选择哪一项？
+- 假设你初到深圳闯荡，赤手空拳，身无分文，刚到深圳就中了个奖，要求你必须二选一
+  - （A）确定的获得 1000 元人民币；
+  - （B）抛硬币，抛到正面朝上，你能得到 2000 元。抛到反面朝上，什么也得不到。
+- 你会选择哪一项？
 
 <!--col:R-->
 
@@ -525,9 +525,9 @@ $$
 
 <!--col:M-->
 #### Classification
-¡ Risk neutral
-¡ Risk aversion
-¡ Risk prefer
+- Risk neutral
+- Risk aversion
+- Risk prefer
 
 效用曲线以货币金额 X 为横轴、U(x) 为纵轴：风险厌恶 a（凹）、风险中性 b（直线）、风险偏好 c（凸）。
 
@@ -556,9 +556,9 @@ $$
 
 <!--col:M-->
 #### How to build a utility function
-¡ 函数曲线拟合法
-- 风险厌恶型（指数型）：$U(x) = 1 - e^{-x/R}$（其中 $e \approx 2.71828$，$R$ 为风险容忍参数）
-- 对数型：$u(x) = c + a\ln(x + b)$
+- 函数曲线拟合法
+  - 风险厌恶型（指数型）：$U(x) = 1 - e^{-x/R}$（其中 $e \approx 2.71828$，$R$ 为风险容忍参数）
+  - 对数型：$u(x) = c + a\ln(x + b)$
 
 <!--col:R-->
 
@@ -570,11 +570,11 @@ $$
 
 <!--col:M-->
 #### Application of EU in insurance
-¡ 某企业想为厂房（价值为 A）申报火灾保险，假设发生火灾的概率为 $P_f$
-- 如果投保，要支付保险金 i 元
-  - 明年如果发生火灾的话，所有损失都将全部得到赔偿；
-- 如果不投保的话，一旦发生火灾，则损失 B 元（$B \le A$）
-¡ 如果按照 EMV 准则，发生火灾的概率 $P_f$ 为多少时，企业才会投保？
+- 某企业想为厂房（价值为 A）申报火灾保险，假设发生火灾的概率为 $P_f$
+  - 如果投保，要支付保险金 i 元
+    - 明年如果发生火灾的话，所有损失都将全部得到赔偿；
+  - 如果不投保的话，一旦发生火灾，则损失 B 元（$B \le A$）
+- 如果按照 EMV 准则，发生火灾的概率 $P_f$ 为多少时，企业才会投保？
 
 <!--col:R-->
 
@@ -596,7 +596,7 @@ $$
 <!--col:L-->
 
 <!--col:M-->
-¡ According to EV：
+- According to EV：
 
 $$
 \begin{aligned}
@@ -606,8 +606,8 @@ p_f &\ge \frac{i}{B}
 \end{aligned}
 $$
 
-- 根据保额 5000 元的财产，保费为 5 元计算，$P_f$ 应该大于 1/1000，才值得去保险。
-- 但据有关的估计，实际发生火灾的概率为 1/5000，远小于火灾发生概率的阈值，但大部分人会选择买这个火险，为什么？
+  - 根据保额 5000 元的财产，保费为 5 元计算，$P_f$ 应该大于 1/1000，才值得去保险。
+  - 但据有关的估计，实际发生火灾的概率为 1/5000，远小于火灾发生概率的阈值，但大部分人会选择买这个火险，为什么？
 
 <!--col:R-->
 
@@ -618,7 +618,7 @@ $$
 <!--col:L-->
 
 <!--col:M-->
-¡ According to EU：
+- According to EU：
 
 $$
 p_f\cdot u(A-i) + (1-p_f)\cdot u(A-i) \ge p_f\,u(A-B) + (1-p_f)\cdot u(A)
@@ -640,8 +640,8 @@ $$
 
 <!--col:M-->
 #### Insurance Co.'s profits
-¡ 假设飞机失事的概率是 1/250000，事故后保险公司赔付 200 万元。问如何设定保险费，使得保险公司正好收支平衡？
-¡ 中国人寿保险公司投保额为 200 万元的保险费为 40 元。问如果一个人买了该保险，保险公司的收益为多少？
+- 假设飞机失事的概率是 1/250000，事故后保险公司赔付 200 万元。问如何设定保险费，使得保险公司正好收支平衡？
+- 中国人寿保险公司投保额为 200 万元的保险费为 40 元。问如果一个人买了该保险，保险公司的收益为多少？
 
 <!--col:R-->
 
@@ -766,7 +766,7 @@ $$
 
 <!--col:M-->
 #### Allais Paradox
-¡ France Economist, 1988 Nobel Laureate
+- France Economist, 1988 Nobel Laureate
 
 方案 A：100% 肯定能赢得 100 万元。
 方案 B：10% 的概率赢得 150 万元；89% 的概率赢得 100 万元；1% 的概率没有盈亏。

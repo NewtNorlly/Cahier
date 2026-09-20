@@ -39,6 +39,7 @@ const notes = defineCollection({
       '!AI 指令/**',
       '!**/文本附件/**/*.md',
       '!_pdf-staging/**',
+      '!_tools/**',
     ],
     deferRender: true,
   }),

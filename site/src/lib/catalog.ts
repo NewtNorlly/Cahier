@@ -52,6 +52,8 @@ export interface WereadMetadata {
 export interface Note {
   id: string;
   title: string;
+  /** 文档类型（frontmatter doc_type，如 lecture / literaturenote / slide）；缺省为 null */
+  doc_type?: string | null;
   /** 条目时效键（YYYY-MM-DD）：frontmatter date → 微信读书 lastReadDate/finishedDate/readingDate → publishTime；缺失为空串 */
   date?: string;
   collectionId: string;
@@ -366,6 +368,7 @@ async function buildCatalog(): Promise<Catalog> {
     return {
       id: stableId(title, sourcePath),
       title,
+      doc_type: stringValue(entry.data.doc_type) ?? null,
       date: noteRecencyKey(entry.data),
       collectionId,
       collectionName,

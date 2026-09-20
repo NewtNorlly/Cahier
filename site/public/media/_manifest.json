@@ -1,10 +1,6 @@
 {
-  "generatedAt": "2026-09-19T15:29:30.962Z",
+  "generatedAt": "2026-09-20T02:11:27.169Z",
   "files": [
-    {
-      "path": "_tools/_legal-cover.svg",
-      "bytes": 4099
-    },
     {
       "path": "德语/covers/german-480.webp",
       "bytes": 6458
@@ -342,6 +338,10 @@
       "bytes": 102678
     },
     {
+      "path": "决策理论与方法/figures/c4-p32-default-effect.webp",
+      "bytes": 134438
+    },
+    {
       "path": "决策理论与方法/figures/c4-p34-bookshelf.webp",
       "bytes": 22072
     },
@@ -399,39 +399,39 @@
     },
     {
       "path": "网络工程师/covers/network-engineer-480.webp",
-      "bytes": 4976
+      "bytes": 12698
     },
     {
-      "path": "网络工程师/covers/network-engineer-960-480.webp",
-      "bytes": 5672
+      "path": "网络工程师/covers/network-engineer-960_thumb.webp",
+      "bytes": 5976
     },
     {
       "path": "网络工程师/covers/network-engineer-960.webp",
-      "bytes": 19788
+      "bytes": 33180
     },
     {
       "path": "网络技术/covers/network-tech-480.webp",
-      "bytes": 4748
+      "bytes": 10928
     },
     {
-      "path": "网络技术/covers/network-tech-960-480.webp",
-      "bytes": 4408
+      "path": "网络技术/covers/network-tech-960_thumb.webp",
+      "bytes": 5234
     },
     {
       "path": "网络技术/covers/network-tech-960.webp",
-      "bytes": 18372
+      "bytes": 28492
     },
     {
       "path": "文献笔记/covers/legal-zhishichanquan-480.webp",
-      "bytes": 8300
+      "bytes": 18102
     },
     {
       "path": "文献笔记/covers/legal-zhishichanquan-960_thumb.webp",
-      "bytes": 3042
+      "bytes": 8274
     },
     {
       "path": "文献笔记/covers/legal-zhishichanquan-960.webp",
-      "bytes": 25440
+      "bytes": 48704
     },
     {
       "path": "文献笔记/covers/mgmt-overseas-sea-2021-480.webp",

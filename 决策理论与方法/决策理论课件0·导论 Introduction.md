@@ -25,24 +25,24 @@ Shi.jing@hust.edu.cn
 
 <!--col:M-->
 #### Decision-making practice exists in all human activities
-¡ Events happened recently
+- Events happened recently
 
-¡ 自然环境
-- 自然灾害——地震、泥石流、海啸
-- 极端气候——夏季电量缺口
+- 自然环境
+  - 自然灾害——地震、泥石流、海啸
+  - 极端气候——夏季电量缺口
 
-¡ 国际政治
-- 中美科技战
-- 俄乌战争
-- 国家选举
+- 国际政治
+  - 中美科技战
+  - 俄乌战争
+  - 国家选举
 
-¡ 公共议题（社会、民生）
-- 绩点为王——中国顶尖高校年轻人的囚徒困境
-- a life confused by the evaluation system
+- 公共议题（社会、民生）
+  - 绩点为王——中国顶尖高校年轻人的囚徒困境
+  - a life confused by the evaluation system
 
-¡ 科技（关注 ICT 技术）影响
-- 外卖骑手，困在系统里
-- a life controlled by algorithms
+- 科技（关注 ICT 技术）影响
+  - 外卖骑手，困在系统里
+  - a life controlled by algorithms
 
 <!--col:R-->
 
@@ -68,17 +68,17 @@ Shi.jing@hust.edu.cn
 
 <!--col:M-->
 #### 不同学科中的决策理论
-¡ Economics
-- Utility, rational choice, behavior, game theory
-¡ Public administration
-- Performance/policy evaluation
-- Strategic planning
-¡ Organization and institution
-- The difference between public and private organization
-¡ Management
-- MIS, DSS——A combination of IT and management
-¡ Industrial engineering
-- Operations research（运筹学）
+- Economics
+  - Utility, rational choice, behavior, game theory
+- Public administration
+  - Performance/policy evaluation
+  - Strategic planning
+- Organization and institution
+  - The difference between public and private organization
+- Management
+  - MIS, DSS——A combination of IT and management
+- Industrial engineering
+  - Operations research（运筹学）
 ……….
 
 <!--col:R-->
@@ -91,10 +91,10 @@ Shi.jing@hust.edu.cn
 
 <!--col:M-->
 #### 这门课程涉及内容
-¡ 经济学中的决策问题：理性经济人假设（确定型决策、不确定型决策、风险型决策），行为经济学
-¡ 管理学中的决策问题：评估——多目标决策问题
-¡ 数字时代的决策问题：决策支持系统，大数据决策模型，基于算法与人工智能的决策风险，社交媒体中的谣言、虚假信息传播，区块链技术的“免信任”（trust-free）机制
-¡ 群体决策：投票
+- 经济学中的决策问题：理性经济人假设（确定型决策、不确定型决策、风险型决策），行为经济学
+- 管理学中的决策问题：评估——多目标决策问题
+- 数字时代的决策问题：决策支持系统，大数据决策模型，基于算法与人工智能的决策风险，社交媒体中的谣言、虚假信息传播，区块链技术的“免信任”（trust-free）机制
+- 群体决策：投票
 
 <!--col:R-->
 
@@ -137,7 +137,7 @@ Case: AI replaces human beings？！
 <!--col:L-->
 
 <!--col:M-->
-个人层面：AIGC 的人格权侵权
+#### 个人层面：AIGC 的人格权侵权
 
 ![AIGC 相关案例：AI 配音祝福、AI 合成艺人、AI 取代真人演员、AI 音乐创作等短视频截图|720](./figures/c0-p08-aigc-a.webp)
 
@@ -206,7 +206,7 @@ Case: Cryptocurrency
 <!--col:L-->
 
 <!--col:M-->
-组织与行业层面：好莱坞大罢工
+#### 组织与行业层面：好莱坞大罢工
 - 要求流媒体平台盈利分成，改善影视工作者的薪酬；
 - 要求平台规范对人工智能的使用。
 
@@ -227,7 +227,7 @@ Case: Cryptocurrency
 <!--col:L-->
 
 <!--col:M-->
-国家层面：科技战
+#### 国家层面：科技战
 
 ![雷蒙多“华为继续高研发将受严惩”相关新闻截图|640](./figures/c0-p13-huawei-techwar.webp)
 
@@ -242,7 +242,7 @@ Case: Cryptocurrency
 <!--col:L-->
 
 <!--col:M-->
-国家层面：人才战
+#### 国家层面：人才战
 
 ![华为海思芯片与 HarmonyOS 鸿蒙标志|720](./figures/c0-p14-harmonyos-chip.webp)
 
@@ -288,15 +288,15 @@ a blend of mathematics, statistics, economics, philosophy, management, psycholog
 
 <!--col:M-->
 #### Herbert Simon
-¡ 2022 年是 Herbert Simon《Administrative Behavior: A Study of Decision-Making Processes in Administrative Organizations》一书发表 75 周年。（1947–2022）
-¡ The Royal Swedish Academy of Sciences, which awarded Herbert Simon the Nobel Prize in Economics in 1978, considered Administrative Behavior to be “epoch-making.”
+- 2022 年是 Herbert Simon《Administrative Behavior: A Study of Decision-Making Processes in Administrative Organizations》一书发表 75 周年。（1947–2022）
+- The Royal Swedish Academy of Sciences, which awarded Herbert Simon the Nobel Prize in Economics in 1978, considered Administrative Behavior to be “epoch-making.”
    1978 年获诺贝尔经济学奖，《管理行为》被认为是划时代巨作。
-¡ When PAR selected its half-century's “Great Books” in public administration for its own 50th anniversary, Administrative Behavior was selected as the overwhelming winner by a panel of 20 experts
+- When PAR selected its half-century's “Great Books” in public administration for its own 50th anniversary, Administrative Behavior was selected as the overwhelming winner by a panel of 20 experts
 
 《管理行为》将决策置于分析的中心，并考察个人如何在某些组织框架或环境中做出决策，其结论主要有两点：
 
-- 有限理性、寻求满意方案而不是最优方案。西蒙强调了现实生活中的管理者在记忆力、注意力和能力方面所面临的理性限制。
-- 个人决策并不完全由自身利益出发。组织的正式结构会引导行动者的思想和行动，也就是说，他们不能自由地追求自身利益，而是为实现组织目标而集体努力的一部分。
+  - 有限理性、寻求满意方案而不是最优方案。西蒙强调了现实生活中的管理者在记忆力、注意力和能力方面所面临的理性限制。
+  - 个人决策并不完全由自身利益出发。组织的正式结构会引导行动者的思想和行动，也就是说，他们不能自由地追求自身利益，而是为实现组织目标而集体努力的一部分。
 
 西蒙还开创了人工智能和计算机科学的研究，将计算机视为改善人类决策的工具，例如，通过充当专家系统 expert system。
 
@@ -324,9 +324,9 @@ a blend of mathematics, statistics, economics, philosophy, management, psycholog
 
 <!--col:M-->
 #### 结课方式
-¡ 平时参与：10%
-¡ 实验：30%
-¡ 结课报告：60%
+- 平时参与：10%
+- 实验：30%
+- 结课报告：60%
 
 <!--col:R-->
 
@@ -338,13 +338,13 @@ a blend of mathematics, statistics, economics, philosophy, management, psycholog
 
 <!--col:M-->
 #### 参考资料
-¡ Textbook
-- 陶长琪《决策理论与方法》中国人民大学，2010
-¡ Readings
-- Daniel Kahneman《Thinking, fast and slow》
-- Richard Thaler《赢家的诅咒》、《助推》、《“错误”的行为》
-- Herbert Simon《Administrative behavior》
-- Some research literatures
+- Textbook
+  - 陶长琪《决策理论与方法》中国人民大学，2010
+- Readings
+  - Daniel Kahneman《Thinking, fast and slow》
+  - Richard Thaler《赢家的诅咒》、《助推》、《“错误”的行为》
+  - Herbert Simon《Administrative behavior》
+  - Some research literatures
 
 <!--col:R-->
 
@@ -356,12 +356,12 @@ a blend of mathematics, statistics, economics, philosophy, management, psycholog
 
 <!--col:M-->
 #### Definition of decision making
-¡ Narrowly
-- Decision = Judgment + Choice
-- make the best choice from different suggestion
-¡ "Selectivity" is a necessary and sufficient condition for decision-making
-- Avoid "Hobson's choice"
-- Avoid information overload
+- Narrowly
+  - Decision = Judgment + Choice
+  - make the best choice from different suggestion
+- "Selectivity" is a necessary and sufficient condition for decision-making
+  - Avoid "Hobson's choice"
+  - Avoid information overload
 Importance of information
 
 <!--col:R-->
@@ -374,9 +374,9 @@ Importance of information
 
 <!--col:M-->
 #### Definition
-¡ Broadly
-- Decision Analysis
-- It is a discovery issue, raise the question and problem-solving process.
+- Broadly
+  - Decision Analysis
+  - It is a discovery issue, raise the question and problem-solving process.
 
 <!--col:R-->
 
@@ -422,12 +422,12 @@ Importance of information
 
 <!--col:M-->
 2. Obtaining necessary information
-¡ Find out your target
-- Price
-- Oil consumption
-- Durability
-- Comfortability
-- Appearance
+- Find out your target
+  - Price
+  - Oil consumption
+  - Durability
+  - Comfortability
+  - Appearance
 
 ![各标准的重要性权重表：价格 10、油耗 8、耐用性 6、舒适性 5、外形 4|480](./figures/c0-p25-criteria-table.webp)
 
@@ -441,11 +441,11 @@ Importance of information
 
 <!--col:M-->
 3. Find available alternatives
-¡ 大众
-¡ 本田
-¡ 福特
-¡ 现代
-¡ 劳斯莱斯？！！
+- 大众
+- 本田
+- 福特
+- 现代
+- 劳斯莱斯？！！
 
 <!--col:R-->
 
@@ -457,7 +457,7 @@ Importance of information
 
 <!--col:M-->
 4. Evaluation
-¡ Step 1
+- Step 1
 
 ![Step 1：各备选方案在价格、油耗、耐用性、舒适性、外形上的原始评分（大众 GOLF、本田飞度、东风标致 307、现代伊兰特）|720](./figures/c0-p27-eval-step1.webp)
 
@@ -471,7 +471,7 @@ Importance of information
 
 <!--col:M-->
 4. Evaluation (cont.)
-¡ Step 2
+- Step 2
 
 ![Step 2：按重要性加权后的各方案得分与总分（大众 GOLF 222、本田飞度 260、东风标致 307 218、现代伊兰特 229）|720](./figures/c0-p28-eval-step2.webp)
 
@@ -485,12 +485,12 @@ Importance of information
 
 <!--col:M-->
 #### 结构化（structured）决策问题的要素
-¡ Decision maker: individual or group
-- Affected by social, political, economic, cultural, psychological and other factors.
-¡ Decision target: single or multiple
-¡ Alternatives（方案）
-¡ State of nature（决策环境）:
-- The objectively existed decision-making environment that cannot be controlled but can be expected
+- Decision maker: individual or group
+  - Affected by social, political, economic, cultural, psychological and other factors.
+- Decision target: single or multiple
+- Alternatives（方案）
+- State of nature（决策环境）:
+  - The objectively existed decision-making environment that cannot be controlled but can be expected
 
 <!--col:R-->
 
@@ -502,10 +502,10 @@ Importance of information
 
 <!--col:M-->
 #### 要素 (cont.)
-¡ Evaluation criteria（评估标准）
-- Evaluate whether the alternative reached the target value, relevant to decision-makers' value orientation or preference
-¡ Outcome
-- The results of various alternatives under different state of nature
+- Evaluation criteria（评估标准）
+  - Evaluate whether the alternative reached the target value, relevant to decision-makers' value orientation or preference
+- Outcome
+  - The results of various alternatives under different state of nature
 
 <!--col:R-->
 
@@ -517,7 +517,7 @@ Importance of information
 
 <!--col:M-->
 #### Good decision ≠ Good results
-¡ Process driven or results driven?
+- Process driven or results driven?
 Some people teach us the right way to do things, but if you want to discover some things other people have not found, you need to do things the wrong way
 James Dyson (an inventor)
 
@@ -530,9 +530,9 @@ James Dyson (an inventor)
 <!--col:L-->
 
 <!--col:M-->
-¡ 问题一：
-- 如果你知道一个女人怀孕了，她已经生了 8 个小孩子了，其中有 3 个耳朵聋，2 个眼睛瞎，1 个智能不足，而这个女人自己又有梅毒
-- 你会建议她堕胎吗？
+- 问题一：
+  - 如果你知道一个女人怀孕了，她已经生了 8 个小孩子了，其中有 3 个耳朵聋，2 个眼睛瞎，1 个智能不足，而这个女人自己又有梅毒
+  - 你会建议她堕胎吗？
 
 <!--col:R-->
 
@@ -543,11 +543,11 @@ James Dyson (an inventor)
 <!--col:L-->
 
 <!--col:M-->
-¡ 问题二：
-- 现在要选举一名领袖，下面是关于 3 个候选人的一些事实：
-¡ 候选人 A：跟一些不诚实的政客有往来，而且会星象占卜学。他有婚外情，是一个老烟枪，每天喝 8 到 10 杯的马丁尼。
-¡ 候选人 B：他过去有过 2 次被解雇的记录，睡觉睡到中午才起来，大学时吸鸦片，而且每天傍晚会喝一大夸特威士忌。
-¡ 候选人 C：他是一位受勋的战争英雄，素食主义者，不抽烟，只偶尔喝一点啤酒。从没有发生婚外情。
+- 问题二：
+  - 现在要选举一名领袖，下面是关于 3 个候选人的一些事实：
+- 候选人 A：跟一些不诚实的政客有往来，而且会星象占卜学。他有婚外情，是一个老烟枪，每天喝 8 到 10 杯的马丁尼。
+- 候选人 B：他过去有过 2 次被解雇的记录，睡觉睡到中午才起来，大学时吸鸦片，而且每天傍晚会喝一大夸特威士忌。
+- 候选人 C：他是一位受勋的战争英雄，素食主义者，不抽烟，只偶尔喝一点啤酒。从没有发生婚外情。
 
 <!--col:R-->
 

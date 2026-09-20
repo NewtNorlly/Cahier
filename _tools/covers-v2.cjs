@@ -86,6 +86,18 @@ const SPECS = [
     title: ['英语'], subtitle: 'ENGLISH',
     deco: 'quill',
   },
+  {
+    slug: 'network-engineer', dir: '网络工程师', no: 'Nº 14', kind: '教学讲稿',
+    bg: '#e8eef2', ink: '#2b3a4a', accent: '#5d7f99', sub: '#8395a5',
+    title: ['网络工程师'], subtitle: 'NETWORK ENGINEER',
+    deco: 'topology',
+  },
+  {
+    slug: 'network-tech', dir: '网络技术', no: 'Nº 15', kind: '教学讲稿',
+    bg: '#e6efee', ink: '#2c4448', accent: '#5b8a86', sub: '#82999a',
+    title: ['网络技术'], subtitle: 'NETWORK TECHNOLOGY',
+    deco: 'layers',
+  },
 ];
 
 function deco(d, ink, accent) {
@@ -185,6 +197,41 @@ function deco(d, ink, accent) {
         <line x1="540" y1="600" x2="480" y2="640" opacity="0.55"/>
         <line x1="525" y1="630" x2="470" y2="665" opacity="0.55"/>
         <line x1="510" y1="660" x2="465" y2="690" opacity="0.55"/>
+      </g>`;
+    case 'topology': // 星环网络拓扑
+      return `<g stroke="${accent}" stroke-width="1.8" fill="none" opacity="0.8">
+        <ellipse cx="480" cy="528" rx="212" ry="58"/>
+        <line x1="480" y1="528" x2="692" y2="528"/>
+        <line x1="480" y1="528" x2="586" y2="578"/>
+        <line x1="480" y1="528" x2="374" y2="578"/>
+        <line x1="480" y1="528" x2="268" y2="528"/>
+        <line x1="480" y1="528" x2="374" y2="478"/>
+        <line x1="480" y1="528" x2="586" y2="478"/>
+        <circle cx="480" cy="528" r="10" fill="${ink}" stroke="none"/>
+        <circle cx="692" cy="528" r="6.5" fill="${accent}" stroke="none"/>
+        <circle cx="586" cy="578" r="6.5" fill="${accent}" stroke="none"/>
+        <circle cx="374" cy="578" r="6.5" fill="${accent}" stroke="none"/>
+        <circle cx="268" cy="528" r="6.5" fill="${accent}" stroke="none"/>
+        <circle cx="374" cy="478" r="6.5" fill="${accent}" stroke="none"/>
+        <circle cx="586" cy="478" r="6.5" fill="${accent}" stroke="none"/>
+        <line x1="360" y1="858" x2="600" y2="858" stroke-width="1.4" opacity="0.5"/>
+      </g>`;
+    case 'layers': // 核心-汇聚-接入三层架构
+      return `<g stroke="${accent}" stroke-width="1.8" fill="none" opacity="0.8">
+        <line x1="480" y1="478" x2="392" y2="530"/>
+        <line x1="480" y1="478" x2="568" y2="530"/>
+        <line x1="392" y1="530" x2="306" y2="582"/>
+        <line x1="392" y1="530" x2="424" y2="582"/>
+        <line x1="568" y1="530" x2="536" y2="582"/>
+        <line x1="568" y1="530" x2="654" y2="582"/>
+        <circle cx="480" cy="478" r="9" fill="${ink}" stroke="none"/>
+        <circle cx="392" cy="530" r="7" fill="${accent}" stroke="none"/>
+        <circle cx="568" cy="530" r="7" fill="${accent}" stroke="none"/>
+        <circle cx="306" cy="582" r="5" fill="${accent}" stroke="none"/>
+        <circle cx="424" cy="582" r="5" fill="${accent}" stroke="none"/>
+        <circle cx="536" cy="582" r="5" fill="${accent}" stroke="none"/>
+        <circle cx="654" cy="582" r="5" fill="${accent}" stroke="none"/>
+        <line x1="360" y1="858" x2="600" y2="858" stroke-width="1.4" opacity="0.5"/>
       </g>`;
   }
 }

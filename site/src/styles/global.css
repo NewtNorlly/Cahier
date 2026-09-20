@@ -109,9 +109,6 @@
     --sidebar-accent-fg: 223 63% 28%;
     --sidebar-border: 218 34% 82%;
     --story-accent: 223 63% 28%;
-    /* 站底装饰横带：白昼钴蓝系低对比线条 */
-    --foot-line: hsl(223 55% 50% / 0.32);
-    --foot-fill: hsl(223 55% 50% / 0.06);
   }
 
   /* ── 暗夜主题（深夜墨蓝，护眼柔白，天蓝青强调；不用纯黑、不偏靛紫） ── */
@@ -135,9 +132,6 @@
     --story-accent: 198 84% 68%;
     /* 暗夜下阴影改为柔和黑，避免亮色调阴影发灰发白 */
     --shadow: 0 18px 45px hsl(222 60% 2% / 0.55);
-    /* 站底装饰横带：深夜墨蓝系低对比线条 */
-    --foot-line: hsl(210 45% 74% / 0.26);
-    --foot-fill: hsl(210 45% 74% / 0.05);
   }
 
   /* ── 语义别名 ── */
@@ -535,54 +529,130 @@
     color: var(--ink-soft);
   }
 
-  /* ── 站底无限循环视差装饰横带（纯 CSS/SVG，自包含）──
-     一幅 1600px 的学院意象剪影横向重复 3 次；轨道匀速左移一个剪影宽度即回到原位，
-     故首尾真正无缝。双主题配色由 --foot-line/--foot-fill 驱动，随 data-theme 联动。 */
+  /* ── 站底三层视差水彩横带（成品手绘水彩风，位图为无缝 WebP）──
+     每层是 200% 宽轨道、放两张相同的无缝横带，轨道匀速左移 50%（恰一个周期）即回原位，
+     故首尾真正无缝；远/中/近三层速度不同形成视差，遮罩让天空与草丘自然叠化。 */
   .foot-scene {
     position: relative;
     overflow: hidden;
-    height: clamp(120px, 15vw, 190px);
+    height: clamp(150px, 16vw, 210px);
     margin-top: 2.5rem;
+    background: linear-gradient(180deg, hsl(var(--card) / 0), hsl(var(--card) / 0.55));
     /* 顶部羽化，与正文柔和衔接 */
-    -webkit-mask-image: linear-gradient(180deg, transparent, #000 26%);
-            mask-image: linear-gradient(180deg, transparent, #000 26%);
+    -webkit-mask-image: linear-gradient(180deg, transparent, #000 18%);
+            mask-image: linear-gradient(180deg, transparent, #000 18%);
   }
 
-  .foot-scene__layer {
+  .foot-layer {
     position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
-  .foot-scene__layer--far  { bottom: 56px; opacity: 0.7; }
-  .foot-scene__layer--mid  { bottom: 18px; }
-  .foot-scene__layer--near { bottom: 0; }
-
-  .foot-scene__track {
+    inset: 0;
     display: flex;
-    width: max-content;
+    width: 200%;
+    height: 100%;
     will-change: transform;
   }
-  .foot-scene__track--far  { animation: foot-scroll 120s linear infinite; }
-  .foot-scene__track--mid  { animation: foot-scroll 80s  linear infinite; }
-  .foot-scene__track--near { animation: foot-scroll 55s  linear infinite; }
+  .foot-layer--far  { z-index: 1; animation: foot-drift 150s linear infinite; }
+  .foot-layer--mid  { z-index: 2; animation: foot-drift 92s  linear infinite; }
+  .foot-layer--near { z-index: 3; animation: foot-drift 56s  linear infinite; }
 
-  .foot-scene__svg {
-    display: block;
-    flex: 0 0 auto;
-    width: 4800px;
-    height: 220px;
+  .foot-art {
+    width: 50%;
+    height: 100%;
+    flex: none;
+    object-fit: cover;
+    object-position: center bottom;
+  }
+  /* 远层：天空与积云，顶部淡入页面背景 */
+  .foot-layer--far .foot-art {
+    object-position: center 58%;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 1.6rem);
+            mask-image: linear-gradient(to bottom, transparent 0, #000 1.6rem);
+  }
+  /* 中层：只保留中段丘树木屋（底部让给近景花草，上部溶入远层天空） */
+  .foot-layer--mid .foot-art {
+    -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 14%, #000 50%, rgba(0, 0, 0, 0.4) 63%, transparent 72%);
+            mask-image: linear-gradient(to top, transparent 0%, #000 14%, #000 50%, rgba(0, 0, 0, 0.4) 63%, transparent 72%);
+  }
+  /* 近层：花草只占底部约四成，上部溶入中景，露出天空与丘树 */
+  .foot-layer--near .foot-art {
+    -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 10%, #000 40%, rgba(0, 0, 0, 0.45) 52%, transparent 60%);
+            mask-image: linear-gradient(to top, transparent 0%, #000 10%, #000 40%, rgba(0, 0, 0, 0.45) 52%, transparent 60%);
   }
 
-  @keyframes foot-scroll {
+  @keyframes foot-drift {
     from { transform: translate3d(0, 0, 0); }
-    to   { transform: translate3d(-1600px, 0, 0); }
+    to   { transform: translate3d(-50%, 0, 0); }
+  }
+
+  /* 夜间：明亮水彩整体压暗降饱和，再叠一层夜蓝渐变，融入夜读底色 */
+  [data-theme="night"] .foot-scene { filter: brightness(0.6) saturate(0.82); }
+  [data-theme="night"] .foot-scene::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    background: linear-gradient(180deg, hsl(222 32% 9% / 0.22), hsl(222 32% 9% / 0.5));
+  }
+
+  /* 随风飘过的落叶（纯 CSS 形状，无位图、无受版权保护的形象） */
+  .foot-leaves {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .foot-leaf {
+    position: absolute;
+    left: 0;
+    width: 18px;
+    height: 12px;
+    border-radius: 80% 0 80% 0;
+    opacity: 0.85;
+    will-change: transform;
+  }
+  .foot-leaf--a {
+    top: 22%;
+    background: linear-gradient(135deg, #93c25a, #5e8f37);
+    animation: foot-leaf-a 22s linear infinite;
+  }
+  .foot-leaf--b {
+    top: 48%;
+    width: 15px;
+    height: 10px;
+    background: linear-gradient(135deg, #e3ac4e, #c87f2e);
+    animation: foot-leaf-b 28s linear infinite;
+    animation-delay: -9s;
+  }
+  .foot-leaf--c {
+    top: 12%;
+    width: 14px;
+    height: 9px;
+    background: linear-gradient(135deg, #a6cf6b, #6b9a41);
+    animation: foot-leaf-a 34s linear infinite;
+    animation-delay: -20s;
+  }
+  @keyframes foot-leaf-a {
+    0%   { transform: translateX(-6vw) rotate(0deg); }
+    25%  { transform: translateX(24vw) translateY(14px) rotate(120deg); }
+    50%  { transform: translateX(52vw) translateY(-10px) rotate(220deg); }
+    75%  { transform: translateX(80vw) translateY(12px) rotate(320deg); }
+    100% { transform: translateX(108vw) rotate(400deg); }
+  }
+  @keyframes foot-leaf-b {
+    0%   { transform: translateX(-6vw) translateY(0) rotate(10deg); }
+    30%  { transform: translateX(28vw) translateY(-16px) rotate(150deg); }
+    60%  { transform: translateX(60vw) translateY(12px) rotate(260deg); }
+    100% { transform: translateX(108vw) translateY(-6px) rotate(380deg); }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .foot-scene__track {
+    .foot-layer,
+    .foot-leaf {
       animation: none;
     }
+    .foot-leaves { display: none; }
   }
 
   .cover {

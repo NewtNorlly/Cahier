@@ -38,7 +38,7 @@ by Richard H. Thaler & Cass R. Sunstein
 
 <!--col:M-->
 #### Every Decision can be Nudged
-¡ the researchers were able to increase or decrease selection of specific foods by 25%, just by rearranging them.
+- the researchers were able to increase or decrease selection of specific foods by 25%, just by rearranging them.
 
 ![自助餐厅自助取餐台：仅靠重新排列食物位置即可助推选择|640](./figures/c4-p03-cafeteria.webp)
 
@@ -52,12 +52,12 @@ by Richard H. Thaler & Cass R. Sunstein
 
 <!--col:M-->
 #### Nudge
-¡ Thaler and Sunstein define a nudge as altering people's behavior in a predictable way without significantly changing their economic incentives
+- Thaler and Sunstein define a nudge as altering people's behavior in a predictable way without significantly changing their economic incentives
 Ø Libertarianism
-- Be free to do what they like
+  - Be free to do what they like
 Ø Paternalism
 Ø Libertarian paternalism
-- 自由（主义）的温和专制主义
+  - 自由（主义）的温和专制主义
 
 <!--col:R-->
 
@@ -68,7 +68,7 @@ by Richard H. Thaler & Cass R. Sunstein
 <!--col:L-->
 
 <!--col:M-->
-Case 1
+#### Case 1
 
 ![“Don't Mess With Texas”警示牌：以反垃圾标语助推不乱扔垃圾|640](./figures/c4-p05-dont-mess-tx.webp)
 
@@ -81,7 +81,7 @@ Case 1
 <!--col:L-->
 
 <!--col:M-->
-Case 2
+#### Case 2
 
 ![夜间行人天桥（首尔麻浦大桥自杀干预助推案例）|640](./figures/c4-p06-mapo-bridge.webp)
 
@@ -107,11 +107,11 @@ Case 2
 
 <!--col:M-->
 #### More public issues
-¡ Obeying traffic rules
-¡ Smoking
-¡ Low carbon consumption
-¡ Obesity
-¡ Short sight
+- Obeying traffic rules
+- Smoking
+- Low carbon consumption
+- Obesity
+- Short sight
 
 <!--col:R-->
 
@@ -123,8 +123,8 @@ Case 2
 
 <!--col:M-->
 #### Decision Architecture
-¡ Organize the context in which people make decisions
-¡ An effective design enables people to easily focus on the right things and make meaningful evaluations.
+- Organize the context in which people make decisions
+- An effective design enables people to easily focus on the right things and make meaningful evaluations.
 
 ![2000 年美国大选“蝴蝶选票”：选票排版（选择架构）误导了部分选民|720](./figures/c4-p09-ballot-2000.webp)
 
@@ -169,9 +169,9 @@ Case 2
 <!--col:L-->
 
 <!--col:M-->
-¡ 光滑的门板让人们推门，门上有把手使人产生“拉门”的倾向。
-¡ 球拍与球总价 1.1 元，球拍比球贵 1 元，问球拍的价格？
-¡ 请说出文字的颜色：红 绿 白。
+- 光滑的门板让人们推门，门上有把手使人产生“拉门”的倾向。
+- 球拍与球总价 1.1 元，球拍比球贵 1 元，问球拍的价格？
+- 请说出文字的颜色：红 绿 白。
 
 <!--col:R-->
 
@@ -183,10 +183,10 @@ Case 2
 
 <!--col:M-->
 #### When do we need nudges?
-¡ When we see the benefits now, costs later.
-¡ When encountering decisions we make infrequently.
-¡ When feedback is not immediate.
-¡ When it is hard to imagine the possible outcomes.
+- When we see the benefits now, costs later.
+- When encountering decisions we make infrequently.
+- When feedback is not immediate.
+- When it is hard to imagine the possible outcomes.
 
 <!--col:R-->
 
@@ -213,12 +213,12 @@ Benefits now / Costs later（收益在当下、成本在未来）。
 
 <!--col:M-->
 #### Human's actions are predictable
-¡ We have predictable mental biases.
-- Anchoring Bias: We are heavily biased by where we start.
-- Status Quo Bias: We rarely overcome inertia（惯性/惰性）.
-- Availability Bias: We overestimate the likelihood of events we can easily remember.
-- Representativeness Bias: We sometimes see patterns where there are none.
-- Unrealistic Optimism: Almost all of us think we are better than average.
+- We have predictable mental biases.
+  - Anchoring Bias: We are heavily biased by where we start.
+  - Status Quo Bias: We rarely overcome inertia（惯性/惰性）.
+  - Availability Bias: We overestimate the likelihood of events we can easily remember.
+  - Representativeness Bias: We sometimes see patterns where there are none.
+  - Unrealistic Optimism: Almost all of us think we are better than average.
 
 <!--col:R-->
 
@@ -300,11 +300,11 @@ Benefits now / Costs later（收益在当下、成本在未来）。
 
 <!--col:M-->
 #### Status quo bias
-¡ first introduced by researchers William Samuelson and Richard Zeckhauser in 1988.
-- people preferring that things stay as they are or that the current state of affairs remains the same.
-- 90 年代初，New Jersey 和 Pennsylvania 要改革汽车保险，给保民们两个选择，A. 贵的，但是赔偿高，权利多，B. 便宜的，赔偿低，权利有限。两州给保民的这两个选择内容都差不多。
-¡ 在 New Jersey，贵的那种是 default，结果改革后，75% 保民选了贵的。
-¡ 在 Pennsylvania，便宜的那种是 default，所以改革后大部分人选的还是便宜的那种。
+- first introduced by researchers William Samuelson and Richard Zeckhauser in 1988.
+  - people preferring that things stay as they are or that the current state of affairs remains the same.
+  - 90 年代初，New Jersey 和 Pennsylvania 要改革汽车保险，给保民们两个选择，A. 贵的，但是赔偿高，权利多，B. 便宜的，赔偿低，权利有限。两州给保民的这两个选择内容都差不多。
+- 在 New Jersey，贵的那种是 default，结果改革后，75% 保民选了贵的。
+- 在 Pennsylvania，便宜的那种是 default，所以改革后大部分人选的还是便宜的那种。
 
 <!--col:R-->
 
@@ -394,8 +394,8 @@ Benefits now / Costs later（收益在当下、成本在未来）。
 
 <!--col:M-->
 #### Availability Bias
-¡ We are much more scared of vivid and easily imagined threats (like plane crashes or tornadoes), than we are of ordinary but much more common dangers (like asthma attacks).
-- We are 20x more likely to die of asthma attack than tornado, so if we were purely rational, we'd be 20x more scared of asthma than tornadoes.
+- We are much more scared of vivid and easily imagined threats (like plane crashes or tornadoes), than we are of ordinary but much more common dangers (like asthma attacks).
+  - We are 20x more likely to die of asthma attack than tornado, so if we were purely rational, we'd be 20x more scared of asthma than tornadoes.
 
 ![空难现场：生动、易想象的威胁让人过度恐惧|480](./figures/c4-p24-plane-crash.webp)
 
@@ -409,8 +409,8 @@ Benefits now / Costs later（收益在当下、成本在未来）。
 
 <!--col:M-->
 #### Representativeness Bias
-¡ Based on the beauty pageant contestants you've seen in the media lately, you might think that ALL of them are dumb as a post. (That's not true.)
-¡ If you wore your old hat during two games which your team won, you might assume that it's a lucky hat, and that if you don't wear it during the next game, your team will lose. (Sorry, there's no connection.)
+- Based on the beauty pageant contestants you've seen in the media lately, you might think that ALL of them are dumb as a post. (That's not true.)
+- If you wore your old hat during two games which your team won, you might assume that it's a lucky hat, and that if you don't wear it during the next game, your team will lose. (Sorry, there's no connection.)
 
 ![选美比赛参赛者：媒体曝光让我们以为“都很笨”，其实并非如此|360](./figures/c4-p25-beauty.webp)
 
@@ -424,7 +424,7 @@ Benefits now / Costs later（收益在当下、成本在未来）。
 
 <!--col:M-->
 #### Unrealistic Optimism
-¡ In one study the authors conducted, 90% of their students predicted they would finish in the top 2 percentiles in their class.
+- In one study the authors conducted, 90% of their students predicted they would finish in the top 2 percentiles in their class.
 
 ![多数人高估自己：正态分布曲线与“90% 的学生预测自己名列前茅”|480](./figures/c4-p26-optimism-curve.webp)
 
@@ -451,9 +451,9 @@ Benefits now / Costs later（收益在当下、成本在未来）。
 <!--col:L-->
 
 <!--col:M-->
-¡ 劳东燕讲述，自己在 10 月 1 日接到电话，对方声称是电信服务商的工作人员，说她名下另外有个手机号，一直向加拿大公民发送虚假广告，如果她不申诉并获取警方的立案报告的话，就要断掉她当前在本地办理的手机电信服务。
-¡ 为取得劳东燕的信任，对方在电话里报了自己的姓名、工号还有处理该事项的文件号，之后说给她转接广州公安局的电话。随后，有一位自称是广州市公安局民警的男子声称要给她做笔录，按规定要录音录像，还与她确认是否是在单独的房间，房间里有无他人，并要求她开摄像头。
-¡ 从劳东燕所了解的电诈案件来看，如果犯罪分子拿到受骗人的姓名、手机号、身份证和人脸识别的视频，基本上受骗人银行账户里的钱，对方就能如入无人之境那般转走。去年发生过好几起这样的案件，诈骗分子利用银行人脸识别系统的漏洞，同时截获了手机的验证码，转走被害人账户里的存款。
+- 劳东燕讲述，自己在 10 月 1 日接到电话，对方声称是电信服务商的工作人员，说她名下另外有个手机号，一直向加拿大公民发送虚假广告，如果她不申诉并获取警方的立案报告的话，就要断掉她当前在本地办理的手机电信服务。
+- 为取得劳东燕的信任，对方在电话里报了自己的姓名、工号还有处理该事项的文件号，之后说给她转接广州公安局的电话。随后，有一位自称是广州市公安局民警的男子声称要给她做笔录，按规定要录音录像，还与她确认是否是在单独的房间，房间里有无他人，并要求她开摄像头。
+- 从劳东燕所了解的电诈案件来看，如果犯罪分子拿到受骗人的姓名、手机号、身份证和人脸识别的视频，基本上受骗人银行账户里的钱，对方就能如入无人之境那般转走。去年发生过好几起这样的案件，诈骗分子利用银行人脸识别系统的漏洞，同时截获了手机的验证码，转走被害人账户里的存款。
 
 https://mp.weixin.qq.com/s/JSdFShw_0FlvcHUXlHo8tA
 
@@ -469,12 +469,12 @@ https://mp.weixin.qq.com/s/JSdFShw_0FlvcHUXlHo8tA
 
 <!--col:M-->
 #### How to achieve a good choice architecture
-¡ iNcentives
-¡ Understand "mappings"
-¡ Defaults
-¡ Give Feedback
-¡ Expect Error
-¡ Structure Complex Choices
+- iNcentives
+- Understand "mappings"
+- Defaults
+- Give Feedback
+- Expect Error
+- Structure Complex Choices
 
 <!--col:R-->
 
@@ -486,8 +486,8 @@ https://mp.weixin.qq.com/s/JSdFShw_0FlvcHUXlHo8tA
 
 <!--col:M-->
 #### Understand "mappings"
-¡ Mappings means how we translate data about an option into what it actually means for us
-- like translating kilowatts of energy into dollars on the electricity bill
+- Mappings means how we translate data about an option into what it actually means for us
+  - like translating kilowatts of energy into dollars on the electricity bill
 
 ![把用电量即时换算为金额的电表/气表设备|480](./figures/c4-p30-energy-meter.webp)
 
@@ -500,7 +500,7 @@ https://mp.weixin.qq.com/s/JSdFShw_0FlvcHUXlHo8tA
 <!--col:L-->
 
 <!--col:M-->
-Default
+#### Default
 
 ![新泽西州驾照上的器官捐献默认勾选（Default）示例|720](./figures/c4-p31-nj-license.webp)
 
@@ -514,6 +514,8 @@ Default
 
 <!--col:M-->
 
+![默认选项的奇特效果：器官捐献在线调查三种默认方式下的同意比例（明确同意42%、推定同意82%、中立条件79%）书页|720](./figures/c4-p32-default-effect.webp)
+
 <!--col:R-->
 
 <!--/folio-->
@@ -524,10 +526,10 @@ Default
 
 <!--col:M-->
 #### Default
-¡ Large railroad Europe made small change to its website so seat reservations would be included automatically with ticket purchases (at an added cost of 1-2 Euros), unless the customer unchecked a box on the online booking form.
-- Before: 9% tickets including reservations
-- After: 47% tickets including reservations
-¡ Earning railroad an additional 40 million annually
+- Large railroad Europe made small change to its website so seat reservations would be included automatically with ticket purchases (at an added cost of 1-2 Euros), unless the customer unchecked a box on the online booking form.
+  - Before: 9% tickets including reservations
+  - After: 47% tickets including reservations
+- Earning railroad an additional 40 million annually
 
 <!--col:R-->
 
@@ -539,7 +541,7 @@ Default
 
 <!--col:M-->
 #### Feedback
-¡ This device is designed to give you feedback about your energy usage as you are using it. It is also mapping your usage to money, targeting your loss aversion, and it plans to tap into vast social pressures by broadcasting your usage statistics to Facebook and Twitter.
+- This device is designed to give you feedback about your energy usage as you are using it. It is also mapping your usage to money, targeting your loss aversion, and it plans to tap into vast social pressures by broadcasting your usage statistics to Facebook and Twitter.
 
 ![书架与电价计量屏：把使用量即时反馈给用户|420](./figures/c4-p34-bookshelf.webp)
 
@@ -553,7 +555,7 @@ Default
 
 <!--col:M-->
 #### Expect Error
-¡ Make plan for the errors
+- Make plan for the errors
 
 ![路面上的“LOOK RIGHT”提示：为行人看错方向这一常见错误预先设计提示|480](./figures/c4-p35-look-right.webp)
 

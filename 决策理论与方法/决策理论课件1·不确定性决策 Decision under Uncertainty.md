@@ -25,12 +25,12 @@ Shi.jing@hust.edu.cn
 
 <!--col:M-->
 #### 结构化决策问题的类别
-¡ Decisions under certainty
-- are decisions made when one knows what the result of each act would be.
-¡ Decisions under uncertainty
-- are decisions made when one cannot assign a subjective probability to the possible results of any act.
-¡ Decisions under risk
-- are decisions made when one does not know the outcome of each act, yet can assign a subjective probability to the possible results of each act.
+- Decisions under certainty
+  - are decisions made when one knows what the result of each act would be.
+- Decisions under uncertainty
+  - are decisions made when one cannot assign a subjective probability to the possible results of any act.
+- Decisions under risk
+  - are decisions made when one does not know the outcome of each act, yet can assign a subjective probability to the possible results of each act.
 
 <!--col:R-->
 
@@ -42,10 +42,10 @@ Shi.jing@hust.edu.cn
 
 <!--col:M-->
 #### Important events and people
-¡ Relevant to game
-- In the 16-17 century, French palace has a gambling consultant who is the pioneer of probability theory and game theory
-¡ Core concepts
-- In 1738, Daniel Bernoulli proposed the concept of the utility and expected utility, used to explain gambling and insurance expectations
+- Relevant to game
+  - In the 16-17 century, French palace has a gambling consultant who is the pioneer of probability theory and game theory
+- Core concepts
+  - In 1738, Daniel Bernoulli proposed the concept of the utility and expected utility, used to explain gambling and insurance expectations
 
 ![Daniel Bernoulli（丹尼尔·伯努利）肖像|240](./figures/c1-p03-bernoulli.webp)
 
@@ -58,10 +58,10 @@ Shi.jing@hust.edu.cn
 <!--col:L-->
 
 <!--col:M-->
-¡ Subject establishment
-- After the 1920s, Decision theory separated from game theory
-- 1944, Von Neumann（冯·诺依曼） and Oskar Morgenstern（摩根斯坦） proposed von Neumann-Morgenstern utility（效用值运算定理）
-- 1950, L. J. Savage（萨维奇） established Bayesian decision theory
+- Subject establishment
+  - After the 1920s, Decision theory separated from game theory
+  - 1944, Von Neumann（冯·诺依曼） and Oskar Morgenstern（摩根斯坦） proposed von Neumann-Morgenstern utility（效用值运算定理）
+  - 1950, L. J. Savage（萨维奇） established Bayesian decision theory
 
 ![Von Neumann（冯·诺依曼）|180](./figures/c1-p04-von-neumann.webp)
 
@@ -78,13 +78,13 @@ Shi.jing@hust.edu.cn
 <!--col:L-->
 
 <!--col:M-->
-¡ Behavior decision theory——Nobel Prizes in Economic Sciences
-- 1978, Herbert Simon
-  - Propose items “Bounded rationality”（有限理性） and “satisficing”（满意策略）
-- 1988, Maurice Allais
-  - Allais Paradox: show defect of expected utility theory
-- 2002, Daniel Kahneman
-  - for having integrated insights from psychological research into economic science, especially concerning human judgment and decision-making under uncertainty
+- Behavior decision theory——Nobel Prizes in Economic Sciences
+  - 1978, Herbert Simon
+    - Propose items “Bounded rationality”（有限理性） and “satisficing”（满意策略）
+  - 1988, Maurice Allais
+    - Allais Paradox: show defect of expected utility theory
+  - 2002, Daniel Kahneman
+    - for having integrated insights from psychological research into economic science, especially concerning human judgment and decision-making under uncertainty
 
 ![Herbert Simon（西蒙，1978）|200](./figures/c1-p05-simon.webp)
 
@@ -101,7 +101,7 @@ Shi.jing@hust.edu.cn
 <!--col:L-->
 
 <!--col:M-->
-2017, Richard Thaler
+#### 2017, Richard Thaler
 
 主流经济学假设我们都有：
 - 爱因斯坦一样的智商
@@ -138,7 +138,7 @@ Shi.jing@hust.edu.cn
 <!--col:L-->
 
 <!--col:M-->
-Decisions under certainty
+#### Decisions under certainty
 
 ![不确定性决策的隐喻：在不确定中收拾行装前行|240](./figures/c1-p08-luggage.webp)
 
@@ -152,9 +152,9 @@ Decisions under certainty
 
 <!--col:M-->
 #### Decision under uncertainty
-¡ 演唱会时间：2013 年 03 月 30 日
-¡ 演唱会场馆：武汉光谷体育馆
-¡ 演唱会票价：280\380\480\680\880\1080 元
+- 演唱会时间：2013 年 03 月 30 日
+- 演唱会场馆：武汉光谷体育馆
+- 演唱会票价：280\380\480\680\880\1080 元
 
 ![林宥嘉“神游”巡回演唱会武汉站|240](./figures/c1-p09-concert.webp)
 
@@ -184,9 +184,9 @@ Decisions under certainty
 
 <!--col:M-->
 #### A decision problem
-¡ The city planned to find a place to build a new airport
-¡ Possible addresses are A / B
-¡ Hilton wants to expand and build a new hotel Nearby.
+- The city planned to find a place to build a new airport
+- Possible addresses are A / B
+- Hilton wants to expand and build a new hotel Nearby.
 
 ![希尔顿酒店|420](./figures/c1-p11-hilton.webp)
 
@@ -200,12 +200,12 @@ Decisions under certainty
 
 <!--col:M-->
 #### Obtaining necessary information
-¡ Set up your target and evaluation criteria
-- Maximize profits
-¡ Statue of nature
-- Airport at A or airport at B
-¡ Find possible alternatives
-- Hilton chooses a location at A；B；A and B；none
+- Set up your target and evaluation criteria
+  - Maximize profits
+- Statue of nature
+  - Airport at A or airport at B
+- Find possible alternatives
+  - Hilton chooses a location at A；B；A and B；none
 Construct a decision matrices!!!
 
 <!--col:R-->
@@ -272,7 +272,7 @@ Construct a decision matrices!!!
 
 <!--col:M-->
 #### Maximax
-¡ Choose the alternative which has the highest best possible outcome among all alternatives
+- Choose the alternative which has the highest best possible outcome among all alternatives
 
 | 方案 \ 机场选址处 | A | B | 各行最大值 |
 | --- | --- | --- | --- |
@@ -290,7 +290,7 @@ Construct a decision matrices!!!
 <!--col:L-->
 
 <!--col:M-->
-¡ It is in general "difficult to justify the maximax principle as rational principle of decision, reflecting, as it does, wishful thinking". (Rapoport 1989, p. 57)
+- It is in general "difficult to justify the maximax principle as rational principle of decision, reflecting, as it does, wishful thinking". (Rapoport 1989, p. 57)
 
 <!--col:R-->
 
@@ -301,7 +301,7 @@ Construct a decision matrices!!!
 <!--col:L-->
 
 <!--col:M-->
-¡ Drawback
+- Drawback
 
 | Alternative \ State of nature | 1 | 2 |
 | --- | --- | --- |
@@ -318,8 +318,8 @@ Construct a decision matrices!!!
 
 <!--col:M-->
 #### Maximin
-¡ Choose the alternative that has the maximal security level. In other words, maximize the minimal outcome.
-- The maximin principle was first proposed by von Neumann as a strategy against an intelligent opponent. Wald (1950) extended its use to games against nature.
+- Choose the alternative that has the maximal security level. In other words, maximize the minimal outcome.
+  - The maximin principle was first proposed by von Neumann as a strategy against an intelligent opponent. Wald (1950) extended its use to games against nature.
 
 <!--col:R-->
 
@@ -347,7 +347,7 @@ Construct a decision matrices!!!
 <!--col:L-->
 
 <!--col:M-->
-¡ Drawback
+- Drawback
 
 | 方案 \ 自然状态 | 1 | 2 |
 | --- | --- | --- |
@@ -364,10 +364,10 @@ Construct a decision matrices!!!
 
 <!--col:M-->
 #### Minimax regret aka. 萨维奇准则
-¡ Choose the alternative with the lowest maximal regret
-- to minimize maximal regret
-- introduced by Savage 萨维奇 (1951, p. 59).
-¡ Build a regret matrix from original matrix, and choose the alternative with the minimal “maximal regret”.
+- Choose the alternative with the lowest maximal regret
+  - to minimize maximal regret
+  - introduced by Savage 萨维奇 (1951, p. 59).
+- Build a regret matrix from original matrix, and choose the alternative with the minimal “maximal regret”.
 
 <!--col:R-->
 
@@ -378,7 +378,7 @@ Construct a decision matrices!!!
 <!--col:L-->
 
 <!--col:M-->
-original matrix
+#### original matrix
 
 | 方案 \ 机场选址处 | A | B |
 | --- | --- | --- |
@@ -396,7 +396,7 @@ original matrix
 <!--col:L-->
 
 <!--col:M-->
-regret matrix
+#### regret matrix
 
 | 方案 \ 机场选址处 | A | B | 各行最大后悔 |
 | --- | --- | --- | --- |
@@ -415,15 +415,15 @@ regret matrix
 
 <!--col:M-->
 #### Optimism-pessimism index aka. 赫维茨准则
-¡ The decision-maker is required to choose an index $\alpha$ between 0 and 1, that reflects his degree of optimism or pessimism.
-- The α-index of A is calculated according to the formula:
+- The decision-maker is required to choose an index $\alpha$ between 0 and 1, that reflects his degree of optimism or pessimism.
+  - The α-index of A is calculated according to the formula:
 
 $$
 \alpha \times \min(A) + (1-\alpha)\times \max(A)
 $$
 
-- A trade-off way between pessimism and optimism
-- It is often called the Hurwicz α index, since it was proposed in a paper by Hurwicz（赫维茨） in 1951
+  - A trade-off way between pessimism and optimism
+  - It is often called the Hurwicz α index, since it was proposed in a paper by Hurwicz（赫维茨） in 1951
 
 <!--col:R-->
 
@@ -453,9 +453,9 @@ $\alpha = 0.5$，各方案折中值：
 
 <!--col:M-->
 #### Insufficient reason
-¡ Transform the decision problem from uncertainty to risk
-- This principle states that if there is no reason to believe that one event is more likely to occur than another, then the events should be assigned equal probabilities.
-- First formulated by Jacques Bernoulli (1654–1705).
+- Transform the decision problem from uncertainty to risk
+  - This principle states that if there is no reason to believe that one event is more likely to occur than another, then the events should be assigned equal probabilities.
+  - First formulated by Jacques Bernoulli (1654–1705).
 
 <!--col:R-->
 
@@ -627,7 +627,7 @@ $$
 | B | 200 | 150 | 40 |
 | C | 340 | 140 | −20 |
 
-¡ Maximax, Maximin, Minimax regret
+- Maximax, Maximin, Minimax regret
 
 <!--col:R-->
 
@@ -638,7 +638,7 @@ $$
 <!--col:L-->
 
 <!--col:M-->
-Regret matrix
+#### Regret matrix
 
 | 方案 \ 自然状态 | 1 | 2 | 3 | 各行最大后悔 |
 | --- | --- | --- | --- | --- |

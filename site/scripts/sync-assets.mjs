@@ -17,6 +17,7 @@ const skippedDirectories = new Set([
   'node_modules',
   'site',
   '_pdf-staging',
+  '_tools',
   'game',
   'images',
   'bgm',
