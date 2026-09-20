@@ -875,18 +875,18 @@
    米色幻灯片卡片 + 藏青标题 + 橙方块/蓝箭头项目符号，贴近源 PPT。
    ════════════════════════════════════════════════════════════ */
 
-/* 课件无左右批注：隐藏三栏引导竖线，幻灯片单列、加宽贴近横版幻灯片 */
+/* 课件与讲稿一致：左右始终呈现空白便笺纸（即使没有笔记也留空栏），
+   中栏为固定 1004px 幻灯片轨道（卡宽与既有零超高几何口径完全一致），
+   两侧 1fr 空白便签以极淡竖线与中栏分界。 */
 .doc-body--slides {
   background-image: none;
 }
 .doc-body--slides .folio__band {
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1004px) minmax(0, 1fr);
 }
 .doc-body--slides .folio__col--main {
-  grid-column: 1;
+  grid-column: 2;
   width: 100%;
-  max-width: 1004px;
-  margin-inline: auto;
   /* 幻灯片沿用 PPT 的无衬线字体，与讲稿的宋体纸面区分开 */
   font-family: -apple-system, "Segoe UI", "Microsoft YaHei", "PingFang SC",
     "Hiragino Sans GB", "Noto Sans CJK SC", sans-serif;
@@ -894,8 +894,11 @@
   line-height: 1.72;
   color: #2A2620;
 }
-.doc-body--slides .folio__col--left:empty,
-.doc-body--slides .folio__col--right:empty { display: none; }
+/* 空白便笺纸：拉满整带高度，靠中栏一侧画极淡竖线（夜间在下方覆盖） */
+.doc-body--slides .folio__col--left,
+.doc-body--slides .folio__col--right { align-self: stretch; }
+.doc-body--slides .folio__col--left { border-right: 1px solid #EDEDED; }
+.doc-body--slides .folio__col--right { border-left: 1px solid #EDEDED; }
 
 .slide-block {
   position: relative;
@@ -1109,8 +1112,10 @@
   justify-content: center;
 }
 
-/* 课件暗夜主题：米色卡片转夜读蓝灰 */
+/* 课件暗夜主题：米色卡片转夜读蓝灰；空白便签竖线同步转夜读色 */
 [data-theme="night"] .doc-body--slides .folio__col--main { color: #d6dce7; }
+[data-theme="night"] .doc-body--slides .folio__col--left { border-right-color: #28303f; }
+[data-theme="night"] .doc-body--slides .folio__col--right { border-left-color: #28303f; }
 [data-theme="night"] .slide-block {
   background: #1A2231;
   border-color: #2C3547;
@@ -1144,10 +1149,22 @@
 }
 
 @media (max-width: 920px) {
-  .slide-block { padding: 1.1rem 1.05rem 1.05rem; }
+  /* 窄屏：课件退回单列，空白便签栏按全局规则隐藏，中栏归位 */
+  .doc-body--slides .folio__band { grid-template-columns: minmax(0, 1fr); }
+  .doc-body--slides .folio__col--main { grid-column: 1; min-width: 0; }
+  .doc-body--slides .folio__col--left,
+  .doc-body--slides .folio__col--right { display: none; }
+  .slide-block { min-width: 0; padding: 1.1rem 1.05rem 1.05rem; }
   .slide-block h4 { font-size: 1.12rem; margin-right: 1.8rem; }
   .slide-block--cover h4 { font-size: 1.4rem; }
   .slide-block img.markdown-image { max-height: none; }
   .slide-fig img.markdown-image { max-height: none; }
   .slide-figrow { flex-direction: column; }
+  /* 超宽公式在卡片内部横向滑动，不得撑破纸面 */
+  .slide-block .katex-display { overflow-x: auto; overflow-y: hidden; }
+  /* 夹在句子/条目里的行内长公式同样在段落内部滑动 */
+  .slide-block p,
+  .slide-block li { overflow-x: auto; }
+  /* 长链接允许在任意字符间断行 */
+  .slide-block a { overflow-wrap: anywhere; }
 }
