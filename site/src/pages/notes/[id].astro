@@ -23,11 +23,7 @@ if (!note || note.draft) {
   throw new Error(`Note not found: ${id}`);
 }
 
-const { Content, headings } = await render(note.entry);
-// 页内导航：优先取「第 N 页」锚点，否则取二级/三级标题
-const pageAnchors = headings
-  .filter((h) => h.depth === 2)
-  .slice(0, 40);
+const { Content } = await render(note.entry);
 const isLiterature = note.collectionName === "文献笔记";
 const kindLabel = isLiterature ? "文献笔记" : "教学讲稿";
 // 课件（PPT 导出幻灯片）：与分页插件 isSlideDeck 判定保持一致（文件名/标题含「课件」）
@@ -72,15 +68,6 @@ const isFolioDoc = true; // 新版统一为三栏文档体
       </div>
     </div>
   </header>
-
-  <!-- 页内快速导航（按 PDF 页） -->
-  {pageAnchors.length > 1 && (
-    <nav class="page-jump article-shell" aria-label="按页跳转">
-      {pageAnchors.map((h) => (
-        <a href={`#${h.slug}`}>{h.text.replace(/^第\s*/, "").replace(/\s*页$/, "")}</a>
-      ))}
-    </nav>
-  )}
 
   <!-- 三栏文档体：左批注 / 中原文 / 右批注（课件用 slides 修饰类：一页放两张幻灯片） -->
   <div class:list={["doc-body", { "doc-body--slides": isSlideDeck }]}>
@@ -150,34 +137,6 @@ const isFolioDoc = true; // 新版统一为三栏文档体
     max-width: 42rem;
     color: var(--ink-soft);
     line-height: 1.9;
-  }
-
-  .page-jump {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    padding-top: 1.4rem;
-    padding-bottom: 0.2rem;
-  }
-
-  .page-jump a {
-    min-width: 2.3rem;
-    text-align: center;
-    padding: 0.32rem 0.6rem;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: hsl(var(--card) / 0.7);
-    font-family: var(--font-latin);
-    font-size: 0.82rem;
-    color: var(--ink-soft);
-    text-decoration: none;
-    transition: all var(--duration-quick) var(--ease-out);
-  }
-
-  .page-jump a:hover {
-    border-color: var(--vermillion);
-    color: var(--vermillion-dark);
-    background: hsl(var(--accent));
   }
 
   @media (max-width: 820px) {
