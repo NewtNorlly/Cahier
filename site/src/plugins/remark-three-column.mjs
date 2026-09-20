@@ -1019,6 +1019,10 @@ function packPages(units) {
   const HEADING_KEEP = 150; // 标题落页尾时，其后至少要留这么多高度，否则标题整体移到下页（防孤标题）
   const FILL_MIN = 48;      // 页尾余量≥约两行即续切填满，行文如翻书、自然段可在页底自然续到下页
 
+  // markdown 标题与文献笔记的小节标题 <p class="doc-section"> 同样防孤行
+  const isHeadingLike = (node) => node.type === "heading" ||
+    (node.type === "html" && /class="doc-section"/.test(node.value || ""));
+
   const pageEmpty = () =>
     !chunk.m.length && !chunk.l.length && !chunk.r.length;
   const pushBlock = (node, w) => {
@@ -1032,7 +1036,7 @@ function packPages(units) {
     if (pageEmpty()) { pushBlock(node, w); return; }
     if (chunk.w + w <= FIXED) {
       // 标题孤行控制：标题后若几乎放不下正文，标题整体移到下页
-      if (node.type === "heading" && FIXED - (chunk.w + w) < HEADING_KEEP) {
+      if (isHeadingLike(node) && FIXED - (chunk.w + w) < HEADING_KEEP) {
         newChunk();
         pushBlock(node, blockWeight(node));
         return;
@@ -1041,7 +1045,7 @@ function packPages(units) {
       return;
     }
     // 当前页放不下
-    if (node.type === "heading") { newChunk(); pushBlock(node, w); return; }
+    if (isHeadingLike(node)) { newChunk(); pushBlock(node, w); return; }
     const remaining = FIXED - chunk.w;
     if (remaining >= FILL_MIN) {
       const pieces = splitBlockAt(node, remaining);

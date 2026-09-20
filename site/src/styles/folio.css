@@ -881,8 +881,17 @@
 .doc-body--slides {
   background-image: none;
 }
+
+/* 夜间 [data-theme="night"] .doc-body 会重画 25%/75% 笔记本竖线；课件中栏固定 1004px、自带左右便签边框，必须再次关掉，否则夜间多出错位竖线 */
+[data-theme="night"] .doc-body--slides {
+  background-image: none;
+}
 .doc-body--slides .folio__band {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1004px) minmax(0, 1fr);
+  /* 课件每个 folio 只有一个带：让该带拉满整页 A4 高度，
+     空便签竖线才能与讲稿页一样通顶通底，而不是只在卡片旁边画一小截 */
+  flex: 1 1 auto;
+  grid-template-rows: minmax(0, 1fr);
 }
 .doc-body--slides .folio__col--main {
   grid-column: 2;
