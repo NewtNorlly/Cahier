@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-09-12T16:11:44.200Z",
+  "generatedAt": "2026-09-21T15:44:12.905Z",
   "generator": "site/scripts/generate-missing-covers.mjs",
   "sourceArtwork": "site/assets/cover-system/editorial-collage.webp",
   "sourcePrompt": "Contemporary Chinese editorial collage on warm fibrous paper, with ink, torn paper, printmaking grain, archival marks and restrained vermilion; no text, logos, people or watermark.",
   "strategy": "One AI-generated source artwork plus deterministic title-, collection-, topic- and hash-driven local compositions.",
-  "count": 25,
+  "count": 27,
   "dimensions": {
     "full": "960x640",
     "small": "480x320"
   },
-  "totalBytes": 1801936,
+  "totalBytes": 1939818,
   "records": [
     {
       "markdown": "_pdf-staging/教学讲稿/德语/9月4日讲稿.md",
@@ -252,6 +252,18 @@
       "bytes480": 15088
     },
     {
+      "markdown": "公共经济学/9月20日讲稿.md",
+      "title": "9月20日讲稿",
+      "collection": "公共经济学",
+      "topic": null,
+      "category": "general",
+      "seed": "b0e1ea0a44fb",
+      "cover960": "公共经济学/文本附件/generated-cover-b0e1ea0a44fb-960.webp",
+      "cover480": "公共经济学/文本附件/generated-cover-b0e1ea0a44fb-480.webp",
+      "bytes960": 54920,
+      "bytes480": 14180
+    },
+    {
       "markdown": "会计/9月8日讲稿.md",
       "title": "9月8日讲稿",
       "collection": "会计",
@@ -262,6 +274,18 @@
       "cover480": "会计/文本附件/generated-cover-307eedf6cddd-480.webp",
       "bytes960": 60726,
       "bytes480": 15354
+    },
+    {
+      "markdown": "批判性思维/9月21日讲稿.md",
+      "title": "9月21日讲稿",
+      "collection": "批判性思维",
+      "topic": null,
+      "category": "general",
+      "seed": "53d44560ae2c",
+      "cover960": "批判性思维/文本附件/generated-cover-53d44560ae2c-960.webp",
+      "cover480": "批判性思维/文本附件/generated-cover-53d44560ae2c-480.webp",
+      "bytes960": 54908,
+      "bytes480": 13874
     },
     {
       "markdown": "英语/9月10日讲稿.md",

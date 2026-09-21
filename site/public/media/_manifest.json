@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-20T06:17:27.208Z",
+  "generatedAt": "2026-09-21T15:44:58.490Z",
   "files": [
     {
       "path": "德语/covers/german-480.webp",
@@ -24,6 +24,14 @@
     {
       "path": "法语/covers/french-960.webp",
       "bytes": 20614
+    },
+    {
+      "path": "公共经济学/文本附件/generated-cover-b0e1ea0a44fb-480.webp",
+      "bytes": 14180
+    },
+    {
+      "path": "公共经济学/文本附件/generated-cover-b0e1ea0a44fb-960.webp",
+      "bytes": 54920
     },
     {
       "path": "会计/covers/accounting-480.webp",
@@ -374,6 +382,14 @@
       "bytes": 26792
     },
     {
+      "path": "批判性思维/文本附件/generated-cover-53d44560ae2c-480.webp",
+      "bytes": 13874
+    },
+    {
+      "path": "批判性思维/文本附件/generated-cover-53d44560ae2c-960.webp",
+      "bytes": 54908
+    },
+    {
       "path": "社会保障学/covers/social-security-480.webp",
       "bytes": 11286
     },
@@ -552,6 +568,22 @@
     {
       "path": "中国法制史/covers/legal-history-960.webp",
       "bytes": 24048
+    },
+    {
+      "path": "shots/v6/han-abstract.webp",
+      "bytes": 66854
+    },
+    {
+      "path": "shots/v6/han-note.webp",
+      "bytes": 16740
+    },
+    {
+      "path": "shots/v6/sb0831-ratio.webp",
+      "bytes": 60506
+    },
+    {
+      "path": "shots/v6/shaoke-canada.webp",
+      "bytes": 110080
     }
   ]
 }
