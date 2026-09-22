@@ -1,167 +1,257 @@
 # -*- coding: utf-8 -*-
 """
-超长段终结者：找出所有 >320 字段落，在自然边界拆分。
-断点优先级：
-1. 中文句末标点 。！？
-2. 中文逗号 ，；、
-3. 英文逗号 , ; (仅当两侧都是英文)
-4. 连接词前：并且/但是/因为/所以/如果/虽然/然后/另外/此外/同时/其中/其中/首先/其次/最后/也就是说/换句话说/其实/实际上/当然/不过/于是/因此/然而/此外/另外
-5. 从句引导词前：当...时/在...中/对...来说/对于...而言
-不切断：德语/法语/英语完整句子（不在例句中间断）
+超长段终结者（140 字怀疑线版，现行规则见《智能体操作手册》§2.6）。
+
+- 怀疑线：一个代码行上的中文正文超过 140 个汉字（只数汉字，不含标点、空白、西文、标签）即判超长。
+- 只在自然边界拆，断点优先级：句末标点（。！？!?，尾随引号/闭合标签留在句尾）
+  → 中文逗号/分号/顿号（，；、）→ 英文 , ;（仅两侧均为西文）→ 连接词前（并且/但是/因为……）
+  → 贪心打包；无任何自然断点的段落原样保留并由扫描器列报，绝不硬切。
+- 逐字守恒：拆分只增段落边界，剥掉 HTML 标签与空白后逐字相等，守恒失败则该文件不写。
+- folio 感知：M/L/R 三栏同等处理；frontmatter、<!--folio/col/band--> 标记、代码/公式块、
+  表格、HTML 块、标题一律不拆；📌 式原文引用不在本站，列表条目逐行评估。
+- 依赖同目录 seg140.py（唯一分段实现）。用法：
+    python split-long-paras.py            # 全课程 dry-run 扫描
+    python split-long-paras.py --write    # 实际改写
+    python split-long-paras.py --write path/to.md ...
+改写后请运行 normalize-encoding.py 归一 BOM/行尾。
 """
-import re, io, os, sys
+import io, os, re, sys, glob
 
-def split_long_paragraph(para, max_len=300):
-    """把一个超长段拆成多个短段，在自然边界断。"""
-    if len(para) <= max_len:
-        return [para]
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from seg140 import han_len, split_long
 
-    # 先尝试在句末标点后断
-    sentences = re.split(r'([。！？!?])', para)
-    # 重组：每句 = 内容+标点
-    parts = []
-    i = 0
-    while i < len(sentences):
-        if i + 1 < len(sentences) and sentences[i+1] in '。！？!?':
-            parts.append(sentences[i] + sentences[i+1])
-            i += 2
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+COURSES = ['中国法制史','会计','公共经济学','决策理论与方法','土地资源管理','宪法','德语','批判性思维',
+           '民事诉讼法','法语','知识产权法基础理论','社会保障学','网络工程师','网络技术','脑图集','英语']
+
+
+def is_marker_line(l):
+    return bool(re.fullmatch(r'\s*<!--.*?-->\s*', l))
+
+
+def line_kind(l):
+    s = l.strip()
+    if re.match(r'^#{1,6}\s', s): return 'h'
+    if re.match(r'^\s*(?:[-*+]|\d+[.)])\s', l): return 'l'
+    if s.startswith('>'): return 'q'
+    return 'p'
+
+
+def split_quote_lines(lines):
+    out = []
+    for l in lines:
+        m = re.match(r'^((?:>\s*)+)(.*)$', l)
+        if not m:
+            out.append(l); continue
+        prefix, text = m.group(1), m.group(2)
+        if han_len(text) <= 140:
+            out.append(l.rstrip()); continue
+        chunks = split_long(text)
+        out.append(prefix.rstrip() + ' ' + chunks[0].strip())
+        for c in chunks[1:]:
+            out.append('')
+            out.append(prefix.rstrip() + ' ' + c.strip())
+    return out
+
+
+def split_long_item(l):
+    m = re.match(r'^(\s*)([-*+]|\d+[.)])(\s+)(.*)$', l)
+    ind, mark, sp, txt = m.groups()
+    chunks = split_long(txt)
+    cont = ' ' * (len(ind) + len(mark) + len(sp))
+    out = [f'{ind}{mark}{sp}{chunks[0].strip()}']
+    for c in chunks[1:]:
+        out.append('')
+        out.append(cont + c.strip())
+    return out
+
+
+def split_mixed_block(lines):
+    expanded = []
+    for l in lines:
+        if not l.strip():
+            continue
+        kind = line_kind(l)
+        if kind == 'l' and han_len(l) > 140:
+            expanded.extend(split_long_item(l))
+        elif kind == 'p' and han_len(l.strip()) > 140:
+            indent = re.match(r'^\s*', l).group(0)
+            chunks = split_long(l.strip())
+            for i, c in enumerate(chunks):
+                expanded.append(indent + c.strip())
+                if i < len(chunks) - 1:
+                    expanded.append('')
         else:
-            if sentences[i].strip():
-                parts.append(sentences[i])
-            i += 1
+            expanded.append(l.rstrip())
+    out, prev_kind = [], None
+    for l in expanded:
+        if l == '':
+            if out and out[-1] != '':
+                out.append('')
+            prev_kind = None
+            continue
+        k = line_kind(l)
+        if out and out[-1] != '' and (prev_kind in ('h', 'p', 'q') or k in ('h', 'p', 'q')):
+            out.append('')
+        out.append(l)
+        prev_kind = k
+    return out
 
-    # 如果拆分后每部分仍 >max_len，继续在逗号处拆
+
+def split_list_lines(lines):
+    out = []
+    for l in lines:
+        out.extend(split_long_item(l) if han_len(l) > 140 else [l.rstrip()])
+    return out
+
+
+def transform_body(body):
+    lines = body.split('\n')
+    items, buf, in_fence = [], [], False
+
+    def flush():
+        if buf:
+            items.append(('block', list(buf))); buf.clear()
+
+    for l in lines:
+        s = l.strip()
+        if s.startswith('```'):
+            buf.append(l); in_fence = not in_fence; continue
+        if in_fence:
+            buf.append(l); continue
+        if is_marker_line(l):
+            flush(); items.append(('marker', l)); continue
+        if s == '':
+            flush(); items.append(('blank', '')); continue
+        buf.append(l)
+    flush()
+
+    out_items = []
+    for kind, payload in items:
+        if kind != 'block':
+            out_items.append((kind, payload)); continue
+        blines = payload
+        if any(l.strip().startswith('```') for l in blines):
+            out_items.append(('block', blines)); continue
+        nonempty = [l for l in blines if l.strip()]
+        if any('$$' in l for l in blines):
+            out_items.append(('block', blines)); continue
+        if all(l.strip().startswith('|') for l in nonempty):
+            out_items.append(('block', blines)); continue
+        if all(l.strip().startswith('#') for l in nonempty):
+            out_items.append(('block', blines)); continue
+        if all(re.fullmatch(r'\s*<[^>]+>(?:[^<]*</[a-zA-Z]+>)?\s*', l) or
+               re.fullmatch(r'\s*(?:<[^>]+>)+', l) for l in nonempty):
+            out_items.append(('block', blines)); continue
+        if all(l.strip().startswith('>') for l in nonempty):
+            out_items.append(('block', split_quote_lines(blines))); continue
+        if all(re.match(r'\s*(?:[-*+]|\d+[.)])\s', l) for l in nonempty):
+            out_items.append(('block', split_list_lines(blines))); continue
+        out_items.append(('block', split_mixed_block(blines)))
+
+    out = []
+    for kind, payload in out_items:
+        if kind == 'marker':
+            if out and out[-1] != '':
+                out.append('')
+            out.append(payload); out.append('')
+        elif kind == 'blank':
+            if out and out[-1] != '':
+                out.append('')
+        else:
+            if out and out[-1] != '':
+                out.append('')
+            out.extend(payload)
     final = []
-    for p in parts:
-        if len(p) <= max_len:
-            final.append(p)
+    for l in out:
+        if l == '' and final and final[-1] == '':
             continue
-        # 在逗号/分号处拆
-        sub = re.split(r'([，；、,;])', p)
-        buf = ""
-        j = 0
-        while j < len(sub):
-            if j + 1 < len(sub) and sub[j+1] in '，；、,;':
-                piece = sub[j] + sub[j+1]
-            else:
-                piece = sub[j]
-            if len(buf) + len(piece) > max_len and buf:
-                final.append(buf)
-                buf = piece
-            else:
-                buf += piece
-            j += 1
-        if buf:
-            final.append(buf)
+        final.append(l)
+    return '\n'.join(final).strip('\n') + '\n'
 
-    # 如果还是太长，在连接词前断
-    result = []
-    connectors = r'(并且|但是|因为|所以|如果|虽然|然后|另外|此外|同时|其中|首先|其次|最后|也就是说|换句话说|其实|实际上|当然|不过|于是|因此|然而|而|却|则|也|还|又|再|就|才|只|就会|就能|就可以|就需要|就必须|就要|要|想|能|可以|应该|必须|需要|得)'
-    for p in final:
-        if len(p) <= max_len:
-            result.append(p)
+
+def residual_scan(text):
+    bad, in_fence = 0, False
+    for blk in re.split(r'\n\s*\n', text):
+        lines = blk.split('\n')
+        for l in lines:
+            if l.strip().startswith('```'): in_fence = not in_fence
+        if in_fence: continue
+        if not blk.strip(): continue
+        nonempty = [l for l in lines if l.strip()]
+        first = nonempty[0].strip()
+        if first.startswith(('<!--', '|')): continue
+        if all(l.strip().startswith('#') for l in nonempty):
+            for l in nonempty:
+                if han_len(l) > 140: bad += 1
             continue
-        # 在连接词前断
-        chunks = re.split(r'(' + connectors + r')', p)
-        buf = ""
-        for chunk in chunks:
-            if len(buf) + len(chunk) > max_len and buf:
-                result.append(buf)
-                buf = chunk
+        if '$$' in blk: continue
+        if all(re.fullmatch(r'\s*<[^>]+>(?:[^<]*</[a-zA-Z]+>)?\s*', l) or
+               re.fullmatch(r'\s*(?:<[^>]+>)+', l) for l in nonempty):
+            continue
+        if all(l.strip().startswith('>') for l in nonempty):
+            for l in nonempty:
+                m = re.match(r'^(?:>\s*)+(.*)$', l)
+                if m and han_len(m.group(1)) > 140: bad += 1
+            continue
+        plain_buf = ''
+        for l in nonempty:
+            if line_kind(l) == 'p':
+                plain_buf += l.strip()
             else:
-                buf += chunk
-        if buf:
-            result.append(buf)
-
-    return result
-
-
-def process_file(path):
-    with io.open(path, 'r', encoding='utf-8-sig') as f:
-        text = f.read()
-
-    fm_match = re.match(r'^(---\n.*?\n---\n)', text, re.DOTALL)
-    frontmatter = fm_match.group(1) if fm_match else ""
-    body = text[len(frontmatter):] if fm_match else text
-
-    folio_pattern = re.compile(r'(<!--folio:[^>]+-->\s*\n)(.*?)(?=<!--folio:|<!--/folio-->|\Z)', re.DOTALL)
-
-    def split_m(m_content):
-        paras = [p.strip() for p in m_content.split('\n\n') if p.strip()]
-        new_paras = []
-        for p in paras:
-            if len(p) > 320:
-                split = split_long_paragraph(p, max_len=280)
-                new_paras.extend(split)
-            else:
-                new_paras.append(p)
-        return '\n\n'.join(new_paras)
-
-    def process_folio(match):
-        header = match.group(1)
-        body_content = match.group(2)
-        # Try with col:L
-        col_match = re.match(
-            r'(<!--col:L-->\s*\n)(.*?)(<!--col:M-->\s*\n)(.*?)(<!--col:R-->\s*\n)(.*?)$',
-            body_content, re.DOTALL
-        )
-        if not col_match:
-            col_match = re.match(
-                r'(<!--col:M-->\s*\n)(.*?)(<!--col:R-->\s*\n)(.*?)$',
-                body_content, re.DOTALL
-            )
-            if not col_match:
-                col_match = re.match(
-                    r'(<!--col:M-->\s*\n)(.*?)$',
-                    body_content, re.DOTALL
-                )
-                if not col_match:
-                    return match.group(0)
-                l_marker = ""
-                m_marker = col_match.group(1)
-                m_content = col_match.group(2)
-                r_marker = "<!--col:R-->\n"
-            else:
-                l_marker = ""
-                m_marker = col_match.group(1)
-                m_content = col_match.group(2)
-                r_marker = col_match.group(3)
-        else:
-            l_marker = col_match.group(1)
-            m_marker = col_match.group(3)
-            m_content = col_match.group(4)
-            r_marker = col_match.group(5)
-        new_m = split_m(m_content)
-        return header + l_marker + "\n" + m_marker + "\n" + new_m + "\n" + r_marker + "\n"
-
-    new_body = folio_pattern.sub(process_folio, body)
-    result = frontmatter + new_body
-
-    with io.open(path, 'w', encoding='utf-8', newline='') as f:
-        f.write(result)
-
-    # 统计
-    folios = re.finditer(r'(?s)<!--col:M-->(.*?)(?:<!--col:R-->|\Z)', result)
-    all_paras = []
-    for m in folios:
-        m_c = m.group(1).strip()
-        paras = [p.strip() for p in m_c.split('\n\n') if p.strip()]
-        all_paras.extend(paras)
-    lengths = [len(p) for p in all_paras]
-    avg = sum(lengths) / len(lengths) if lengths else 0
-    mx = max(lengths) if lengths else 0
-    over320 = sum(1 for l in lengths if l > 320)
-    return len(all_paras), avg, mx, over320
+                if plain_buf and han_len(plain_buf) > 140: bad += 1
+                plain_buf = ''
+                if han_len(l) > 140: bad += 1
+        if plain_buf and han_len(plain_buf) > 140: bad += 1
+    return bad
 
 
-if __name__ == "__main__":
-    files = sys.argv[1:]
-    print(f"{'File':<50} {'Paras':>6} {'Avg':>6} {'Max':>6} {'>320':>5}")
-    print("-" * 80)
-    for f in files:
-        try:
-            paras, avg, mx, over320 = process_file(f)
-            rel = os.path.basename(f)
-            print(f"{rel:<50} {paras:>6} {avg:>6.0f} {mx:>6} {over320:>5}")
-        except Exception as e:
-            print(f"{os.path.basename(f):<50} ERROR: {e}")
+def norm(t):
+    t = re.sub(r'<!--.*?-->', '', t, flags=re.S)
+    t = re.sub(r'<[^>]+>', '', t)
+    return re.sub(r'\s+', '', t)
+
+
+def targets(argv):
+    files = [a for a in argv if not a.startswith('--')]
+    if files:
+        return files
+    out = []
+    for course in COURSES:
+        out += glob.glob(os.path.join(ROOT, course, '**', '*.md'), recursive=True)
+    return out
+
+
+def main():
+    argv = sys.argv[1:]
+    write = '--write' in argv
+    changed = residuals = failed = 0
+    for md in targets(argv):
+        raw = io.open(md, encoding='utf-8-sig').read()
+        mfm = re.match(r'^(---\r?\n.*?\r?\n---\r?\n?)', raw, re.S)
+        fm = mfm.group(1) if mfm else ''
+        if re.search(r'draft:\s*true', fm):
+            continue
+        dtm = re.search(r'doc_type:\s*["\']?([^"\'\n]+)', fm)
+        dt = dtm.group(1).strip() if dtm else ''
+        rel = os.path.relpath(md, ROOT)
+        if '课件' in rel or re.search(r'slide|courseware|deck', dt):
+            continue
+        body = raw[len(fm):]
+        new_body = transform_body(body)
+        if norm(new_body) != norm(body):
+            print('!!! 守恒失败，跳过:', rel); failed += 1; continue
+        bad = residual_scan(new_body)
+        if bad:
+            print('!!! 拆后仍超长 %d 处:' % bad, rel); residuals += bad; continue
+        if new_body.strip() != body.strip():
+            changed += 1
+            if write:
+                with io.open(md, 'w', encoding='utf-8', newline='\n') as f:
+                    f.write(fm.rstrip('\n') + '\n' + new_body)
+    print(f'课程讲稿 140 通查：改动 {changed} 文件，残留超长 {residuals}，守恒失败 {failed}，WRITE={write}')
+
+
+if __name__ == '__main__':
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+    main()

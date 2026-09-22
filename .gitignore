@@ -45,3 +45,6 @@ _lecture_bak/
 site/public/media/*
 !site/public/media/_manifest.json
 
+
+# Agent session scratch
+.sessions/

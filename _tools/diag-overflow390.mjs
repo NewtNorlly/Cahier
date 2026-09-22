@@ -1,10 +1,10 @@
-// 移动端 390px 检查：无横向滚动、空白便签栏隐藏、课件卡正常
+// 390px 溢出诊断：沿最宽元素向上找未收口的祖先
 import { spawn } from "node:child_process";
 import { setTimeout as sleep } from "node:timers/promises";
 import { join } from "node:path";
 const CHROME = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 const url = process.argv[2];
-const PORT = 9800 + Math.floor(Math.random() * 100);
+const PORT = 9860 + Math.floor(Math.random() * 100);
 const prof = join(process.env.TEMP, `cdp-${Date.now()}`);
 const chrome = spawn(CHROME, ["--headless=new", "--disable-gpu", `--remote-debugging-port=${PORT}`,
   `--user-data-dir=${prof}`, "--no-first-run", "--window-size=390,900", "about:blank"], { stdio: "ignore" });
@@ -20,16 +20,19 @@ const S = (m, p = {}) => send(m, p, sid);
 await S("Page.enable"); await S("Runtime.enable");
 await S("Emulation.setDeviceMetricsOverride", { width: 390, height: 900, deviceScaleFactor: 2, mobile: true });
 await S("Page.navigate", { url });
-await S("Runtime.evaluate", { expression: "new Promise(r=>{if(document.readyState==='complete')setTimeout(r,500);else window.addEventListener('load',()=>setTimeout(r,1000));})", awaitPromise: true });
-// 等 web 字体（KaTeX/思源宋体）全部就绪再量，避免回退字体度量造成的瞬时假溢出
-await S("Runtime.evaluate", { expression: "document.fonts?document.fonts.ready.then(()=>new Promise(r=>setTimeout(r,500))):new Promise(r=>setTimeout(r,500))", awaitPromise: true });
-const v = (await S("Runtime.evaluate", { expression: `JSON.stringify({
-  scrollW: document.documentElement.scrollWidth, innerW: window.innerWidth,
-  folios: document.querySelectorAll('.folio').length,
-  leftHidden: getComputedStyle(document.querySelector('.folio__col--left')).display,
-  rightHidden: getComputedStyle(document.querySelector('.folio__col--right')).display,
-  cardW: Math.round(document.querySelector('.slide-block')?.getBoundingClientRect().width || 0),
-  overflowFolios: [...document.querySelectorAll('.folio')].filter(f=>f.getBoundingClientRect().height>1090).length
-})`, returnByValue: true })).result.result.value;
-console.log(url.split("/").slice(-2, -1)[0], v);
+await S("Runtime.evaluate", { expression: "new Promise(r=>{if(document.readyState==='complete')setTimeout(r,600);else window.addEventListener('load',()=>setTimeout(r,1000));})", awaitPromise: true });
+await S("Runtime.evaluate", { expression: "document.fonts?document.fonts.ready.then(()=>new Promise(r=>setTimeout(r,800))):new Promise(r=>setTimeout(r,800))", awaitPromise: true });
+const expr = `(()=>{
+  const inSvg=(el)=>{let p=el;while(p){if(p.tagName==='SVG')return true;p=p.parentElement;}return false;};
+  let worst=null,wr=396;
+  document.querySelectorAll('*').forEach(el=>{if(inSvg(el))return;const r=el.getBoundingClientRect();if(r.right>wr){wr=r.right;worst=el;}});
+  const chain=[];let el=worst;
+  while(el&&el!==document.documentElement){const r=el.getBoundingClientRect();const cs=getComputedStyle(el);
+    chain.push(el.tagName+'.'+((el.className&&el.className.baseVal!==undefined?el.className.baseVal:el.className||'')+'').slice(0,40)+' L'+Math.round(r.left)+' R'+Math.round(r.right)+' w'+Math.round(r.width)+' ox='+cs.overflowX+' ws='+cs.whiteSpace+' ow='+cs.overflowWrap+' pos='+cs.position);
+    el=el.parentElement;}
+  return JSON.stringify({innerW,clientW:document.documentElement.clientWidth,scrollW:document.documentElement.scrollWidth,
+    worstTag:worst&&worst.tagName, worstHtml:worst&&worst.outerHTML.slice(0,300), chain},null,1);
+})()`;
+const v = (await S("Runtime.evaluate", { expression: expr, returnByValue: true })).result.result.value;
+console.log(v);
 chrome.kill(); process.exit(0);

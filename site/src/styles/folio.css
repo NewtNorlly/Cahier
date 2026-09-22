@@ -1177,3 +1177,11 @@
   /* 长链接允许在任意字符间断行 */
   .slide-block a { overflow-wrap: anywhere; }
 }
+
+/* 窄屏兜底（≤700px 手机）：字体加载完成前回退字体度量可能让宽公式/长链接瞬时超出，
+   最终布局本身不溢出；在根上裁掉横向滚动，避免加载瞬间页面可横滑。
+   公式块/表格自身的 overflow-x:auto 仍可在卡片内部横滑。 */
+@media (max-width: 700px) {
+  html, body { overflow-x: clip; }
+  .folio__col--main a { overflow-wrap: anywhere; }
+}
