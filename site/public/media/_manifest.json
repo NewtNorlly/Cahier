@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-21T15:44:58.490Z",
+  "generatedAt": "2026-09-22T04:15:38.708Z",
   "files": [
     {
       "path": "德语/covers/german-480.webp",
@@ -568,22 +568,6 @@
     {
       "path": "中国法制史/covers/legal-history-960.webp",
       "bytes": 24048
-    },
-    {
-      "path": "shots/v6/han-abstract.webp",
-      "bytes": 66854
-    },
-    {
-      "path": "shots/v6/han-note.webp",
-      "bytes": 16740
-    },
-    {
-      "path": "shots/v6/sb0831-ratio.webp",
-      "bytes": 60506
-    },
-    {
-      "path": "shots/v6/shaoke-canada.webp",
-      "bytes": 110080
     }
   ]
 }
