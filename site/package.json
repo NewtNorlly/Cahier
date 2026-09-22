@@ -8,7 +8,6 @@
   },
   "scripts": {
     "dev": "node ./scripts/sync-assets.mjs && astro dev",
-    "generate:covers": "node ./scripts/generate-missing-covers.mjs",
     "sync-assets": "node ./scripts/sync-assets.mjs",
     "check": "astro check",
     "build": "node ./scripts/sync-assets.mjs && astro check && astro build && node ./scripts/check-built-site.mjs",
