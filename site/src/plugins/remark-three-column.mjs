@@ -110,9 +110,12 @@ function imageWeight(node) {
   return renderH + 52;
 }
 
-/* 一页中栏可排高度（估算 px）。实测版心容量约 952px，预留 ~11% 估算误差余量；
- * 段落行数另加 12% 安全系数吸收中英混排的折行偏差，保证零超高。 */
-const FIXED = 848;
+/* 一页中栏可排高度（估算 px）。实测版心容量约 952px，预留估算误差余量；
+ * 段落行数另加 12% 安全系数吸收中英混排的折行偏差，保证零超高。
+ * 9月17日讲稿 folio73 在 848 下实测超 2px（4 段中英混排按 44 字/行估成 1 行、实折 2 行，
+ * 漏算约 104px，恰好顶穿 104px 余量）；若改行宽 44→40 会牵动文献笔记的批注带拆分边界、
+ * 反撑出 folio4=1145。故按任务书允许的退路，把 lecture 安全余量收 15px（848→833）吸收该漏算。 */
+const FIXED = 833;
 /* 单个列表/表格拆分片段的目标高度，留出标题与续接余量。 */
 const SPLIT_TARGET = Math.round(FIXED * 0.9);
 
@@ -127,7 +130,11 @@ const SPLIT_TARGET = Math.round(FIXED * 0.9);
  * 估算后再留 SLIDE_SAFETY 安全余量吸收折行偏差，DP 求页数最少的两页配对，保证零超高。 */
 const SLIDES_PER_PAGE = 2;
 const SLIDE_CAP = 951;             // 一个 A4 页主列可排高度（CDP 实测：1086 − 纸页上下边距 − 主列顶距 − 页码行）
-const SLIDE_SAFETY = 26;           // 配对安全余量（px），吸收估算误差，保证不超高
+// 配对安全余量（px）。密集纯中文流动段落（mixedLines 按 52 中字/行折算）会把折行数
+// 低估约 1 行（≈28px/张），两张叠加即低估 ~60–70px；原余量 26 不足，会让 6B 第
+// 47+48 两张稠密文字幻灯片（est 911）误配合页、实测 980 撑破 A4（1118px）。提到 46
+// 后配对限额 = 951−46 = 905：911>905 拆开，而 6A 最高配对 900、其余 <883 的配对均不变。
+const SLIDE_SAFETY = 46;           // 配对安全余量（px），吸收稠密段落折行低估，保证零超高
 const SLIDE_GAP = 18;              // 两张卡片之间的纵向间距
 const SLIDE_CARD_PAD = 44;         // 卡片上下内边距 + 边框
 const SLIDE_LINE = 28.1;           // 1.02rem × 1.72
@@ -138,7 +145,8 @@ const SLIDE_LI_LAT = 96;           // 一级列表项每行西文字符数
 const SLIDE_IMG_CAP = 426;         // 单张大图渲染上限（与 CSS max-height 对齐）
 const SLIDE_ROW_IMG_CAP = 256;     // 横排（半宽）图片渲染上限（与 CSS max-height 对齐）
 const SLIDE_CONTENT_W = 858;       // 卡内文宽
-const SLIDE_HALF_W = 421;          // 横排每张图可用宽（(858-16)/2）
+const SLIDE_HALF_W = 421;          // 两列横排每张图可用宽（(858 - 0.7rem)/2）
+const SLIDE_THIRD_W = 278;         // 三列横排每张图可用宽（(858 - 2*0.7rem)/3 ≈ 278，复现源 PPTX 三列图片网格）
 
 function blockHasImage(node) {
   return !!(node && node.children && node.children.some(
@@ -155,19 +163,27 @@ function isImageParagraph(node) {
     (c.type === "html" && /<img/i.test(c.value || "")) ||
     (c.type === "text" && c.value.trim() === ""));
 }
-/* 把一张幻灯片的原子块整理为序列：普通块 {node}，连续图片块合并成 {figs:[...]}（两两横排） */
+/* 把一张幻灯片的原子块整理为序列：普通块 {node}，连续图片块合并成 {figs:[...], cols}。
+ * 图片横排列数由内联标记 <!--figrow:3--> 指定（忠实复现源 PPTX 的多列图片网格，如 slide11
+ * 的 3列×2行、slide39 的 3 个方形图标一排）；无标记时默认两列，行为与旧版完全一致。 */
+const FIGROW_RE = /^\s*<!--\s*figrow:([23])\s*-->\s*$/;
 function groupSlideContent(nodes) {
   const items = [];
   let run = [];
+  let runCols = 2;
   const flush = () => {
     if (!run.length) return;
     if (run.length === 1) items.push({ node: run[0] });
-    else items.push({ figs: run });
+    else items.push({ figs: run, cols: runCols });
     run = [];
   };
   for (const n of nodes) {
+    if (n.type === "html") {
+      const m = FIGROW_RE.exec(n.value || "");
+      if (m) { flush(); runCols = Number(m[1]); continue; } // 纯布局标记，不产出可见节点
+    }
     if (isImageParagraph(n)) run.push(n);
-    else { flush(); items.push({ node: n }); }
+    else { flush(); runCols = 2; items.push({ node: n }); }
   }
   flush();
   return items;
@@ -175,7 +191,7 @@ function groupSlideContent(nodes) {
 
 /* 课件口径下一张图片的渲染高度（按真实宽高比；幻灯片里图片按自然尺寸渲染，
  * 仅受卡宽与 max-height 约束，alt 里的 |宽 标记不参与）。 */
-function slideImageH(node, half = false) {
+function slideImageH(node, half = false, third = false) {
   const n = u(node);
   if (!n) return 0;
   let url = n.url || "";
@@ -184,13 +200,13 @@ function slideImageH(node, half = false) {
     url = m ? m[1] : "";
   }
   const nat = imgDims.get(url);
-  const maxW = half ? SLIDE_HALF_W : SLIDE_CONTENT_W;
-  const maxH = half ? SLIDE_ROW_IMG_CAP : SLIDE_IMG_CAP;
+  const maxW = third ? SLIDE_THIRD_W : half ? SLIDE_HALF_W : SLIDE_CONTENT_W;
+  const maxH = (half || third) ? SLIDE_ROW_IMG_CAP : SLIDE_IMG_CAP;
   if (nat && nat.w) {
     const h = Math.min(nat.h, (maxW * nat.h) / nat.w);
     return Math.min(h, maxH);
   }
-  return half ? SLIDE_ROW_IMG_CAP : 300; // 无元数据时取偏保守值
+  return (half || third) ? SLIDE_ROW_IMG_CAP : 300; // 无元数据时取偏保守值
 }
 
 /* 中英混排行数：中文按中文字容、西文按西文字容分别占宽 */
@@ -321,27 +337,31 @@ function slideBlockWeight(node) {
   return mixedLines(textOf(n), SLIDE_CJK_CPL, SLIDE_LAT_CPL) * SLIDE_LINE + 9;
 }
 
-/* 单张图片在半宽横排下的高度估算 */
-function slideRowImageWeight(node) {
+/* 单张图片在横排下的高度估算（cols=2 半宽 / cols=3 三分之一宽） */
+function slideRowImageWeight(node, cols = 2) {
   const n = u(node);
   if (!n) return 0;
+  const third = cols === 3;
   if (n.type === "paragraph") {
     let h = 0;
     for (const c of n.children || []) {
-      if (c.type === "image" || c.type === "imageReference") h = Math.max(h, slideImageH(c, true));
-      else if (c.type === "html" && /<img/i.test(c.value || "")) h = Math.max(h, slideImageH(c, true));
+      if (c.type === "image" || c.type === "imageReference") h = Math.max(h, slideImageH(c, false, third));
+      else if (c.type === "html" && /<img/i.test(c.value || "")) h = Math.max(h, slideImageH(c, false, third));
     }
     return h;
   }
-  return slideImageH(n, true);
+  return slideImageH(n, false, third);
 }
-/* 一个图片横排（两两并排）的高度 = 每行两张取大 + 行距，含横排上下外边距 */
-function figRowWeight(figs) {
+/* 一个图片横排的高度 = 每行取大 + 行距，含横排上下外边距；cols 决定每行张数 */
+function figRowWeight(figs, cols = 2) {
+  const perRow = cols === 3 ? 3 : 2;
   let h = 0;
-  for (let i = 0; i < figs.length; i += 2) {
-    const a = slideRowImageWeight(figs[i]);
-    const b = figs[i + 1] ? slideRowImageWeight(figs[i + 1]) : 0;
-    h += Math.max(a, b) + 14;
+  for (let i = 0; i < figs.length; i += perRow) {
+    let rowMax = 0;
+    for (let j = i; j < i + perRow && j < figs.length; j++) {
+      rowMax = Math.max(rowMax, slideRowImageWeight(figs[j], cols));
+    }
+    h += rowMax + 14;
   }
   return h + 14;
 }
@@ -349,7 +369,7 @@ function figRowWeight(figs) {
 function slideWeight(nodes) {
   let w = SLIDE_CARD_PAD;
   for (const it of groupSlideContent(nodes)) {
-    w += it.figs ? figRowWeight(it.figs) : slideBlockWeight(it.node);
+    w += it.figs ? figRowWeight(it.figs, it.cols) : slideBlockWeight(it.node);
   }
   return w;
 }
@@ -425,6 +445,7 @@ function textOf(node) {
 }
 
 const LINE = 25.6;            // 0.9rem × 1.78
+const LECTURE_PARA_CPL = 44;  // 讲稿段落每行视觉字数（保持原口径；改 40 会牵动文献笔记的批注带拆分，见下 FIXED 修正）
 const CJK_RE = /[㐀-䶿一-鿿豈-﫿＀-￯]/g;
 const SENTENCE_END_RE = /[。！？!?.…：:；;”’"』）)]\s*$/;
 
@@ -596,8 +617,8 @@ function blockWeight(node) {
         for (const c of n.children) w += blockWeight(c);
         return w;
       }
-      // 中英混排受西文词边界与两端对齐影响，每行实容约 44 视觉字（纯中文约 47）
-      return textLines(textOf(n), 44) * LINE + 11; // 折叠后段距约 10.4px
+      // 中英混排受西文词边界与两端对齐影响，每行实容约 40 视觉字（CDP 逐块标定，见 LECTURE_PARA_CPL）
+      return textLines(textOf(n), LECTURE_PARA_CPL) * LINE + 11; // 折叠后段距约 10.4px
     }
     case "heading": {
       const lines = Math.max(1, textLines(textOf(n), 40));
@@ -831,8 +852,8 @@ function lastSentencePos(text) {
 
 /* 页内余量（px）换算为段落可容视觉字数 */
 function paragraphCapChars(budget) {
-  // 与 blockWeight 段落每行 44 视觉字的口径一致
-  return Math.max(1, Math.floor((budget - 11) / LINE)) * 44;
+  // 与 blockWeight 段落每行 LECTURE_PARA_CPL 视觉字的口径一致
+  return Math.max(1, Math.floor((budget - 11) / LINE)) * LECTURE_PARA_CPL;
 }
 
 /* 把段落按首片/续片高度切成多片，保留行内格式；优先在句读处断行 */
@@ -1088,7 +1109,7 @@ function renderSlideItems(nodes) {
       out.push(it.node);
       continue;
     }
-    out.push(htmlNode(`<div class="slide-figrow">`));
+    out.push(htmlNode(`<div class="slide-figrow${it.cols === 3 ? " slide-figrow--3" : ""}">`));
     for (const fig of it.figs) {
       out.push(htmlNode(`<div class="slide-fig">`));
       out.push(fig);

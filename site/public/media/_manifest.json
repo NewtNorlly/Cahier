@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-22T10:42:24.094Z",
+  "generatedAt": "2026-10-02T17:37:48.167Z",
   "files": [
     {
       "path": "德语/covers/german-480.webp",
@@ -50,6 +50,18 @@
       "bytes": 18944
     },
     {
+      "path": "近现代中日关系史/covers/modern-china-japan-480.webp",
+      "bytes": 7584
+    },
+    {
+      "path": "近现代中日关系史/covers/modern-china-japan-960_thumb.webp",
+      "bytes": 3610
+    },
+    {
+      "path": "近现代中日关系史/covers/modern-china-japan-960.webp",
+      "bytes": 18986
+    },
+    {
       "path": "决策理论与方法/covers/decision-theory-480.webp",
       "bytes": 15718
     },
@@ -60,6 +72,318 @@
     {
       "path": "决策理论与方法/covers/decision-theory-960.webp",
       "bytes": 40600
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s05-1.webp",
+      "bytes": 108476
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s06-1.webp",
+      "bytes": 79166
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s07-1.webp",
+      "bytes": 25548
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s08-1.webp",
+      "bytes": 49562
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s09-1.webp",
+      "bytes": 106326
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s11-1.webp",
+      "bytes": 111828
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s14-1.webp",
+      "bytes": 34928
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s14-2.webp",
+      "bytes": 9130
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s15-1.webp",
+      "bytes": 55064
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s16-1.webp",
+      "bytes": 108870
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s16-2.webp",
+      "bytes": 108870
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s17-1.webp",
+      "bytes": 76060
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s18-1.webp",
+      "bytes": 103176
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s19-1.webp",
+      "bytes": 13998
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s20-1.webp",
+      "bytes": 51660
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s21-1.webp",
+      "bytes": 90662
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s22-1.webp",
+      "bytes": 77156
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s22-2.webp",
+      "bytes": 37468
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s23-1.webp",
+      "bytes": 33164
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s24-1.webp",
+      "bytes": 15364
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s31-1.webp",
+      "bytes": 31662
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s32-1.webp",
+      "bytes": 31688
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s33-1.webp",
+      "bytes": 70696
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s33-2.webp",
+      "bytes": 21590
+    },
+    {
+      "path": "决策理论与方法/figures/6a-s48-1.webp",
+      "bytes": 137338
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s03-1.webp",
+      "bytes": 39142
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s03-2.webp",
+      "bytes": 40438
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s04-1.webp",
+      "bytes": 39156
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s05-1.webp",
+      "bytes": 23680
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s08-1.webp",
+      "bytes": 92432
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s09-1.webp",
+      "bytes": 51976
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s10-1.webp",
+      "bytes": 31740
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s10-2.webp",
+      "bytes": 29980
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s10-3.webp",
+      "bytes": 27350
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s11-1.webp",
+      "bytes": 157540
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s11-2.webp",
+      "bytes": 86282
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s11-3.webp",
+      "bytes": 60196
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s11-4.webp",
+      "bytes": 184732
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s11-5.webp",
+      "bytes": 153810
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s11-6.webp",
+      "bytes": 75504
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s13-1.webp",
+      "bytes": 46754
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s14-1.webp",
+      "bytes": 30624
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s15-1.webp",
+      "bytes": 65810
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s16-1.webp",
+      "bytes": 47570
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s17-1.webp",
+      "bytes": 40942
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s18-1.webp",
+      "bytes": 31948
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s20-1.webp",
+      "bytes": 52156
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s21-1.webp",
+      "bytes": 52722
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s25-1.webp",
+      "bytes": 26316
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s26-1.webp",
+      "bytes": 68194
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s27-1.webp",
+      "bytes": 50586
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s28-1.webp",
+      "bytes": 43826
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s29-1.webp",
+      "bytes": 65324
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s30-1.webp",
+      "bytes": 61810
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s31-1.webp",
+      "bytes": 97962
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s33-1.webp",
+      "bytes": 63988
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s33-2.webp",
+      "bytes": 20946
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s34-1.webp",
+      "bytes": 73024
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s34-2.webp",
+      "bytes": 50916
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s34-3.webp",
+      "bytes": 86630
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s36-1.webp",
+      "bytes": 28622
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s39-1.webp",
+      "bytes": 48944
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s39-2.webp",
+      "bytes": 199598
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s39-3.webp",
+      "bytes": 11274
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s39-4.webp",
+      "bytes": 15374
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s39-5.webp",
+      "bytes": 20090
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s40-1.webp",
+      "bytes": 94886
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s42-1.webp",
+      "bytes": 40386
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s43-1.webp",
+      "bytes": 9386
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s43-2.webp",
+      "bytes": 18932
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s43-3.webp",
+      "bytes": 17170
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s43-4.webp",
+      "bytes": 14796
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s44-1.webp",
+      "bytes": 54980
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s45-1.webp",
+      "bytes": 53318
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s46-1.webp",
+      "bytes": 50446
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s55-1.webp",
+      "bytes": 36388
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s56-1.webp",
+      "bytes": 135188
+    },
+    {
+      "path": "决策理论与方法/figures/6b-s56-2.webp",
+      "bytes": 11274
     },
     {
       "path": "决策理论与方法/figures/c0-p06-cambridge-analytica.webp",
@@ -576,6 +900,18 @@
     {
       "path": "中国法制史/covers/legal-history-960.webp",
       "bytes": 24048
+    },
+    {
+      "path": "Python/covers/python-480.webp",
+      "bytes": 4912
+    },
+    {
+      "path": "Python/covers/python-960_thumb.webp",
+      "bytes": 2462
+    },
+    {
+      "path": "Python/covers/python-960.webp",
+      "bytes": 13204
     }
   ]
 }

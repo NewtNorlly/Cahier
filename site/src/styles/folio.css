@@ -1033,6 +1033,10 @@
   min-width: 0;
   text-align: center;
 }
+.slide-figrow--3 .slide-fig {
+  /* 每行三张并排（gap 0.7rem，三列两 gap，列 gap 0.47rem），复现源 PPTX 三列图片网格 */
+  flex: 0 1 calc(33.333% - 0.47rem);
+}
 .slide-fig p:has(> img.markdown-image) { margin: 0; }
 .slide-fig img.markdown-image {
   width: 100%;
