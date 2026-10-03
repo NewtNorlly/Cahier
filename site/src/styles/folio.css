@@ -247,13 +247,13 @@
   text-indent: 0;
 }
 
-/* ── 代码块：半透明天蓝 + 黑色思源宋体（同 lectures-et-echos 读书笔记：
-   半透明色透纸、若有若无的极小圆角、淡边框；字体与字号都与中栏正文一致）── */
+/* ── 代码块：雾面淡蓝 + 黑色思源宋体（低饱和淡蓝仅比白纸略蓝，
+   若有若无的极小圆角、同色系淡边框；字体与字号都与中栏正文一致）── */
 .folio__col--main pre {
   margin-block: 0.85em;
   padding: 0.75em 1.15em;
-  background: hsl(205 85% 72% / 0.22);       /* 半透明天蓝，透出白纸，清新柔和 */
-  border: 1px solid hsl(205 78% 66% / 0.32); /* 同色系极淡边框，几乎融入纸面 */
+  background: #EEF3F9;                       /* 雾面淡蓝 hsl(213 48% 95%)，比白纸略蓝，沉静不抢眼 */
+  border: 1px solid #D1DDEA;                 /* 同色系淡边框 hsl(211 37% 87%)，精致勾边 */
   border-radius: 3px;                        /* 极小圆角，精致不抢眼 */
   color: #1F1C18;                      /* 与中栏正文同墨色（黑色） */
   /* 与中栏正文同一字体：西文 Times New Roman、中文思源宋体 */
@@ -273,11 +273,11 @@
   font-size: inherit;
   white-space: pre;
 }
-/* 行内代码：更淡的天蓝半透明 + 若有若无的圆角，宋体、字号同正文 */
+/* 行内代码：比代码块更浅一档的雾蓝 + 若有若无的圆角，宋体、字号同正文 */
 .folio__col--main :not(pre) > code {
   padding: 0.07em 0.34em;
-  background: hsl(205 85% 74% / 0.2);
-  border: 1px solid hsl(205 78% 68% / 0.3);
+  background: #F1F5F9;                       /* 浅雾蓝 hsl(210 40% 96%)，嵌入正文不打扰阅读 */
+  border: 1px solid #DAE3EC;                 /* 淡边框 hsl(210 32% 89%) */
   border-radius: 2px;
   color: #1F1C18;
   font-family: inherit;
@@ -864,10 +864,10 @@
 /* 公式块 / 表格：夜读配色 */
 [data-theme="night"] .folio__col--main .katex-display { background: #1b2230; }
 
-/* 代码块 / 行内代码：半透明天蓝在夜读底上呈淡蓝晕、柔白宋体（圆角同白昼，若有若无） */
+/* 代码块 / 行内代码：低饱和雾蓝在夜读底上呈淡蓝晕、柔白宋体（圆角同白昼，若有若无） */
 [data-theme="night"] .folio__col--main pre {
-  background: hsl(205 80% 66% / 0.16);
-  border-color: hsl(205 75% 62% / 0.26);
+  background: hsl(212 52% 70% / 0.16);
+  border-color: hsl(212 48% 66% / 0.30);
   color: #d6dce7;
 }
 [data-theme="night"] .folio__col--main pre code {
@@ -875,8 +875,8 @@
   color: inherit;
 }
 [data-theme="night"] .folio__col--main :not(pre) > code {
-  background: hsl(205 80% 66% / 0.14);
-  border-color: hsl(205 75% 62% / 0.24);
+  background: hsl(212 52% 70% / 0.13);
+  border-color: hsl(212 48% 66% / 0.26);
   color: #d6dce7;
 }
 [data-theme="night"] .folio__col--main table thead th {
