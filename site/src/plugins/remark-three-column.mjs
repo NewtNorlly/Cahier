@@ -635,7 +635,9 @@ function blockWeight(node) {
       // 0.84em / 1.7：每行约 20.6px、每行约 56 视觉字
       return textLines(textOf(n), 56) * 20.6 + 16;
     case "code":
-      return 24 + (n.value || "").split("\n").length * 20;
+      // 代码块 1em 宋体 / line-height 1.75：每行实测约 25.2px；
+      // 固定项 = 上下边框 2 + 上下内边距约 21.6 + 单侧外边距约 12（略取保守，宁松勿超高）
+      return 38 + (n.value || "").split("\n").length * 25.5;
     case "math": // remarkMath 显示公式（实测块高 92–99 + 上下边距）
       return 118;
     case "inlineMath":

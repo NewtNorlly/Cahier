@@ -247,20 +247,21 @@
   text-indent: 0;
 }
 
-/* ── 代码块：米白色便签纸 + 黑色思源宋体（字体与中栏正文完全一致，不用等宽字体/深色底）── */
+/* ── 代码块：柔和暖米半透明纸 + 黑色思源宋体（同 lectures-et-echos 读书笔记：
+   半透明色透纸、大圆角、无生硬边框；字体与字号都与中栏正文一致）── */
 .folio__col--main pre {
   margin-block: 0.85em;
-  padding: 0.7em 1.05em;
-  background: #F7F3EA;                 /* 米白，与站内 slide-block 米色体系协调、比白纸略深可辨 */
-  border: 1px solid #E7E0D0;
-  border-radius: 4px;
+  padding: 0.75em 1.15em;
+  background: hsl(42 38% 92% / 0.55);       /* 半透明暖米，透出白纸，柔和不生硬 */
+  border: 1px solid hsl(42 32% 87% / 0.55); /* 同色系极淡边框，几乎融入纸面 */
+  border-radius: 10px;
   color: #1F1C18;                      /* 与中栏正文同墨色（黑色） */
   /* 与中栏正文同一字体：西文 Times New Roman、中文思源宋体 */
   font-family: "Times New Roman", "Liberation Serif", "Source Han Serif CN",
     "思源宋体 CN", "Source Han Serif SC", "Songti SC", "STSong", "SimSun",
     "Noto Serif CJK SC", serif;
-  font-size: 0.92em;
-  line-height: 1.72;
+  font-size: 1em;                      /* 与正文一样大 */
+  line-height: 1.75;
   overflow-x: auto;
 }
 .folio__col--main pre code {
@@ -272,15 +273,15 @@
   font-size: inherit;
   white-space: pre;
 }
-/* 行内代码：同色系淡米底 + 细边框，字体仍为中栏宋体 */
+/* 行内代码：更淡的暖米半透明 + 大圆角，宋体、字号同正文 */
 .folio__col--main :not(pre) > code {
-  padding: 0.06em 0.32em;
-  background: #F6F4EE;
-  border: 1px solid #ECE6D8;
-  border-radius: 3px;
+  padding: 0.07em 0.34em;
+  background: hsl(42 38% 93% / 0.5);
+  border: 1px solid hsl(42 32% 89% / 0.5);
+  border-radius: 8px;
   color: #1F1C18;
   font-family: inherit;
-  font-size: 0.92em;
+  font-size: 1em;
 }
 
 /* 整页首带的首个块、末带的末块去掉外边距（由栏内边距统一留白）；
@@ -863,10 +864,10 @@
 /* 公式块 / 表格：夜读配色 */
 [data-theme="night"] .folio__col--main .katex-display { background: #1b2230; }
 
-/* 代码块 / 行内代码：米白纸转夜读蓝灰、黑字转柔白（字体仍为宋体，与夜间正文一致） */
+/* 代码块 / 行内代码：半透明夜读蓝灰、柔白宋体（与白昼同为半透明透纸、大圆角） */
 [data-theme="night"] .folio__col--main pre {
-  background: #1b2230;
-  border-color: #2e384c;
+  background: hsl(var(--muted) / 0.45);
+  border-color: hsl(var(--border) / 0.6);
   color: #d6dce7;
 }
 [data-theme="night"] .folio__col--main pre code {
@@ -874,8 +875,8 @@
   color: inherit;
 }
 [data-theme="night"] .folio__col--main :not(pre) > code {
-  background: #1b2230;
-  border-color: #2e384c;
+  background: hsl(var(--muted) / 0.4);
+  border-color: hsl(var(--border) / 0.55);
   color: #d6dce7;
 }
 [data-theme="night"] .folio__col--main table thead th {
