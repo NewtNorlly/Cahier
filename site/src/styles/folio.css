@@ -247,6 +247,42 @@
   text-indent: 0;
 }
 
+/* ── 代码块：米白色便签纸 + 黑色思源宋体（字体与中栏正文完全一致，不用等宽字体/深色底）── */
+.folio__col--main pre {
+  margin-block: 0.85em;
+  padding: 0.7em 1.05em;
+  background: #F7F3EA;                 /* 米白，与站内 slide-block 米色体系协调、比白纸略深可辨 */
+  border: 1px solid #E7E0D0;
+  border-radius: 4px;
+  color: #1F1C18;                      /* 与中栏正文同墨色（黑色） */
+  /* 与中栏正文同一字体：西文 Times New Roman、中文思源宋体 */
+  font-family: "Times New Roman", "Liberation Serif", "Source Han Serif CN",
+    "思源宋体 CN", "Source Han Serif SC", "Songti SC", "STSong", "SimSun",
+    "Noto Serif CJK SC", serif;
+  font-size: 0.92em;
+  line-height: 1.72;
+  overflow-x: auto;
+}
+.folio__col--main pre code {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  white-space: pre;
+}
+/* 行内代码：同色系淡米底 + 细边框，字体仍为中栏宋体 */
+.folio__col--main :not(pre) > code {
+  padding: 0.06em 0.32em;
+  background: #F6F4EE;
+  border: 1px solid #ECE6D8;
+  border-radius: 3px;
+  color: #1F1C18;
+  font-family: inherit;
+  font-size: 0.92em;
+}
+
 /* 整页首带的首个块、末带的末块去掉外边距（由栏内边距统一留白）；
    中间各带保留正常段距，避免被切开的相邻段落/标题挤在一起 */
 .folio__band:first-child .folio__col--main > :first-child { margin-top: 0; }
@@ -826,6 +862,22 @@
 
 /* 公式块 / 表格：夜读配色 */
 [data-theme="night"] .folio__col--main .katex-display { background: #1b2230; }
+
+/* 代码块 / 行内代码：米白纸转夜读蓝灰、黑字转柔白（字体仍为宋体，与夜间正文一致） */
+[data-theme="night"] .folio__col--main pre {
+  background: #1b2230;
+  border-color: #2e384c;
+  color: #d6dce7;
+}
+[data-theme="night"] .folio__col--main pre code {
+  background: transparent;
+  color: inherit;
+}
+[data-theme="night"] .folio__col--main :not(pre) > code {
+  background: #1b2230;
+  border-color: #2e384c;
+  color: #d6dce7;
+}
 [data-theme="night"] .folio__col--main table thead th {
   color: #e3e8f2;
   border-top-color: #46506a;

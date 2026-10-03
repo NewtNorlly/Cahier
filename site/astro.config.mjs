@@ -22,6 +22,9 @@ export default defineConfig({
   },
   integrations: [sitemap()],
   markdown: {
+    // 关闭 Shiki/Prism 语法高亮：代码块不使用 github-dark 深色主题，
+    // 改由 folio.css 呈现「米白纸 + 黑色思源宋体」的学院派代码块
+    syntaxHighlight: false,
     processor: unified({
       remarkPlugins: [
         remarkMath,
