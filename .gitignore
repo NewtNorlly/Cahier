@@ -16,6 +16,7 @@ desktop.ini
 .preview/
 screenshot_*.png
 preview_*.png
+_tools/shots*/
 
 # Python cache
 __pycache__/
