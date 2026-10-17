@@ -23,6 +23,9 @@ def md_body(path):
     t = b.decode("utf-8")
     t = re.sub(r"^---.*?---\s*", "", t, count=1, flags=re.S)
     t = re.sub(r"<!--.*?-->", "", t, flags=re.S)
+    # 原始 HTML 语义类标签（如 <p class="doc-file-title">）；要求标签名后紧跟空白/>，
+    # 避免误吞代码里的比较运算符（如 a<b:、1 < a < 5）
+    t = re.sub(r"</?[a-zA-Z][a-zA-Z0-9]*(?=[\s/>])[^>]*>", "", t)
     t = t.replace("```", "")
     t = t.replace("**", "")
     t = re.sub(r"^#{1,6}\s*", "", t, flags=re.M)

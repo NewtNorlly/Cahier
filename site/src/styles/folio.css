@@ -350,6 +350,17 @@
   letter-spacing: 0.03em;
   color: #161310;
 }
+/* 影音/字幕类讲稿源文件名标题：与正文同字重（西文 Times New Roman、中文衬线宋体），
+   只是大一号、不居中、不加粗；忠实于台词本里大号常规体的文件名页眉 */
+.folio__col--main .doc-file-title {
+  text-indent: 0;
+  font-size: 1.2rem;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0.2rem 0 1.1rem;
+  letter-spacing: 0.01em;
+  color: #1F1C18;
+}
 /* 作者：右对齐 */
 .folio__col--main .doc-author,
 .folio__col--main h4.doc-author {
@@ -853,6 +864,7 @@
 [data-theme="night"] .lecture-outline .outline-section-title,
 [data-theme="night"] .lecture-outline .outline-sub { color: #eceff6; }
 [data-theme="night"] .struct-chip { color: #e3e8f2; }
+[data-theme="night"] .folio__col--main .doc-file-title { color: #eceff6; }
 [data-theme="night"] .folio__col--main .doc-keywords { border-bottom-color: #2e384c; }
 [data-theme="night"] .folio__col--main .fn,
 [data-theme="night"] .folio__col--main .doc-abstract,
