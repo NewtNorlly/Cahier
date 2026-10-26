@@ -327,66 +327,32 @@ const canonicalUrl = canonicalPath !== false && Astro.site
         const open = !root.classList.contains("is-notes-open");
         try { localStorage.setItem("cahier-notes", open ? "open" : "closed"); } catch { /* 忽略 */ }
         reflectNotes(open);
-        if (open) setTimeout(alignNotesToMain, 120);
       });
 
-      /* ════════ 笔记纸垂直对齐：按笔记标题关键词在正文找对应小节，顶到其页内真实高度 ════════ */
-      function alignNotesToMain() {
-        const spreads = [...document.querySelectorAll('.folio--spread')];
-        if (!spreads.length) return;
-        const mainCols = spreads.map((s) => s.querySelector('.folio__col--main'));
-        // 收集所有笔记块
-        const notes: any[] = [];
-        spreads.forEach((spread, si) => {
-          const col = spread.querySelector('.folio__col--notes') as HTMLElement | null;
-          if (!col) return;
-          [...col.children].forEach((child) => {
-            if (child.classList.contains('notes-spacer')) return;
-            notes.push({ el: child, fromSpread: si });
+      /* ════════ 本地笔记编辑：仅 127.0.0.1 / localhost 启用，云端只读 ════════ */
+      function setupEditableNotes() {
+        const host = location.hostname;
+        const isLocal = host === "localhost" || host === "127.0.0.1" || host === "[::1]";
+        const edits = document.querySelectorAll<HTMLElement>(".folio__edit");
+        if (!edits.length) return;
+        if (!isLocal) {
+          // 云端：只读、不显示编辑框外观
+          document.body.classList.add("notes-cloud-readonly");
+          return;
+        }
+        document.body.classList.add("notes-local-edit");
+        const keyBase = "cahier-note:" + location.pathname;
+        edits.forEach((el) => {
+          const page = el.getAttribute("data-page") || "1";
+          const key = keyBase + ":" + page;
+          try { el.textContent = localStorage.getItem(key) || ""; } catch {}
+          el.setAttribute("contenteditable", "true");
+          el.addEventListener("input", () => {
+            try { localStorage.setItem(key, el.textContent); } catch {}
           });
         });
-        // 清空笔记列
-        spreads.forEach((s) => {
-          const col = s.querySelector('.folio__col--notes') as HTMLElement | null;
-          if (col) { col.innerHTML = ''; (col as any)._cursor = 0; }
-        });
-        notes.forEach((note) => {
-          const titleEl = note.el.querySelector('.struct-chip, .callout-title, h3, h4, strong');
-          let title = titleEl ? titleEl.textContent.trim() : note.el.textContent.trim();
-          let kw = title.replace(/^\d+\s*[-—–]\s*/, '').trim().split(/[：:。\n]/)[0].trim();
-          // 在正文里找：优先短标题/小节行
-          let si = note.fromSpread, el = null;
-          outer: for (let i = 0; i < mainCols.length; i++) {
-            const col = mainCols[i]; if (!col) continue;
-            for (const e of col.querySelectorAll('p, h1, h2, h3, h4, .callout')) {
-              const t = e.textContent.trim();
-              if (!t || !kw) continue;
-              if (t.includes(kw) && (t.length < 42 || /^[一二三四五六七八九十]+、/.test(t))) {
-                si = i; el = e; break outer;
-              }
-            }
-          }
-          const notesCol = spreads[si].querySelector('.folio__col--notes') as HTMLElement;
-          let targetY = 0;
-          if (el) {
-            targetY = el.getBoundingClientRect().top - mainCols[si]!.getBoundingClientRect().top;
-          }
-          const cur = (notesCol as any)._cursor || 0;
-          const insertY = Math.max(cur, targetY);
-          if (insertY - cur > 24) {
-            const sp = document.createElement('div');
-            sp.className = 'notes-spacer';
-            sp.style.height = (insertY - cur) + 'px';
-            notesCol.appendChild(sp);
-          }
-          notesCol.appendChild(note.el);
-          (notesCol as any)._cursor = insertY + (note.el as HTMLElement).getBoundingClientRect().height;
-        });
       }
-      // 页面初次加载且笔记已开启时执行一次
-      if (root.classList.contains('is-notes-open')) {
-        window.addEventListener('load', () => setTimeout(alignNotesToMain, 150));
-      }
+      window.addEventListener("DOMContentLoaded", setupEditableNotes);
     </script>
   </body>
 </html>

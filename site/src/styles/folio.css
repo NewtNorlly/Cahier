@@ -353,6 +353,25 @@ html.is-notes-open .folio__paper--notes {
 /* 对齐用垂直空行（插件按原文锚点高度插入），不可见、不占外边距 */
 .folio__col--notes .notes-spacer { margin: 0; padding: 0; flex: none; }
 
+/* 本地笔记编辑区：纯文本、填满笔记纸；云端不启用 contenteditable 时保持空白 */
+.folio__edit {
+  min-height: 100%;
+  width: 100%;
+  outline: none;
+  font: inherit;
+  color: #1F1C18;
+  white-space: pre-wrap;
+  word-break: break-word;
+  caret-color: #2b6cb0;
+}
+.folio__edit:empty::before {
+  content: attr(data-placeholder);
+  color: #b6b0a6;
+}
+body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"; }
+[data-theme="night"] .folio__edit { color: #d6dce7; }
+[data-theme="night"] body.notes-local-edit .folio__edit:empty::before { color: #5b6478; }
+
 .folio__col--main p {
   margin-block: 0.72em;
   text-align: justify;

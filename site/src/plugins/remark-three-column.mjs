@@ -1068,37 +1068,9 @@ function flowPackMain(mainStream) {
   return pages;
 }
 
-/* 笔记纸：先定页，再定高。
- * 笔记是按序号导读全文的跳跃性块（"0-提要, 1-前言, 2-理念力量 ..."）。
- * 按第 i 条笔记在全文中的比例 f=i/(M-1) 算出它在全文累计权重里的绝对位置，
- * 据此决定它落在哪一页、在该页的哪个垂直高度；同页后续笔记从该高度继续往下堆。 */
 function flowPackNotes(mainPages, noteStream) {
-  const P = mainPages.length;
-  const M = noteStream.length;
-  const total = mainPages.length
-    ? mainPages[mainPages.length - 1].start + mainPages[mainPages.length - 1].w
-    : 0;
-  const notePages = mainPages.map(() => ({ nodes: [], cursor: 0 }));
-  noteStream.forEach((item, i) => {
-    const f = M > 1 ? i / (M - 1) : 0;
-    const abs = f * total;
-    // 定页
-    let p = P - 1;
-    for (let k = 0; k < P; k += 1) {
-      if (mainPages[k].start <= abs) p = k;
-    }
-    const target = notePages[p];
-    // 定高：该笔记在本页内的垂直位置
-    const targetY = Math.max(0, abs - mainPages[p].start);
-    const gap = Math.max(0, targetY - target.cursor);
-    if (gap > 24) {
-      target.nodes.push(htmlNode(`<div class="notes-spacer" style="height:${Math.round(gap)}px"></div>`));
-      target.cursor += gap;
-    }
-    target.nodes.push(item.node);
-    target.cursor += blockWeight(item.node);
-  });
-  return notePages;
+  // 用户决定自写笔记：不再输出预置笔记，每页笔记纸留空（由本地编辑区填充）。
+  return mainPages.map(() => ({ nodes: [], cursor: 0 }));
 }
 
 /* 合并两股流：原文纸页数与笔记纸页数取大者；
@@ -1295,7 +1267,7 @@ function makeSpreadFolio(label, page, index, slideMod) {
     htmlNode(`</div>`),
     htmlNode(`<div class="folio__paper folio__paper--notes">`),
     htmlNode(`<div class="folio__col folio__col--notes">`),
-    ...notes,
+    htmlNode(`<div class="folio__edit" contenteditable="false" data-page="${index + 1}" aria-label="笔记纸（本地可编辑）"></div>`),
     htmlNode(`</div>`),
     htmlNode(`</div>`),
     htmlNode(`</section>`),
