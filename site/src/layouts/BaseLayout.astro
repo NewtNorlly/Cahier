@@ -48,6 +48,16 @@ const canonicalUrl = canonicalPath !== false && Astro.site
         } catch { /* localStorage 不可用时保持白昼 */ }
       })();
     </script>
+    {/* 渲染前应用已保存的笔记显隐状态，避免笔记纸刷新时闪现 */}
+    <script is:inline>
+      (() => {
+        try {
+          if (localStorage.getItem("cahier-notes") === "open") {
+            document.documentElement.classList.add("is-notes-open");
+          }
+        } catch { /* 忽略 */ }
+      })();
+    </script>
   </head>
   <body class={pageClass}>
     <a class="skip-link" href="#main-content">跳到正文</a>
@@ -67,6 +77,24 @@ const canonicalUrl = canonicalPath !== false && Astro.site
         </div>
 
         <div class="site-header__right">
+          <!-- 笔记显隐切换（默认隐藏笔记：铅笔带斜杠；开启后两纸左右摊开） -->
+          <button
+            type="button"
+            class="notes-toggle"
+            id="notesToggle"
+            aria-label="显示笔记纸"
+            title="显示 / 隐藏笔记纸"
+            aria-pressed="false"
+          >
+            <svg class="notes-toggle__pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+              <path d="m15 5 4 4"/>
+            </svg>
+            <svg class="notes-toggle__slash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+              <path d="m4 4 16 16"/>
+            </svg>
+          </button>
+
           <!-- 暗夜 / 白昼主题切换（纯图标，圆形破口转场） -->
           <button
             type="button"
@@ -286,6 +314,20 @@ const canonicalUrl = canonicalPath !== false && Astro.site
       reflectTheme(currentTheme());
       // iframe（如 3D 场景）加载后补发一次当前主题
       window.addEventListener("load", () => reflectTheme(currentTheme()));
+
+      /* ════════ 笔记纸显隐：原文纸左移、笔记纸自其右后方摊开 ════════ */
+      const notesBtn = document.getElementById("notesToggle") as HTMLButtonElement | null;
+      function reflectNotes(open: boolean) {
+        root.classList.toggle("is-notes-open", open);
+        notesBtn?.setAttribute("aria-pressed", open ? "true" : "false");
+        notesBtn?.setAttribute("aria-label", open ? "隐藏笔记纸" : "显示笔记纸");
+      }
+      reflectNotes(root.classList.contains("is-notes-open"));
+      notesBtn?.addEventListener("click", () => {
+        const open = !root.classList.contains("is-notes-open");
+        try { localStorage.setItem("cahier-notes", open ? "open" : "closed"); } catch { /* 忽略 */ }
+        reflectNotes(open);
+      });
     </script>
   </body>
 </html>

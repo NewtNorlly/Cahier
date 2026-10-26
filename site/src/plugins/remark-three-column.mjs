@@ -1032,9 +1032,9 @@ function buildUnits(folios) {
 
 function packPages(units) {
   const pages = [];
-  let chunk = { l: [], m: [], r: [], w: 0 };
+  let chunk = { l: [], m: [], r: [], notes: [], w: 0 };
   const newChunk = () => {
-    chunk = { l: [], m: [], r: [], w: 0 };
+    chunk = { l: [], m: [], r: [], notes: [], w: 0 };
     pages.push(chunk);
   };
   newChunk();
@@ -1097,6 +1097,8 @@ function packPages(units) {
       chunk.l.push(...unit.l);
       chunk.m.push(...unit.m);
       chunk.r.push(...unit.r);
+      // 笔记纸：按「带」顺序把左注+右注交织合并为一条笔记流（保持与原文垂直对应）
+      chunk.notes.push(...unit.l, ...unit.r);
       chunk.w += unit.w;
     }
   }
@@ -1262,6 +1264,31 @@ function makeFolio(label, page, index) {
   return children;
 }
 
+/* 普通讲稿/文献页：左右双纸「原文纸 / 笔记纸」布局。
+ * - 原文纸（main）：中栏 M 原文，沿用 .folio__col--main 全套排版；
+ * - 笔记纸（notes）：左注+右注按带顺序合并，沿用 .folio__col--notes；
+ * 默认笔记纸叠在原文纸正后方（CSS 绝对定位），导航铅笔按钮触发 body 类后两纸左右摊开。 */
+function makeSpreadFolio(label, page, index) {
+  const notes = page.notes || [];
+  return [
+    htmlNode(`<section class="folio folio--spread" data-page="${index + 1}">`),
+    htmlNode(`<div class="folio__paper folio__paper--main">`),
+    htmlNode(`<div class="folio__col folio__col--main">`),
+    ...annotateEst(page.m),
+    htmlNode(`</div>`),
+    htmlNode(
+      `<div class="folio__pageno"><span>${label || `第 ${index + 1} 页`}</span></div>`,
+    ),
+    htmlNode(`</div>`),
+    htmlNode(`<div class="folio__paper folio__paper--notes">`),
+    htmlNode(`<div class="folio__col folio__col--notes">`),
+    ...notes,
+    htmlNode(`</div>`),
+    htmlNode(`</div>`),
+    htmlNode(`</section>`),
+  ];
+}
+
 /* 课件（幻灯片）判定：文件名含「课件」或以 doc_type 标注。
  * 幻灯片每个源 folio 是一张自洽的幻灯片，必须保持硬页边界：
  * 不跨幻灯片合并、不让一张幻灯片的图片流落到别张幻灯片的页面。 */
@@ -1294,7 +1321,11 @@ export function remarkThreeColumn() {
 
     const children = [];
     pages.forEach((page, i) => {
-      children.push(...makeFolio(`第 ${i + 1} 页`, page, i));
+      children.push(
+        ...(slideMode
+          ? makeFolio(`第 ${i + 1} 页`, page, i)
+          : makeSpreadFolio(`第 ${i + 1} 页`, page, i)),
+      );
     });
     tree.children = children;
   };
