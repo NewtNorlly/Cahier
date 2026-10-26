@@ -1068,41 +1068,22 @@ function flowPackMain(mainStream) {
   return pages;
 }
 
-/* 笔记纸：按 alignAt 与原文逐行垂直对齐。
- * 每页维护游标 cursor（已排笔记累计高度）；每条笔记先按锚点跳到目标 Y（插空行），
- * 再检查放不放得下：放不下就翻到下一页、游标归零重新对齐。 */
-const NOTES_FIXED = 860;
+/* 笔记纸：先定页，再定高。
+ * 笔记是按序号导读全文的跳跃性块（"0-提要, 1-前言, 2-理念力量 ..."），
+ * 不按机械锚点权重定页，而是按笔记序号在全文中的比例落到对应正文页；
+ * 同页笔记从顶部往下自然堆叠，不做"放不下就翻页"的流水分页。 */
 function flowPackNotes(mainPages, noteStream) {
-  const notePages = [];
-  const pageAt = (p) => {
-    while (notePages.length <= p) notePages.push({ nodes: [], cursor: 0 });
-    return notePages[p];
-  };
-  for (const item of noteStream) {
-    const noteW = blockWeight(item.node);
-    // 该锚点应落在原文哪一页
-    let p = mainPages.length - 1;
-    for (let i = 0; i < mainPages.length; i += 1) {
-      if (mainPages[i].start <= item.alignAt) p = i;
-    }
-    // 翻页直到本页放得下（按锚点 Y 起排）
-    for (;;) {
-      const target = pageAt(p);
-      let targetY = Math.max(0, item.alignAt - mainPages[p].start);
-      const gap = Math.max(0, targetY - target.cursor);
-      const after = target.cursor + gap + noteW;
-      if (after <= NOTES_FIXED || p >= mainPages.length - 1) {
-        if (gap > 24) {
-          target.nodes.push(htmlNode(`<div class="notes-spacer" style="height:${Math.round(gap)}px"></div>`));
-          target.cursor += gap;
-        }
-        target.nodes.push(item.node);
-        target.cursor += noteW;
-        break;
-      }
-      p += 1; // 放不下，翻到下一页（cursor 重置为 0）
-    }
-  }
+  const P = mainPages.length;
+  const M = noteStream.length;
+  const notePages = mainPages.map(() => ({ nodes: [], cursor: 0 }));
+  noteStream.forEach((item, i) => {
+    // 比例定页：第 i 条笔记对应全文 i/M 处
+    let p = 0;
+    if (P > 1 && M > 1) p = Math.min(P - 1, Math.floor((i / (M - 1)) * (P - 1)));
+    const target = notePages[p];
+    target.nodes.push(item.node);
+    target.cursor += blockWeight(item.node);
+  });
   return notePages;
 }
 
