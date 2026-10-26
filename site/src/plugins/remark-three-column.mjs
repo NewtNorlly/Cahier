@@ -1068,15 +1068,16 @@ function flowPackMain(mainStream) {
   return pages;
 }
 
-/* 笔记纸：按 alignAt 与原文对齐。
- * 每条笔记先定位它落在原文哪一页 p，再在笔记页 p 顶部补 (alignAt - start[p]) 的空行，
- * 使该笔记在垂直方向上贴近它所批注的原文，方便左右对照。笔记块原子完整不切分。 */
+/* 笔记纸：按 alignAt 与原文逐行垂直对齐。
+ * 维护每页游标 cursor（已排笔记累计高度）；每条笔记的目标 Y=alignAt-start[p]，
+ * 若游标落后目标 Y 超过阈值，先插 (目标Y-游标) 的空行把它顶到对应位置，再排笔记。
+ * 笔记块原子完整不切分；目标 Y 超出本页容量则自然落到下一页。 */
 const NOTES_FIXED = 860;
 function flowPackNotes(mainPages, noteStream) {
   const notePages = [];
-  // 按目标原文页 p 直接索引取页
+  // 每个目标页 { nodes:[], cursor:0 }
   const pageAt = (p) => {
-    while (notePages.length <= p) notePages.push({ nodes: [], w: 0 });
+    while (notePages.length <= p) notePages.push({ nodes: [], cursor: 0 });
     return notePages[p];
   };
   for (const item of noteStream) {
@@ -1085,18 +1086,24 @@ function flowPackNotes(mainPages, noteStream) {
     for (let i = 0; i < mainPages.length; i += 1) {
       if (mainPages[i].start <= item.alignAt) p = i;
     }
-    const target = pageAt(p);
-    // 该页第一条笔记：顶部补垂直空行对齐原文锚点
-    if (!target.nodes.length) {
-      const gap = item.alignAt - mainPages[p].start;
-      if (gap > 24) {
-        target.nodes.push(htmlNode(`<div class="notes-spacer" style="height:${Math.round(gap)}px"></div>`));
-        target.w += gap;
-      }
+    let target = pageAt(p);
+    const noteW = blockWeight(item.node);
+    // 目标 Y：笔记应落在原文页 p 内的垂直位置
+    let targetY = item.alignAt - mainPages[p].start;
+    // 若按锚点本页放不下，顺延到下一页（游标从页顶 0 起）
+    if (target.cursor + Math.max(targetY, 0) + noteW > NOTES_FIXED) {
+      p += 1;
+      target = pageAt(p);
+      targetY = 0;
     }
-    const w = blockWeight(item.node);
+    // 顶到目标 Y：游标落后则插空行
+    const gap = Math.max(0, targetY - target.cursor);
+    if (gap > 24) {
+      target.nodes.push(htmlNode(`<div class="notes-spacer" style="height:${Math.round(gap)}px"></div>`));
+      target.cursor += gap;
+    }
     target.nodes.push(item.node);
-    target.w += w;
+    target.cursor += noteW;
   }
   return notePages;
 }
