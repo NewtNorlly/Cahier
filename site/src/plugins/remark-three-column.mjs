@@ -968,76 +968,56 @@ function splitBlockAt(node, budget) {
  * - { kind:'block', m:node }  讲稿原子块（无批注）
  * - { kind:'band', l,m,r }    文献带批注的整带（三栏对齐）
  */
+/* 收集两条独立的流（双纸布局后，原文纸与笔记纸不再逐页带对齐）：
+ *  - mainStream：全部中栏 M 原子块（段落/列表/表格/图片/公式），文档顺序，可跨页续切；
+ *  - noteStream：左注+右注按「带」顺序交织的笔记块流。每条笔记带 alignAt=它所锚定的
+ *    原文累计高度（该带 M 内容开始处），笔记纸据此在页顶补垂直空行，使左右对照阅读。 */
 function unitsFromBands(bands) {
-  const units = [];
+  const mainStream = [];
+  const noteStream = [];
+  let mainOffset = 0;
   for (const band of bands) {
-    const annotated = band.l.length > 0 || band.r.length > 0;
-    if (!annotated) {
-      for (const node of band.m) {
-        // 讲稿列表逐条展平为带序号/圆点的普通段落，使行文可逐行自然续页
-        const expanded = (node.type === "list" && flattenListToBlocks(node)) || [node];
-        for (const base of expanded) {
-          for (const piece of splitBlock(base)) {
-            units.push({ kind: "block", m: piece, w: blockWeight(piece) });
-          }
+    const anchor = mainOffset; // 该带笔记对齐到其 M 内容开始处
+    for (const node of band.m) {
+      // 讲稿列表逐条展平为带序号/圆点的普通段落，使行文可逐行自然续页
+      const expanded = (node.type === "list" && flattenListToBlocks(node)) || [node];
+      for (const base of expanded) {
+        for (const piece of splitBlock(base)) {
+          mainStream.push(piece);
+          mainOffset += blockWeight(piece);
         }
       }
-      continue;
     }
-    const mw = band.m.reduce((sum, node) => sum + blockWeight(node), 0);
-    const lw = sideWeight(band.l);
-    const rw = sideWeight(band.r);
-    const w = Math.max(mw, lw, rw);
-    if (w <= FIXED || band.m.length === 0) {
-      units.push({ kind: "band", l: band.l, m: band.m, r: band.r, w });
-    } else {
-      // 批注带超重：中栏按原子块拆页，批注整体保留在第一页（沿用既有策略）
-      const pieces = [];
-      let cur = [];
-      let curW = 0;
-      const flush = () => {
-        if (!cur.length) return;
-        pieces.push({ m: cur, w: curW });
-        cur = [];
-        curW = 0;
-      };
-      for (const node of band.m) {
-        for (const piece of splitBlock(node)) {
-          const pw = blockWeight(piece);
-          if (cur.length && curW + pw > SPLIT_TARGET) flush();
-          cur.push(piece);
-          curW += pw;
-        }
-      }
-      flush();
-      pieces.forEach((piece, i) => {
-        units.push({
-          kind: "band",
-          l: i === 0 ? band.l : [],
-          m: piece.m,
-          r: i === 0 ? band.r : [],
-          w: i === 0 ? Math.max(piece.w, lw, rw) : piece.w,
-        });
-      });
-    }
+    for (const n of band.l) noteStream.push({ node: n, alignAt: anchor });
+    for (const n of band.r) noteStream.push({ node: n, alignAt: anchor });
   }
-  return units;
+  return { mainStream, noteStream };
 }
 
 function buildUnits(folios) {
-  const units = [];
-  for (const folio of folios) units.push(...unitsFromBands(folio.bands));
-  return units;
+  const mainStream = [];
+  const noteStream = [];
+  for (const folio of folios) {
+    const s = unitsFromBands(folio.bands);
+    mainStream.push(...s.mainStream);
+    noteStream.push(...s.noteStream);
+  }
+  return { mainStream, noteStream };
 }
 
-function packPages(units) {
+/* 原文纸：逐行流动排满，一页排满才翻页（讲稿同款），段落自然跨页。
+ * 返回 pages 及其 start（每页开始处的原文累计高度），供笔记纸对齐。 */
+function flowPackMain(mainStream) {
   const pages = [];
-  let chunk = { l: [], m: [], r: [], notes: [], w: 0 };
+  let chunk = { nodes: [], w: 0, start: 0 };
+  let cumStart = 0;
   const newChunk = () => {
-    chunk = { l: [], m: [], r: [], notes: [], w: 0 };
+    if (!chunk.nodes.length) return; // 跳过空页
+    chunk.start = cumStart;
+    cumStart += chunk.w;
     pages.push(chunk);
+    chunk = { nodes: [], w: 0, start: 0 };
   };
-  newChunk();
 
   const HEADING_KEEP = 150; // 标题落页尾时，其后至少要留这么多高度，否则标题整体移到下页（防孤标题）
   const FILL_MIN = 48;      // 页尾余量≥约两行即续切填满，行文如翻书、自然段可在页底自然续到下页
@@ -1046,14 +1026,10 @@ function packPages(units) {
   const isHeadingLike = (node) => node.type === "heading" ||
     (node.type === "html" && /class="doc-section"/.test(node.value || ""));
 
-  const pageEmpty = () =>
-    !chunk.m.length && !chunk.l.length && !chunk.r.length;
-  const pushBlock = (node, w) => {
-    chunk.m.push(node);
-    chunk.w += w;
-  };
+  const pageEmpty = () => !chunk.nodes.length;
+  const pushBlock = (node, w) => { chunk.nodes.push(node); chunk.w += w; };
 
-  // 把一个讲稿原子块放进当前页；放不下时优先「填满本页 + 续到下页」
+  // 把一个原子块放进当前页；放不下时优先「填满本页 + 续到下页」
   const place = (node) => {
     const w = blockWeight(node);
     if (pageEmpty()) { pushBlock(node, w); return; }
@@ -1087,20 +1063,56 @@ function packPages(units) {
     pushBlock(node, w);
   };
 
-  for (const unit of units) {
-    if (unit.kind === "block") {
-      place(unit.m);
-    } else {
-      if (!pageEmpty() && chunk.w + unit.w > FIXED) {
-        newChunk();
-      }
-      chunk.l.push(...unit.l);
-      chunk.m.push(...unit.m);
-      chunk.r.push(...unit.r);
-      // 笔记纸：按「带」顺序把左注+右注交织合并为一条笔记流（保持与原文垂直对应）
-      chunk.notes.push(...unit.l, ...unit.r);
-      chunk.w += unit.w;
+  for (const node of mainStream) place(node);
+  if (!pageEmpty()) newChunk();
+  return pages;
+}
+
+/* 笔记纸：按 alignAt 与原文对齐。
+ * 每条笔记先定位它落在原文哪一页 p，再在笔记页 p 顶部补 (alignAt - start[p]) 的空行，
+ * 使该笔记在垂直方向上贴近它所批注的原文，方便左右对照。笔记块原子完整不切分。 */
+const NOTES_FIXED = 860;
+function flowPackNotes(mainPages, noteStream) {
+  const notePages = [];
+  // 按目标原文页 p 直接索引取页
+  const pageAt = (p) => {
+    while (notePages.length <= p) notePages.push({ nodes: [], w: 0 });
+    return notePages[p];
+  };
+  for (const item of noteStream) {
+    // 定位 p：最大的页，其 start <= alignAt
+    let p = mainPages.length - 1;
+    for (let i = 0; i < mainPages.length; i += 1) {
+      if (mainPages[i].start <= item.alignAt) p = i;
     }
+    const target = pageAt(p);
+    // 该页第一条笔记：顶部补垂直空行对齐原文锚点
+    if (!target.nodes.length) {
+      const gap = item.alignAt - mainPages[p].start;
+      if (gap > 24) {
+        target.nodes.push(htmlNode(`<div class="notes-spacer" style="height:${Math.round(gap)}px"></div>`));
+        target.w += gap;
+      }
+    }
+    const w = blockWeight(item.node);
+    target.nodes.push(item.node);
+    target.w += w;
+  }
+  return notePages;
+}
+
+/* 合并两股流：原文纸页数与笔记纸页数取大者；
+ * 笔记写完后多出的原文页，其笔记纸为空（用户翻原文时笔记纸留白，符合"笔记本"观感）。 */
+function packPages(mainStream, noteStream) {
+  const mainPages = flowPackMain(mainStream);
+  const notePages = flowPackNotes(mainPages, noteStream);
+  const count = Math.max(mainPages.length, notePages.length);
+  const pages = [];
+  for (let i = 0; i < count; i += 1) {
+    pages.push({
+      m: (mainPages[i] && mainPages[i].nodes) || [],
+      notes: (notePages[i] && notePages[i].nodes) || [],
+    });
   }
   return pages;
 }
@@ -1315,7 +1327,8 @@ export function remarkThreeColumn() {
       slideMode = true;
       pages = packSlides(folios, file);
     } else {
-      pages = packPages(buildUnits(folios));
+      const { mainStream, noteStream } = buildUnits(folios);
+      pages = packPages(mainStream, noteStream);
     }
     // 幻灯片各自独立，不做跨页续段缩进
     if (!slideMode) markContinuation(pages);
