@@ -1069,41 +1069,39 @@ function flowPackMain(mainStream) {
 }
 
 /* 笔记纸：按 alignAt 与原文逐行垂直对齐。
- * 维护每页游标 cursor（已排笔记累计高度）；每条笔记的目标 Y=alignAt-start[p]，
- * 若游标落后目标 Y 超过阈值，先插 (目标Y-游标) 的空行把它顶到对应位置，再排笔记。
- * 笔记块原子完整不切分；目标 Y 超出本页容量则自然落到下一页。 */
+ * 每页维护游标 cursor（已排笔记累计高度）；每条笔记先按锚点跳到目标 Y（插空行），
+ * 再检查放不放得下：放不下就翻到下一页、游标归零重新对齐。 */
 const NOTES_FIXED = 860;
 function flowPackNotes(mainPages, noteStream) {
   const notePages = [];
-  // 每个目标页 { nodes:[], cursor:0 }
   const pageAt = (p) => {
     while (notePages.length <= p) notePages.push({ nodes: [], cursor: 0 });
     return notePages[p];
   };
   for (const item of noteStream) {
-    // 定位 p：最大的页，其 start <= alignAt
+    const noteW = blockWeight(item.node);
+    // 该锚点应落在原文哪一页
     let p = mainPages.length - 1;
     for (let i = 0; i < mainPages.length; i += 1) {
       if (mainPages[i].start <= item.alignAt) p = i;
     }
-    let target = pageAt(p);
-    const noteW = blockWeight(item.node);
-    // 目标 Y：笔记应落在原文页 p 内的垂直位置
-    let targetY = item.alignAt - mainPages[p].start;
-    // 若按锚点本页放不下，顺延到下一页（游标从页顶 0 起）
-    if (target.cursor + Math.max(targetY, 0) + noteW > NOTES_FIXED) {
-      p += 1;
-      target = pageAt(p);
-      targetY = 0;
+    // 翻页直到本页放得下（按锚点 Y 起排）
+    for (;;) {
+      const target = pageAt(p);
+      let targetY = Math.max(0, item.alignAt - mainPages[p].start);
+      const gap = Math.max(0, targetY - target.cursor);
+      const after = target.cursor + gap + noteW;
+      if (after <= NOTES_FIXED || p >= mainPages.length - 1) {
+        if (gap > 24) {
+          target.nodes.push(htmlNode(`<div class="notes-spacer" style="height:${Math.round(gap)}px"></div>`));
+          target.cursor += gap;
+        }
+        target.nodes.push(item.node);
+        target.cursor += noteW;
+        break;
+      }
+      p += 1; // 放不下，翻到下一页（cursor 重置为 0）
     }
-    // 顶到目标 Y：游标落后则插空行
-    const gap = Math.max(0, targetY - target.cursor);
-    if (gap > 24) {
-      target.nodes.push(htmlNode(`<div class="notes-spacer" style="height:${Math.round(gap)}px"></div>`));
-      target.cursor += gap;
-    }
-    target.nodes.push(item.node);
-    target.cursor += noteW;
   }
   return notePages;
 }
