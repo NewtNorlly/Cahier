@@ -132,26 +132,35 @@
    新版（2026-10-25 起）不再有左右窄条便签栏；默认只在舞台正中放一张原文纸（768 宽），
    笔记纸叠在原文纸正后方隐藏。导航铅笔按钮开启后舞台展宽、两纸左右摊开对照阅读。 */
 .doc-body {
-  width: min(calc(100% - 2.5rem), 860px);
+  width: min(calc(100% - 2.5rem), 1000px);
   margin-inline: auto;
   padding-top: clamp(2rem, 4.5vw, 3.6rem);
   display: flex;
   flex-direction: column;
   gap: 0;
-  background-color: #FFFFFF;
+  background-color: transparent;
   background-image: none;
-  /* 笔记纸展开时舞台需要容纳两张 768 纸 + 间距 */
+  /* 笔记纸展开时舞台需要容纳两张纸 + 间距 */
   transition: width 0.65s cubic-bezier(0.22, 1, 0.36, 1);
 }
 /* 笔记展开状态（html.is-notes-open 由 head 内联脚本按 localStorage 预置，防闪） */
 html.is-notes-open .doc-body {
-  width: min(calc(100% - 2.5rem), 1640px);
+  width: min(calc(100% - 2.5rem), 1980px);
 }
-/* 中等屏：两纸等比缩小以并排（transform 缩、高度由 --spread-scale 补偿，分页口径不变） */
-@media (max-width: 1600px) { html.is-notes-open .doc-body { --spread-scale: 0.92; } }
-@media (max-width: 1460px) { html.is-notes-open .doc-body { --spread-scale: 0.84; } }
-@media (max-width: 1320px) { html.is-notes-open .doc-body { --spread-scale: 0.76; } }
-@media (max-width: 1180px) { html.is-notes-open .doc-body { --spread-scale: 0.68; } }
+/* 课件纸更宽，舞台相应加宽 */
+.doc-body--slides { width: min(calc(100% - 2.5rem), 1300px); }
+html.is-notes-open .doc-body--slides { width: min(calc(100% - 2.5rem), 2520px); }
+/* 中等屏：两纸等比缩小以并排（transform 缩、高度由 --spread-scale 补偿，分页口径不变）。
+   纸面已 zoom 1.2，有效两纸宽约 1900，按此重排断点。 */
+@media (max-width: 1800px) { html.is-notes-open .doc-body { --spread-scale: 0.86; } }
+@media (max-width: 1600px) { html.is-notes-open .doc-body { --spread-scale: 0.76; } }
+@media (max-width: 1400px) { html.is-notes-open .doc-body { --spread-scale: 0.68; } }
+@media (max-width: 1200px) { html.is-notes-open .doc-body { --spread-scale: 0.6; } }
+/* 课件纸 1004×1.2 更宽，断点另算 */
+html.is-notes-open .doc-body--slides { --spread-scale: 0.78; }
+@media (max-width: 1900px) { html.is-notes-open .doc-body--slides { --spread-scale: 0.68; } }
+@media (max-width: 1600px) { html.is-notes-open .doc-body--slides { --spread-scale: 0.58; } }
+@media (max-width: 1300px) { html.is-notes-open .doc-body--slides { --spread-scale: 0.5; } }
 
 /* 每一页 PDF = 一个 folio：由若干「带」纵向堆叠；每带内中栏原文纸与左右便签纸三栏对齐。
    带（band）是垂直对齐单元：同一带内三栏顶部对齐，批注因此落在其呼应原文的高度上。 */
@@ -238,6 +247,9 @@ html.is-notes-open .doc-body {
    - 纸宽固定 768（原中栏宽），分页高度估算口径不变，零超高硬指标依然成立。
    ════════════════════════════════════════════════════════════ */
 .folio--spread {
+  /* 用户硬要求：为大屏观看，纸张与文字整体放大 20%（仅纸页，不动导航/卡片等）。
+     zoom 同时放大纸框与内部文字、版式比例不变，分页布局口径不受影响。 */
+  zoom: 1.2;
   /* 旧 .folio 的纸 chrome 移到单张纸上：舞台本身只做相对定位容器 */
   position: relative;
   border: 0;
@@ -245,18 +257,22 @@ html.is-notes-open .doc-body {
   box-shadow: none;
   padding: 0;
   min-height: 0;
+  --paper-w: 768px;
+  --spread-gap: 52px;
   height: calc(1086px * var(--spread-scale, 1));
   margin: 0 auto clamp(1.6rem, 3vw, 2.6rem);
   background: transparent;
 }
+/* 课件纸更宽，以容纳 PPT 卡片（SLIDE_CAP=951 / 主列 1004 几何口径不变） */
+.folio--spread--slides { --paper-w: 1004px; }
 
 .folio__paper {
   position: absolute;
   top: 0;
   left: 50%;
-  width: 768px;
+  width: var(--paper-w);
   height: 1086px;
-  margin-left: -384px;
+  margin-left: calc(var(--paper-w) / -2);
   transform-origin: top center;
   display: flex;
   flex-direction: column;
@@ -274,16 +290,15 @@ html.is-notes-open .doc-body {
   z-index: 1;
   opacity: 0;
   pointer-events: none;
-  background: #FDFCF8; /* 笔记纸极淡暖白，与原文纸几乎一致、仅微妙区分 */
+  /* 笔记纸底色与原文纸完全一致（用户硬要求），不做任何色差 */
 }
 
-/* 摊开：每张纸从中心向外平移 (768+52)/2 = 410px（translate 在缩放局部坐标内，
-   故中等屏 --spread-scale 缩放后实际位移同比缩小，间距始终贴合） */
+/* 摊开：每张纸从中心向外平移 (paper-w+gap)/2 */
 html.is-notes-open .folio__paper--main {
-  transform: scale(var(--spread-scale, 1)) translateX(calc((768px + 52px) / -2));
+  transform: scale(var(--spread-scale, 1)) translateX(calc((var(--paper-w) + var(--spread-gap)) / -2));
 }
 html.is-notes-open .folio__paper--notes {
-  transform: scale(var(--spread-scale, 1)) translateX(calc((768px + 52px) / 2));
+  transform: scale(var(--spread-scale, 1)) translateX(calc((var(--paper-w) + var(--spread-gap)) / 2));
   opacity: 1;
   pointer-events: auto;
 }
@@ -293,6 +308,11 @@ html.is-notes-open .folio__paper--notes {
 .folio__paper .folio__col--notes {
   flex: 1 1 auto;
   padding: clamp(1.4rem, 2.6vw, 2rem) clamp(1.5rem, 3vw, 2.6rem) 1.2rem;
+}
+/* 课件：卡片按原 1004 几何排版，内部栏不再加横向内边距 */
+.folio--spread--slides .folio__paper .folio__col--main {
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
 }
 .folio__paper .folio__pageno {
   width: auto;
@@ -961,7 +981,7 @@ html.is-notes-open .folio__paper--notes {
   border-color: #2c3547;
   box-shadow: 0 1px 2px hsl(222 30% 10% / 0.3), 0 12px 28px hsl(222 30% 10% / 0.35);
 }
-[data-theme="night"] .folio__paper--notes { background: #161d2b; }
+[data-theme="night"] .folio__paper--notes { background: #141a26; }
 [data-theme="night"] .folio__col--notes { color: #d6dce7; }
 [data-theme="night"] .folio__col--notes .callout,
 [data-theme="night"] .folio__col--notes .callout .callout-title,

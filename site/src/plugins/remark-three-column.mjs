@@ -1267,11 +1267,12 @@ function makeFolio(label, page, index) {
 /* 普通讲稿/文献页：左右双纸「原文纸 / 笔记纸」布局。
  * - 原文纸（main）：中栏 M 原文，沿用 .folio__col--main 全套排版；
  * - 笔记纸（notes）：左注+右注按带顺序合并，沿用 .folio__col--notes；
- * 默认笔记纸叠在原文纸正后方（CSS 绝对定位），导航铅笔按钮触发 body 类后两纸左右摊开。 */
-function makeSpreadFolio(label, page, index) {
+ * 默认笔记纸叠在原文纸正后方（CSS 绝对定位），导航铅笔按钮触发 body 类后两纸左右摊开。
+ * slideMod=true 时给 folio 加 --slides 修饰类（课件纸更宽，以容纳 PPT 卡片）。 */
+function makeSpreadFolio(label, page, index, slideMod) {
   const notes = page.notes || [];
   return [
-    htmlNode(`<section class="folio folio--spread" data-page="${index + 1}">`),
+    htmlNode(`<section class="folio folio--spread${slideMod ? " folio--spread--slides" : ""}" data-page="${index + 1}">`),
     htmlNode(`<div class="folio__paper folio__paper--main">`),
     htmlNode(`<div class="folio__col folio__col--main">`),
     ...annotateEst(page.m),
@@ -1322,9 +1323,7 @@ export function remarkThreeColumn() {
     const children = [];
     pages.forEach((page, i) => {
       children.push(
-        ...(slideMode
-          ? makeFolio(`第 ${i + 1} 页`, page, i)
-          : makeSpreadFolio(`第 ${i + 1} 页`, page, i)),
+        ...makeSpreadFolio(`第 ${i + 1} 页`, page, i, slideMode),
       );
     });
     tree.children = children;
