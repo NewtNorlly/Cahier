@@ -1069,18 +1069,32 @@ function flowPackMain(mainStream) {
 }
 
 /* 笔记纸：先定页，再定高。
- * 笔记是按序号导读全文的跳跃性块（"0-提要, 1-前言, 2-理念力量 ..."），
- * 不按机械锚点权重定页，而是按笔记序号在全文中的比例落到对应正文页；
- * 同页笔记从顶部往下自然堆叠，不做"放不下就翻页"的流水分页。 */
+ * 笔记是按序号导读全文的跳跃性块（"0-提要, 1-前言, 2-理念力量 ..."）。
+ * 按第 i 条笔记在全文中的比例 f=i/(M-1) 算出它在全文累计权重里的绝对位置，
+ * 据此决定它落在哪一页、在该页的哪个垂直高度；同页后续笔记从该高度继续往下堆。 */
 function flowPackNotes(mainPages, noteStream) {
   const P = mainPages.length;
   const M = noteStream.length;
+  const total = mainPages.length
+    ? mainPages[mainPages.length - 1].start + mainPages[mainPages.length - 1].w
+    : 0;
   const notePages = mainPages.map(() => ({ nodes: [], cursor: 0 }));
   noteStream.forEach((item, i) => {
-    // 比例定页：第 i 条笔记对应全文 i/M 处
-    let p = 0;
-    if (P > 1 && M > 1) p = Math.min(P - 1, Math.floor((i / (M - 1)) * (P - 1)));
+    const f = M > 1 ? i / (M - 1) : 0;
+    const abs = f * total;
+    // 定页
+    let p = P - 1;
+    for (let k = 0; k < P; k += 1) {
+      if (mainPages[k].start <= abs) p = k;
+    }
     const target = notePages[p];
+    // 定高：该笔记在本页内的垂直位置
+    const targetY = Math.max(0, abs - mainPages[p].start);
+    const gap = Math.max(0, targetY - target.cursor);
+    if (gap > 24) {
+      target.nodes.push(htmlNode(`<div class="notes-spacer" style="height:${Math.round(gap)}px"></div>`));
+      target.cursor += gap;
+    }
     target.nodes.push(item.node);
     target.cursor += blockWeight(item.node);
   });
