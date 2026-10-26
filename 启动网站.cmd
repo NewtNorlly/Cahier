@@ -6,39 +6,50 @@ cd /d "%~dp0site"
 echo ==========================================
 echo            Cahier 本地启动器
 echo ==========================================
-echo   [1] 开发模式（默认，http://localhost:4321）
-echo   [2] 构建静态站点
-echo   [3] 预览构建产物（先构建，http://localhost:4321）
+echo   [1] 直接打开现有构建（http://127.0.0.1:8765）
+echo   [2] 重新构建后打开（先 npm run build 再起服务）
+echo   [3] Astro 开发模式（http://localhost:4321，热更新）
 echo ==========================================
 choice /c 123 /n /m "请选择 [1/2/3]，直接回车默认 1: "
-if errorlevel 3 goto preview
+if errorlevel 3 goto dev
 if errorlevel 2 goto build
-goto dev
+goto serve
 
-:dev
-if not exist node_modules (
-  echo 首次运行，正在安装依赖...
-  call pnpm install
-  if errorlevel 1 call npm install
+:serve
+REM 8765 已被占用则直接打开浏览器；否则后台起 python 静态服务
+netstat -ano | findstr ":8765" | findstr "LISTENING" >nul
+if %errorlevel%==0 (
+  echo 检测到 8765 已在运行，直接打开浏览器...
+  start "" http://127.0.0.1:8765/
+  pause
+  exit /b
 )
-echo 启动开发服务器：http://localhost:4321 （Ctrl+C 停止）
-call pnpm dev
-if errorlevel 1 ( echo [提示] pnpm 不可用，改用 npm... & call npm run dev )
+echo 启动静态服务：http://127.0.0.1:8765/ （关窗即停止）
+start "" http://127.0.0.1:8765/
+python -m http.server 8765
 pause
 exit /b
 
 :build
 echo 正在构建静态站点到 site\dist ...
-call pnpm build
-if errorlevel 1 ( echo [提示] pnpm 不可用，改用 npm... & call npm run build )
-echo 构建完成。
+call npm run build
+if errorlevel 1 (
+  echo [错误] 构建失败，请查看上面的日志。
+  pause
+  exit /b 1
+)
+echo 构建完成，启动预览服务...
+start "" http://127.0.0.1:8765/
+python -m http.server 8765
 pause
 exit /b
 
-:preview
-if not exist dist goto build
-echo 预览构建产物：http://localhost:4321 （Ctrl+C 停止）
-call pnpm preview
-if errorlevel 1 ( echo [提示] pnpm 不可用，改用 npm... & call npm run preview )
+:dev
+if not exist node_modules (
+  echo 首次运行，正在安装依赖...
+  call npm install
+)
+echo 启动开发服务器：http://localhost:4321 （Ctrl+C 停止）
+call npm run dev
 pause
 exit /b
