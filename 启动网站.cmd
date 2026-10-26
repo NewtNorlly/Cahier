@@ -4,52 +4,22 @@ title Cahier 本地启动器
 cd /d "%~dp0site"
 
 echo ==========================================
-echo            Cahier 本地启动器
+echo   Cahier 本地启动器
+echo   地址: http://127.0.0.1:8765/
 echo ==========================================
-echo   [1] 直接打开现有构建（http://127.0.0.1:8765）
-echo   [2] 重新构建后打开（先 npm run build 再起服务）
-echo   [3] Astro 开发模式（http://localhost:4321，热更新）
-echo ==========================================
-choice /c 123 /n /m "请选择 [1/2/3]，直接回车默认 1: "
-if errorlevel 3 goto dev
-if errorlevel 2 goto build
-goto serve
 
-:serve
-REM 8765 已被占用则直接打开浏览器；否则后台起 python 静态服务
+REM 检测 8765 是否已在监听
 netstat -ano | findstr ":8765" | findstr "LISTENING" >nul
-if %errorlevel%==0 (
-  echo 检测到 8765 已在运行，直接打开浏览器...
-  start "" http://127.0.0.1:8765/
-  pause
-  exit /b
-)
-echo 启动静态服务：http://127.0.0.1:8765/ （关窗即停止）
-start "" http://127.0.0.1:8765/
-python -m http.server 8765
-pause
-exit /b
+if %errorlevel%==0 goto open
 
-:build
-echo 正在构建静态站点到 site\dist ...
-call npm run build
-if errorlevel 1 (
-  echo [错误] 构建失败，请查看上面的日志。
-  pause
-  exit /b 1
-)
-echo 构建完成，启动预览服务...
-start "" http://127.0.0.1:8765/
-python -m http.server 8765
-pause
-exit /b
+echo 正在启动静态服务（python http.server 8765）...
+start "Cahier 静态服务" /min cmd /c "cd /d ""%~dp0site\dist"" && python -m http.server 8765"
+timeout /t 2 /nobreak >nul
 
-:dev
-if not exist node_modules (
-  echo 首次运行，正在安装依赖...
-  call npm install
-)
-echo 启动开发服务器：http://localhost:4321 （Ctrl+C 停止）
-call npm run dev
+:open
+echo 正在打开浏览器...
+start "" http://127.0.0.1:8765/
+echo.
+echo 浏览器已打开。关闭本窗口不会停止服务；
+echo 如需停止服务，在任务管理器里结束 python 即可。
 pause
-exit /b
