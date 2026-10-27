@@ -291,6 +291,8 @@ html.is-notes-open .doc-body--slides { --spread-scale: 0.78; }
   opacity: 0;
   pointer-events: none;
   /* 笔记纸底色与原文纸完全一致（用户硬要求），不做任何色差 */
+  /* 硬裁切：本地编辑区文字写满最后一行后绝不能越过纸底溢到背景上 */
+  overflow: hidden;
 }
 
 /* 摊开：每张纸从中心向外平移 (paper-w+gap)/2 */
@@ -307,6 +309,8 @@ html.is-notes-open .folio__paper--notes {
 .folio__paper .folio__col--main,
 .folio__paper .folio__col--notes {
   flex: 1 1 auto;
+  /* min-height:0 允许 flex 子项收缩到内容高度以内，否则笔记纸编辑区会把栏撑破纸底 */
+  min-height: 0;
   padding: clamp(1.4rem, 2.6vw, 2rem) clamp(1.5rem, 3vw, 2.6rem) 1.2rem;
 }
 /* 课件：卡片按原 1004 几何排版，内部栏不再加横向内边距 */
@@ -353,15 +357,19 @@ html.is-notes-open .folio__paper--notes {
 /* 对齐用垂直空行（插件按原文锚点高度插入），不可见、不占外边距 */
 .folio__col--notes .notes-spacer { margin: 0; padding: 0; flex: none; }
 
-/* 本地笔记编辑区：纯文本、填满笔记纸；云端不启用 contenteditable 时保持空白 */
+/* 本地笔记编辑区：纯文本、填满笔记纸；云端不启用 contenteditable 时保持空白。
+   flex 约束 + overflow:hidden：文字只能写在纸内，写满最后一行即被纸张裁住，
+   绝不允许溢出笔记纸底边、落到背景上（物理笔记本观感）。 */
 .folio__edit {
-  min-height: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
   width: 100%;
   outline: none;
   font: inherit;
   color: #1F1C18;
   white-space: pre-wrap;
   word-break: break-word;
+  overflow: hidden;
   caret-color: #2b6cb0;
 }
 .folio__edit:empty::before {
@@ -1447,6 +1455,12 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
   .folio__paper .folio__col--main,
   .folio__paper .folio__col--notes { padding: 0.9rem 0.5rem 0.6rem; }
   .folio__paper .folio__pageno { padding-top: 0.4rem; }
+  /* 窄屏笔记纸为流式高度：编辑区保留一块可写纸面、随内容自然增高，不裁切 */
+  .folio__edit {
+    flex: 0 0 auto;
+    min-height: 60vh;
+    overflow: visible;
+  }
 }
 
 /* 减少动态偏好：取消过渡动画，状态即时切换（位移/淡入仍保留，保证布局正确） */

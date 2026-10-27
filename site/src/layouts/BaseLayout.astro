@@ -347,8 +347,53 @@ const canonicalUrl = canonicalPath !== false && Astro.site
           const key = keyBase + ":" + page;
           try { el.textContent = localStorage.getItem(key) || ""; } catch {}
           el.setAttribute("contenteditable", "true");
-          el.addEventListener("input", () => {
+
+          /* 写满最后一行即止：编辑区在 CSS 上被约束在纸内（溢出裁切），
+             这里再做一道保险——任何会让文字越过纸底的插入（含中文输入法上屏）
+             都回滚到上一状态；删除、撤销等缩减操作始终放行。 */
+          let goodText = el.textContent;
+          let composing = false;
+          let beforeComposition = el.textContent;
+          const isOverflowing = () => el.scrollHeight - el.clientHeight > 2;
+          const moveCaretToEnd = () => {
+            el.scrollTop = 0;
+            const range = document.createRange();
+            range.selectNodeContents(el);
+            range.collapse(false);
+            const sel = window.getSelection();
+            if (sel) {
+              sel.removeAllRanges();
+              sel.addRange(range);
+            }
+          };
+          const save = () => {
+            goodText = el.textContent;
             try { localStorage.setItem(key, el.textContent); } catch {}
+          };
+          el.addEventListener("compositionstart", () => {
+            composing = true;
+            beforeComposition = el.textContent;
+          });
+          el.addEventListener("compositionend", () => {
+            composing = false;
+            if (isOverflowing()) {
+              // 整句拼音上屏后写不下：本次组词整体退回，纸张不被撑破
+              el.textContent = beforeComposition;
+              moveCaretToEnd();
+            } else {
+              save();
+            }
+          });
+          el.addEventListener("input", (ev) => {
+            if (composing) return; // 输入法组词期间不干预，compositionend 统一收口
+            const inputType = (ev as InputEvent).inputType || "";
+            const inserting = inputType.indexOf("insert") === 0;
+            if (inserting && isOverflowing()) {
+              el.textContent = goodText;
+              moveCaretToEnd();
+              return;
+            }
+            save();
           });
         });
       }

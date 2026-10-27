@@ -1,4 +1,7 @@
-// 批量量高：遍历 dist/notes 所有路由，桌面 1536 下报 folio 高度 >1086 的页
+// 批量量高：遍历 dist/notes 所有路由，桌面 1536 下报 folio 高度 >1086 的页。
+// 注意：.folio--spread 上有 zoom:1.2（§二十五），getBoundingClientRect 返回的是
+// 视觉缩放后的 1303px，不能再拿它和 1086 比；高度一律读 offsetHeight（布局像素，
+// 不受 zoom 影响），并额外检查每张纸的内容是否越过纸面（scrollHeight>clientHeight）。
 import { spawn } from "node:child_process";
 import { setTimeout as sleep } from "node:timers/promises";
 import { readdirSync } from "node:fs";
@@ -27,7 +30,7 @@ for (const dir of dirs) {
   const url = `http://localhost:4399/notes/${encodeURIComponent(dir)}/`;
   await S("Page.navigate", { url });
   await S("Runtime.evaluate", { expression: "new Promise(r=>{if(document.readyState==='complete')setTimeout(r,350);else window.addEventListener('load',()=>setTimeout(r,600));})", awaitPromise:true });
-  const r = await S("Runtime.evaluate", { expression: `(()=>{const fs=[...document.querySelectorAll('.folio')];const bad=[];fs.forEach((f,i)=>{if(Math.round(f.getBoundingClientRect().height)>1086) bad.push({i:i+1,h:Math.round(f.getBoundingClientRect().height)});});return JSON.stringify({n:fs.length, bad});})()`, returnByValue:true });
+  const r = await S("Runtime.evaluate", { expression: `(()=>{const fs=[...document.querySelectorAll('.folio')];const bad=[];fs.forEach((f,i)=>{const paperBad=[];f.querySelectorAll('.folio__paper').forEach((p,j)=>{if(p.scrollHeight>p.clientHeight+1) paperBad.push({paper:j+1,sh:p.scrollHeight,ch:p.clientHeight});});if(f.offsetHeight>1086||paperBad.length) bad.push({i:i+1,layoutH:f.offsetHeight,paperBad});});return JSON.stringify({n:fs.length, bad});})()`, returnByValue:true });
   const v = JSON.parse(r.result.result.value);
   if (v.bad.length) overflows.push({ dir, ...v });
 }

@@ -23,13 +23,21 @@ await S("Page.navigate", { url });
 await S("Runtime.evaluate", { expression: "new Promise(r=>{if(document.readyState==='complete')setTimeout(r,500);else window.addEventListener('load',()=>setTimeout(r,1000));})", awaitPromise: true });
 // 等 web 字体（KaTeX/思源宋体）全部就绪再量，避免回退字体度量造成的瞬时假溢出
 await S("Runtime.evaluate", { expression: "document.fonts?document.fonts.ready.then(()=>new Promise(r=>setTimeout(r,500))):new Promise(r=>setTimeout(r,500))", awaitPromise: true });
-const v = (await S("Runtime.evaluate", { expression: `JSON.stringify({
+// 移动端 390px 检查：无横向滚动；双纸结构（§二十四）下笔记纸默认隐藏、开启后排在原文纸下方；
+// 本地编辑区在窄屏为流式高度（min-height 60vh、overflow visible），不得裁切/横溢。
+const measure = async () => (await S("Runtime.evaluate", { expression: `JSON.stringify({
   scrollW: document.documentElement.scrollWidth, innerW: window.innerWidth,
   folios: document.querySelectorAll('.folio').length,
-  leftHidden: getComputedStyle(document.querySelector('.folio__col--left')).display,
-  rightHidden: getComputedStyle(document.querySelector('.folio__col--right')).display,
-  cardW: Math.round(document.querySelector('.slide-block')?.getBoundingClientRect().width || 0),
-  overflowFolios: [...document.querySelectorAll('.folio')].filter(f=>f.getBoundingClientRect().height>1090).length
+  notesDisplay: getComputedStyle(document.querySelector('.folio__paper--notes')).display,
+  editH: Math.round(document.querySelector('.folio__edit')?.getBoundingClientRect().height || 0),
+  editOverflow: getComputedStyle(document.querySelector('.folio__edit')).overflowY,
+  editMinH: Math.round(document.querySelector('.folio__edit')?.getBoundingClientRect().height || 0),
+  cardW: Math.round(document.querySelector('.slide-block')?.getBoundingClientRect().width || 0)
 })`, returnByValue: true })).result.result.value;
-console.log(url.split("/").slice(-2, -1)[0], v);
+const closed = JSON.parse(await measure());
+// 开启笔记纸再量一次
+await S("Runtime.evaluate", { expression: "document.getElementById('notesToggle').click(); true" });
+await S("Runtime.evaluate", { expression: "new Promise(r=>setTimeout(r,750))" });
+const open = JSON.parse(await measure());
+console.log(url.split("/").slice(-2, -1)[0], JSON.stringify({ closed, open }));
 chrome.kill(); process.exit(0);
