@@ -1,25 +1,59 @@
 @echo off
-chcp 65001 >nul
-title Cahier 本地启动器
-cd /d "%~dp0site"
+title Cahier ����������
+
+cd /d "%~dp0"
 
 echo ==========================================
-echo   Cahier 本地启动器
-echo   地址: http://127.0.0.1:8765/
+echo   Cahier ����������
+echo   http://127.0.0.1:8765/
+echo   (ͨ�� 127.0.0.1 ����ʱ, �ʼ�ֽ�Զ����ñ��ر༭)
 echo ==========================================
 
-REM 检测 8765 是否已在监听
-netstat -ano | findstr ":8765" | findstr "LISTENING" >nul
+REM ---- check dist ----
+if not exist "%~dp0site\dist\index.html" (
+  echo.
+  echo [ERROR] site\dist\index.html not found.
+  echo          Please run:  cd site ^&^& npm run build
+  echo.
+  pause
+  exit /b 1
+)
+
+REM ---- locate python (avoid WindowsApps stub) ----
+set "PYEXE="
+if exist "C:\Users\NewtN\AppData\Local\Python\bin\python.exe" set "PYEXE=C:\Users\NewtN\AppData\Local\Python\bin\python.exe"
+if not defined PYEXE if exist "C:\Windows\py.exe" set "PYEXE=C:\Windows\py.exe"
+if not defined PYEXE (
+  echo.
+  echo [ERROR] cannot find python. Install Python 3 and tell me the path.
+  echo.
+  pause
+  exit /b 1
+)
+echo Using: %PYEXE%
+
+REM ---- port already listening? ----
+netstat -ano | findstr ":8765 " | findstr "LISTENING" >nul
 if %errorlevel%==0 goto open
 
-echo 正在启动静态服务（python http.server 8765）...
-start "Cahier 静态服务" /min cmd /c "cd /d ""%~dp0site\dist"" && python -m http.server 8765"
+echo Starting static server on port 8765 ...
+start "Cahier ��̬����" /min /D "%~dp0site\dist" "%PYEXE%" -m http.server 8765
 timeout /t 2 /nobreak >nul
 
+netstat -ano | findstr ":8765 " | findstr "LISTENING" >nul
+if errorlevel 1 (
+  echo.
+  echo [ERROR] port 8765 not listening. See the Cahier server window.
+  echo.
+  pause
+  exit /b 1
+)
+
 :open
-echo 正在打开浏览器...
-start "" http://127.0.0.1:8765/
+echo Opening browser ...
+start "" "http://127.0.0.1:8765/"
 echo.
-echo 浏览器已打开。关闭本窗口不会停止服务；
-echo 如需停止服务，在任务管理器里结束 python 即可。
+echo Done. Close this window will NOT stop the server.
+echo To stop: kill python.exe in Task Manager.
+echo.
 pause
