@@ -589,8 +589,20 @@ function htmlWeight(node) {
   const blockCount = (raw.match(/<(p|li|tr|h[1-6]|div|section|figure|br)[ >]/gi) || []).length;
 
   if (/folio-footnotes/.test(raw)) {
-    // 脚注 0.74rem / 1.66：每行约 17.7px、每行约 56 视觉字
-    return 46 + textLines(text, 56) * 18 + blockCount * 4;
+    // 脚注 0.74rem / 1.66：每条注释独立占行（短条目也占一行，CDP 标定）。
+    // 含中文行实高约 24px、纯英文行约 20px；条间 margin 约 4px；块固定开销约 45px。
+    // 不能把整段文本连续算行（会低估大量短注），也不能对英文条目套用中文行高。
+    let content = 0;
+    let n = 0;
+    const itemRe = /<p\b[^>]*>([\s\S]*?)<\/p>/gi;
+    let m;
+    while ((m = itemRe.exec(raw))) {
+      n += 1;
+      const t = stripHtml(m[1]);
+      const lines = Math.max(1, textLines(t, 56));
+      content += lines * (new RegExp(CJK_RE.source).test(t) ? 24 : 20);
+    }
+    return 45 + content + n * 4;
   }
   if (/doc-abstract/.test(raw)) {
     return 24 + textLines(text, 52) * 20 + blockCount * 6;

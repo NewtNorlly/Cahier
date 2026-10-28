@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-27T13:24:51.675Z",
+  "generatedAt": "2026-10-28T10:08:03.770Z",
   "files": [
     {
       "path": "德语/covers/german-480.webp",
@@ -782,12 +782,28 @@
       "bytes": 48704
     },
     {
+      "path": "文献笔记/covers/qieshu-wei-yazui-480.webp",
+      "bytes": 12758
+    },
+    {
+      "path": "文献笔记/covers/qieshu-wei-yazui-960_thumb.webp",
+      "bytes": 6070
+    },
+    {
+      "path": "文献笔记/covers/qieshu-wei-yazui-960.webp",
+      "bytes": 33882
+    },
+    {
       "path": "文献笔记/covers/xuanyuanxue-gongminhua-960.webp",
       "bytes": 10914
     },
     {
       "path": "文献笔记/figures/masthead.webp",
       "bytes": 9284
+    },
+    {
+      "path": "文献笔记/figures/shenpanzhang-xuanchuanhua.webp",
+      "bytes": 42302
     },
     {
       "path": "宪法/covers/constitution-480.webp",

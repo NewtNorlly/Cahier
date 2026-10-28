@@ -782,6 +782,19 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
 /* 脚注中的斜体书名（英文文献） */
 .folio-footnotes em, .folio-footnotes i { font-style: italic; }
 
+/* 注释/参考文献/索引的块内标题：短横线下方居中、加粗、克制 */
+.folio-footnotes .fn-notes-h {
+  text-align: center;
+  text-indent: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  color: #2A2620;
+  margin: 0.25rem 0 0.6rem;
+  padding-left: 0;
+}
+
 /* 脚注序号：右上角标（尊重学术论文视觉规范） */
 .fn-ref,
 .folio__col--main .fn-ref {
@@ -792,6 +805,117 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
   letter-spacing: 0;
   color: #6B6355;
   text-decoration: none;
+}
+
+/* ────────────────────────────────────────────────────────────
+   书籍专用语义件（专著/译著原文纸）：副标、英文原名、出版项、
+   章首题辞、目录、版权页、版本说明 —— 居中、克制、行距舒展
+   ──────────────────────────────────────────────────────────── */
+
+/* 副标：居中，比主标题小一号，墨色柔和 */
+.folio__col--main .doc-title-sub {
+  text-align: center;
+  text-indent: 0;
+  font-size: 1.02rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  margin: 0.2rem 0 0.9rem;
+  color: #2A2620;
+}
+
+/* 英文原名：居中，Georgia 斜体，小一号灰字 */
+.folio__col--main .doc-orig {
+  text-align: center;
+  text-indent: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.82rem;
+  font-style: italic;
+  line-height: 1.6;
+  color: #6B655C;
+  margin: 0.4rem 0 1.1rem;
+}
+
+/* 出版项：居中，小字号，灰字 */
+.folio__col--main .doc-pub {
+  text-align: center;
+  text-indent: 0;
+  font-size: 0.84rem;
+  letter-spacing: 0.06em;
+  color: #6B655C;
+  margin: 0.5rem 0 1.2rem;
+}
+
+/* 章首题辞：居中、不缩进、内敛、行距舒展 */
+.folio__col--main .doc-epigraph {
+  text-align: center;
+  text-indent: 0;
+  font-size: 0.92rem;
+  line-height: 1.85;
+  color: #33302A;
+  margin: 1.1rem auto 0.3rem;
+  max-width: 92%;
+}
+/* 题辞出处：右对齐，小一号灰字 */
+.folio__col--main .doc-epigraph-src {
+  text-align: right;
+  text-indent: 0;
+  font-size: 0.82rem;
+  color: #6B655C;
+  margin: 0.2rem 0 1.4rem;
+}
+
+/* 中译本序的大问题（（1）（2）…）：加粗、左对齐、段距舒展 */
+.folio__col--main .doc-li {
+  text-indent: 0;
+  font-weight: 700;
+  margin: 1.3rem 0 0.5rem;
+  color: #1F1C18;
+}
+
+/* CIP 版权页：小字号、左对齐、行距紧凑、不缩进 */
+.folio__col--main .doc-cip {
+  text-indent: 0;
+  font-size: 0.8rem;
+  line-height: 1.62;
+  margin: 0.18rem 0;
+  color: #3A362F;
+}
+
+/* 目录条目：标题 + 引导点 + 页码（flex 对齐） */
+.folio__col--main .doc-toc {
+  display: flex;
+  align-items: baseline;
+  text-indent: 0;
+  font-size: 0.86rem;
+  margin: 0.34rem 0;
+  color: #2A2620;
+}
+.folio__col--main .doc-toc__t { flex: 0 0 auto; }
+.folio__col--main .doc-toc__leader {
+  flex: 1 1 auto;
+  margin: 0 0.55em;
+  border-bottom: 1px dotted #B0A99B;
+  transform: translateY(-0.18em);
+}
+.folio__col--main .doc-toc__p { flex: 0 0 auto; font-family: Georgia, serif; }
+
+/* 索引说明：小一号灰字、居中 */
+.folio__col--main .doc-index-note {
+  text-align: center;
+  text-indent: 0;
+  font-size: 0.8rem;
+  color: #8A857A;
+  margin: 0.4rem 0 1rem;
+}
+
+/* 版本说明 colophon：居中、小字号、灰字 */
+.folio__col--main .doc-colophon {
+  text-align: center;
+  text-indent: 0;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  color: #6B655C;
+  margin: 0.5rem 0;
 }
 
 /* ── 左/右栏：连贯便签纸（纯白，与正文同款宋体、墨黑，不使用花式字体与彩色）── */
@@ -1042,9 +1166,22 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
 [data-theme="night"] .folio__col--main .fn,
 [data-theme="night"] .folio__col--main .doc-abstract,
 [data-theme="night"] .folio__col--main .doc-editornote { color: #c2c9d6; }
+/* 书籍专用语义件：夜间转柔白/灰 */
+[data-theme="night"] .folio__col--main .doc-title-sub,
+[data-theme="night"] .folio__col--main .doc-li { color: #eceff6; }
+[data-theme="night"] .folio__col--main .doc-epigraph { color: #d2d8e4; }
+[data-theme="night"] .folio__col--main .doc-orig,
+[data-theme="night"] .folio__col--main .doc-pub,
+[data-theme="night"] .folio__col--main .doc-epigraph-src,
+[data-theme="night"] .folio__col--main .doc-toc,
+[data-theme="night"] .folio__col--main .doc-colophon,
+[data-theme="night"] .folio__col--main .doc-cip { color: #aab4c6; }
+[data-theme="night"] .folio__col--main .doc-index-note { color: #8b94a6; }
+[data-theme="night"] .folio__col--main .doc-toc__leader { border-bottom-color: #5b6478; }
 [data-theme="night"] .folio__col--main blockquote { color: #98a1b3; }
 [data-theme="night"] .folio__col--main li::marker { color: #7e889c; }
 [data-theme="night"] .folio-footnotes { border-top-color: #2e384c; }
+[data-theme="night"] .folio-footnotes .fn-notes-h { color: #eceff6; }
 
 /* 公式块 / 表格：夜读配色 */
 [data-theme="night"] .folio__col--main .katex-display { background: #1b2230; }
