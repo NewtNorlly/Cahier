@@ -389,7 +389,9 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
 }
 
 /* 跨页续段：上一页被切开的自然段，本页不再首行缩进 */
-.folio__col--main p.para-cont { text-indent: 0; }
+/* ★2026-10-29：同时取消段首外边距——否则续段与上页尾之间多出一道段距，
+   一个自然段在视觉上被拆成「两段」（用户报的 Bug）；续段必须与上页尾无缝连读。 */
+.folio__col--main p.para-cont { text-indent: 0; margin-top: 0; }
 
 /* 标题、列表、公式、图片不缩进 */
 .folio__col--main h1,

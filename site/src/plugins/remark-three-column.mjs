@@ -13,6 +13,34 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+/* ── 构建期笔记数据（本地笔记纸导出的快照，合并后随站点上线） ──
+ * 文件 site/src/data/folio-notes.json 结构：
+ *   { "<源md相对仓库根的路径>": { "<页码>": "该页笔记纯文本（含换行/空格）" } }
+ * 笔记纸是 white-space:pre-wrap 的纯文本面，文本逐字写入编辑节点；
+ * 云端因此也能呈现用户在本地写下的笔记（云端只读）。 */
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
+const NOTES_DATA_FILE = path.join(REPO_ROOT, "site", "src", "data", "folio-notes.json");
+let folioNotesCache;
+function loadFolioNotes() {
+  if (folioNotesCache !== undefined) return folioNotesCache;
+  try {
+    folioNotesCache = JSON.parse(fs.readFileSync(NOTES_DATA_FILE, "utf8"));
+  } catch {
+    folioNotesCache = {};
+  }
+  return folioNotesCache;
+}
+/* 源 md 的稳定键：相对仓库根、正斜杠 */
+function sourceDocKey(file) {
+  const abs = (file && file.history && file.history[0]) || (file && file.path) || "";
+  if (!abs) return "";
+  return path.relative(REPO_ROOT, path.resolve(abs)).replace(/\\/g, "/");
+}
+function escapeHtml(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
 
 /* 兼容开标记 <!--folio:..--> 与闭标记 <!--/folio-->（闭标记仅作结构占位，不承载内容） */
 const MARKER_RE = /^\s*<!--\s*\/?\s*(folio|band|col)(?:\s*:\s*([^>]*?))?\s*-->\s*$/;
@@ -110,12 +138,18 @@ function imageWeight(node) {
   return renderH + 52;
 }
 
-/* 一页中栏可排高度（估算 px）。实测版心容量约 952px，预留估算误差余量；
- * 段落行数另加 12% 安全系数吸收中英混排的折行偏差，保证零超高。
- * 9月17日讲稿 folio73 在 848 下实测超 2px（4 段中英混排按 44 字/行估成 1 行、实折 2 行，
- * 漏算约 104px，恰好顶穿 104px 余量）；若改行宽 44→40 会牵动文献笔记的批注带拆分边界、
- * 反撑出 folio4=1145。故按任务书允许的退路，把 lecture 安全余量收 15px（848→833）吸收该漏算。 */
-const FIXED = 833;
+/* 一页中栏可排高度（估算 px）。
+ * ★2026-10-29 按全站实测重新标定：833 → 920（页底留白优化，见手册 §三十二）。
+ * 中栏真实可用高实测 998px（col.clientHeight − 上下 padding；再扣页码约 15px 得 983px），
+ * 旧值 833 比可用高低 150px，导致每页系统性留白约 277px（27.8%）、用户投诉「页底空掉 1/4」。
+ * 920 是「零超高」硬指标下的实测最优档：全站 105 路由 / 2952 页超高 0 页，
+ * 平均留白降到 206px（20.6%）、中位 155px；940 已越界（2 页超高、最小 gap=−43），故取 920。
+ * ★教训（勿重蹈）：2026-10-28 曾把 LECTURE_PARA_CPL 44→40 与 FIXED 833→940 一起改，
+ * 结果每块估算高度普遍变大、页数从 147 涨到 160+、分页反而更差并已全部回退。
+ * 调留白只动 FIXED 一个杠杆、且必须逐档跑「构建 + 全站量高」以零超高为唯一放行判据；
+ * LECTURE_PARA_CPL 保持 44 不动（改它会牵动文献批注带拆分边界）。
+ * 历史校准：9月17日讲稿 folio73 在 848 下曾超 2px（4 段中英混排按 44 字/行估成 1 行、实折 2 行）。 */
+const FIXED = Number(process.env.LEC_FIXED) || 920;
 /* 单个列表/表格拆分片段的目标高度，留出标题与续接余量。 */
 const SPLIT_TARGET = Math.round(FIXED * 0.9);
 
@@ -445,9 +479,12 @@ function textOf(node) {
 }
 
 const LINE = 25.6;            // 0.9rem × 1.78
-const LECTURE_PARA_CPL = 44;  // 讲稿段落每行视觉字数（保持原口径；改 40 会牵动文献笔记的批注带拆分，见下 FIXED 修正）
+const LECTURE_PARA_CPL = 44;  // 讲稿段落每行视觉字数（保持原校准口径，勿改）
 const CJK_RE = /[㐀-䶿一-鿿豈-﫿＀-￯]/g;
-const SENTENCE_END_RE = /[。！？!?.…：:；;”’"』）)]\s*$/;
+/* 句读收尾判定：允许句末标点后紧跟脚注角标（源文形态 。<sup>〔n〕</sup>、
+ * DOM 文本形态 。〔n〕 都算句读收尾），否则「页尾以角标结束」时下一页的
+ * 新自然段会被误判为续段而取消缩进。 */
+const SENTENCE_END_RE = /[。！？!?.…：:；;”’"』）)](?:<\/sup\s*>|〔\s*\d+\s*〕)*\s*$/;
 
 function visualLength(text) {
   const matched = text.match(CJK_RE);
@@ -612,6 +649,23 @@ function htmlWeight(node) {
   }
   if (/doc-lede/.test(raw)) {
     return 18 + textLines(text, 48) * 22.4 + blockCount * 8;
+  }
+  /* ★2026-10-29 单行语义行（章节小标/目录/CIP/题辞）精准行高。
+   * 旧通用口径（正文行高 25.6 + 30 固定开销）把每行估成 56–81px，而实测这些行
+   * 只有 21–28px——高估 2–3 倍的「幻影预算」吃掉页容量，迫使 CIP/目录/章首页
+   * 提前翻页、留下半页空白（用户报的「离奇分页」真凶之一，实测 p12/p13 留白 581/623px）。
+   * 逐 <p> 计行（合并文本会漏算折行），行高取 24、固定开销 6，略偏保守不误报超高。 */
+  if (/doc-(section|toc|cip|epigraph)/.test(raw)) {
+    let lines = 0;
+    let matched = 0;
+    const pRe = /<p\b[^>]*>([\s\S]*?)<\/p>/gi;
+    let m2;
+    while ((m2 = pRe.exec(raw))) {
+      matched += 1;
+      lines += Math.max(1, textLines(stripHtml(m2[1]), 40));
+    }
+    if (!matched) lines = Math.max(1, textLines(text, 40));
+    return lines * 24 + 6;
   }
   // 通用：按正文口径估行，块标签补间距
   return 16 + textLines(text, 47) * LINE + blockCount * 14;
@@ -870,9 +924,43 @@ function paragraphCapChars(budget) {
   return Math.max(1, Math.floor((budget - 11) / LINE)) * LECTURE_PARA_CPL;
 }
 
-/* 把段落按首片/续片高度切成多片，保留行内格式；优先在句读处断行 */
+/* 行内感知的段落切分（保留加粗/斜体/链接/行内公式/上标等格式） ──
+ * ★2026-10-29 续段观感修正（用户报「自然段分页后变两段、角标孤悬页首」）：
+ * 1) 续片（pieces[k>0]）直接打上 para-cont 标记——同一自然段被跨页切断的后续片段，
+ *    必须无首行缩进、无段首间距，视觉与上页尾连成同一段（旧实现只在 markContinuation
+ *    里按「上一页尾文本是否句读」猜，且把类名写进 mdast 不识别的 properties 字段，
+ *    实测 45 个续段页 0 个生效，续段全部带 2em 缩进+段距，看着像两段）；
+ * 2) 脚注角标 <sup class="fn-ref">〔n〕 是「原子」，切断点若落在它前面，它会被整体
+ *    推到下一页、孤悬在新页段首（实测全站 38 页如此）。切分后把右片开头的脚注角标
+ *    收回左片尾部——角标逻辑上属于前文，不跨页。 */
+const FN_SUP_RE = /^<sup\b[^>]*fn-ref/;
+const FN_SUP_CLOSE_RE = /^<\/sup\s*>/i;
+const isFnSupLeaf = (lf) => !!(lf && lf.atom && lf.atom.type === "html" && FN_SUP_RE.test(lf.atom.value || ""));
+
+/* micromark 把行内 <sup class="fn-ref">〔n〕</sup> 拆成「开标签 html / 数字 text /
+ * 闭标签 html」三个节点；若按原样切分，切点会落在开标签与数字之间，把标签撕裂
+ * 跨页（上页尾留孤立开标签、下页首数字变普通文本+孤立闭标签——用户所见「注释角标
+ * 孤悬页首」的真凶）。这里把三节点合并为一个不可切原子（一个完整 html 节点）。 */
+function mergeFnSups(leaves) {
+  const out = [];
+  for (let i = 0; i < leaves.length; i += 1) {
+    const a = leaves[i];
+    const b = leaves[i + 1];
+    const c = leaves[i + 2];
+    if (a && a.atom && a.atom.type === "html" && FN_SUP_RE.test(a.atom.value || "") &&
+        b && !b.atom && c && c.atom && c.atom.type === "html" && FN_SUP_CLOSE_RE.test(c.atom.value || "")) {
+      const raw = (a.atom.value || "") + (b.value || "") + (c.atom.value || "");
+      out.push({ value: b.value || "", wrap: b.wrap.slice(), atom: { type: "html", value: raw } });
+      i += 2;
+      continue;
+    }
+    out.push(a);
+  }
+  return out;
+}
+
 function splitParagraphPieces(node, firstBudget, restBudget) {
-  let rest = flattenInline(node.children || []);
+  let rest = mergeFnSups(flattenInline(node.children || []));
   const pieces = [];
   let budget = firstBudget;
   let guard = 0;
@@ -886,6 +974,14 @@ function splitParagraphPieces(node, firstBudget, restBudget) {
       const pos = lastSentencePos(leftText);
       if (pos > 0 && pos >= cap * 0.6) ({ left, right } = divideLeaves(rest, pos));
     }
+    // 脚注角标不跨页：右片若以「空白文本叶 + 角标原子」开头（源文档里 。与〔n〕
+    // 之间的软换行会形成空白叶，卡住角标回收），先把空白收进左片，再把角标
+    // 收回左片尾（可连续多个）。空白与角标都逐字守恒，仅改变切点。
+    while (left.length && right.length) {
+      if (isFnSupLeaf(right[0])) { left.push(right.shift()); continue; }
+      if (!right[0].atom && !(right[0].value || "").trim()) { left.push(right.shift()); continue; }
+      break;
+    }
     if (!left.length) { // 首原子比整行还宽：整体带走，避免死循环
       left = rest.slice(0, 1);
       right = rest.slice(1);
@@ -896,7 +992,21 @@ function splitParagraphPieces(node, firstBudget, restBudget) {
   }
   return pieces
     .filter((lf) => leavesText(lf).trim() || lf.some((l) => l.atom))
-    .map((lf) => cloneWithChildren(node, buildInline(lf)));
+    .map((lf, k) => {
+      const piece = cloneWithChildren(node, buildInline(lf));
+      if (k > 0) {
+        // 续片：无首行缩进、无段首间距（与上页尾同属一个自然段）；
+        // 保留源段落原有语义类（如 doc-lede），仅追加 para-cont
+        const prevHp = (piece.data && piece.data.hProperties) || {};
+        const prevCls = Array.isArray(prevHp.className) ? prevHp.className
+          : (typeof prevHp.className === "string" ? prevHp.className.split(/\s+/).filter(Boolean) : []);
+        piece.data = {
+          ...(piece.data || {}),
+          hProperties: { ...prevHp, className: [...prevCls.filter((c) => c !== "para-cont"), "para-cont"] },
+        };
+      }
+      return piece;
+    });
 }
 
 /* 超长段落（整块高于一页）的兜底切分 */
@@ -1031,7 +1141,9 @@ function flowPackMain(mainStream) {
     chunk = { nodes: [], w: 0, start: 0 };
   };
 
-  const HEADING_KEEP = 150; // 标题落页尾时，其后至少要留这么多高度，否则标题整体移到下页（防孤标题）
+  // 防孤标题：标题后连两行正文都放不下时，标题才整体移到下页（避免页底孤零零一个标题）。
+  // 原值 150 过于保守，会把其实还能排两三行的小节标题也翻页，凭空留出 1/4 页空白。
+  const HEADING_KEEP = 60;
   const FILL_MIN = 48;      // 页尾余量≥约两行即续切填满，行文如翻书、自然段可在页底自然续到下页
 
   // markdown 标题与文献笔记的小节标题 <p class="doc-section"> 同样防孤行
@@ -1075,7 +1187,32 @@ function flowPackMain(mainStream) {
     pushBlock(node, w);
   };
 
-  for (const node of mainStream) place(node);
+  /* ── 图文粘连（用户：「漫画说明放在漫画底下」）──
+   * 图片块与其紧随的 fig-caption 说明块在源 md 里是两个独立块，分页器会把说明
+   * 挤到下一页（且图片估算里预留了「幻影题注」空间，进一步把真题注推走）。
+   * 这里把「图片 + 紧随 fig-caption」打包成不可分原子组：放得下就同页，
+   * 放不下整组一起翻页，说明永远紧贴图片下方，绝不分离到两页。 */
+  const isImgBlock = (n) => blockHasImage(n) || (n.type === "html" && /<img/i.test(n.value || ""));
+  const isFigCaption = (n) => n.type === "html" && /fig-caption/.test(n.value || "");
+  const groups = [];
+  for (let gi = 0; gi < mainStream.length; gi += 1) {
+    const n = mainStream[gi];
+    if (isImgBlock(n) && gi + 1 < mainStream.length && isFigCaption(mainStream[gi + 1])) {
+      groups.push([n, mainStream[gi + 1]]);
+      gi += 1;
+    } else {
+      groups.push([n]);
+    }
+  }
+  const placeGroup = (group) => {
+    if (group.length === 1) { place(group[0]); return; }
+    // 图文组：整组原子放置，不拆——放不下就整组翻页，图与说明同页
+    const gw = group.reduce((s, n) => s + blockWeight(n), 0);
+    if (!pageEmpty() && chunk.w + gw > FIXED) newChunk();
+    group.forEach((n) => pushBlock(n, blockWeight(n)));
+  };
+
+  for (const group of groups) placeGroup(group);
   if (!pageEmpty()) newChunk();
   return pages;
 }
@@ -1192,29 +1329,6 @@ function packSlides(folios, file) {
   });
 }
 
-function lastText(nodes) {
-  for (let i = nodes.length - 1; i >= 0; i--) {
-    const t = textOf(nodes[i]).trim();
-    if (t) return t;
-  }
-  return "";
-}
-
-/* 跨页续段：上一页末尾不是句读时，下一页首段取消首行缩进 */
-function markContinuation(pages) {
-  pages.forEach((page, i) => {
-    if (i === 0) return;
-    const prev = lastText(pages[i - 1].m);
-    if (prev && !SENTENCE_END_RE.test(prev)) {
-      const first = page.m.find((n) => n.type === "paragraph" && textOf(n).trim());
-      if (first) {
-        first.properties = { ...(first.properties || {}) };
-        first.properties.className = ["para-cont"];
-      }
-    }
-  });
-}
-
 /* ── mdast 组装（remark 阶段以 html 节点包裹原始 mdast 内容） ──── */
 
 function htmlNode(value) {
@@ -1265,8 +1379,7 @@ function makeFolio(label, page, index) {
  * - 笔记纸（notes）：左注+右注按带顺序合并，沿用 .folio__col--notes；
  * 默认笔记纸叠在原文纸正后方（CSS 绝对定位），导航铅笔按钮触发 body 类后两纸左右摊开。
  * slideMod=true 时给 folio 加 --slides 修饰类（课件纸更宽，以容纳 PPT 卡片）。 */
-function makeSpreadFolio(label, page, index, slideMod) {
-  const notes = page.notes || [];
+function makeSpreadFolio(label, page, index, slideMod, noteText) {
   return [
     htmlNode(`<section class="folio folio--spread${slideMod ? " folio--spread--slides" : ""}" data-page="${index + 1}">`),
     htmlNode(`<div class="folio__paper folio__paper--main">`),
@@ -1279,7 +1392,8 @@ function makeSpreadFolio(label, page, index, slideMod) {
     htmlNode(`</div>`),
     htmlNode(`<div class="folio__paper folio__paper--notes">`),
     htmlNode(`<div class="folio__col folio__col--notes">`),
-    htmlNode(`<div class="folio__edit" contenteditable="false" data-page="${index + 1}" aria-label="笔记纸（本地可编辑）"></div>`),
+    // 构建期笔记文本逐字写入（换行/空格由 pre-wrap 原样呈现）；本地仍可继续编辑
+    htmlNode(`<div class="folio__edit" contenteditable="false" data-page="${index + 1}" aria-label="笔记纸（本地可编辑）">${escapeHtml(noteText || "")}</div>`),
     htmlNode(`</div>`),
     htmlNode(`</div>`),
     htmlNode(`</section>`),
@@ -1315,14 +1429,23 @@ export function remarkThreeColumn() {
       pages = packPages(mainStream, noteStream);
     }
     // 幻灯片各自独立，不做跨页续段缩进
-    if (!slideMode) markContinuation(pages);
+    // ★2026-10-29：移除页级 markContinuation 猜测。续段标记已由 splitParagraphPieces
+    // 在「真正被跨页切断的续片」上精确打标；页级按「上一页尾是否句读」猜会把
+    // 目录行/CIP 行/脚注行/题辞（本无句读）之后的新章首段误判为续段而取消缩进
+    // （用户报「每个文章的第一自然段都没有缩进」）。段落要么整块在一页、要么被
+    // 切成续片，不存在第三种跨页形态，故页级猜测只产生误伤，删除。
 
+    const docNotes = loadFolioNotes()[sourceDocKey(file)] || {};
     const children = [];
     pages.forEach((page, i) => {
       children.push(
-        ...makeSpreadFolio(`第 ${i + 1} 页`, page, i, slideMode),
+        ...makeSpreadFolio(`第 ${i + 1} 页`, page, i, slideMode, docNotes[String(i + 1)] || ""),
       );
     });
+    // 注入源 md 相对路径，供本地编辑服务把笔记回写进 folio-notes.json 的对应键
+    if (sourceDocKey(file)) {
+      children.unshift(htmlNode(`<div hidden data-cahier-source="${escapeHtml(sourceDocKey(file))}"></div>`));
+    }
     tree.children = children;
   };
 }

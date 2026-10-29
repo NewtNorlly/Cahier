@@ -329,7 +329,17 @@ const canonicalUrl = canonicalPath !== false && Astro.site
         reflectNotes(open);
       });
 
-      /* ════════ 本地笔记编辑：仅 127.0.0.1 / localhost 启用，云端只读 ════════ */
+      /* ════════ 本地笔记编辑：仅 127.0.0.1 / localhost 启用，云端只读 ════════
+       * 「所写即所得」的四条保证：
+       * 1) 编辑区是纯文本面（只允许文本节点）：回车插入换行符、粘贴/拖放只取纯文本，
+       *    外部网页的字体、颜色、段落样式一律进不来，全部继承笔记纸规定的字体；
+       * 2) 每页可写行数由纸张物理高度固定：beforeinput 在 DOM 改变前预判，
+       *    写满最后一行后再敲字符/回车一律直接拒绝（preventDefault），
+       *    不做事后回滚、不跳动光标——最后一行按回车，什么都不会发生；
+       * 3) 保存/恢复逐字使用 textContent：换行、空行、前导空格一个不丢，
+       *    关闭服务、重新启动后仍是上次的样子；
+       * 4) 构建期数据（folio-notes.json，云端笔记）为底稿，本地 localStorage 覆盖。
+       * 中文输入法组词期间不干预，compositionend 统一收口。 */
       function setupEditableNotes() {
         const host = location.hostname;
         const isLocal = host === "localhost" || host === "127.0.0.1" || host === "[::1]";
@@ -341,60 +351,315 @@ const canonicalUrl = canonicalPath !== false && Astro.site
           return;
         }
         document.body.classList.add("notes-local-edit");
-        const keyBase = "cahier-note:" + location.pathname;
+        /* 缓存键带「页数版本」：分页参数/排版改动会使页数变化，页码键随之错位；
+         * 键里编入页数后，旧版缓存自动失效（不再用旧页码覆盖新分页的落盘笔记），
+         * 用户在新页上的编辑写入新键。2026-10-29 分页修复（151→149 页）后必需。 */
+        const keyBase = "cahier-note:" + location.pathname + ":v" + edits.length;
+
+        // 导出当前文档全部页文本（快照 JSON）
+        const gatherPages = () => {
+          const pages: Record<string, string> = {};
+          edits.forEach((el) => {
+            pages[el.getAttribute("data-page") || "1"] = el.textContent || "";
+          });
+          return pages;
+        };
+
+        /* ── 本地自动回写：编辑即写回 git 跟踪的 folio-notes.json，无需手动导出 ──
+         * 浏览器把当前书全部页防抖 POST 给本地编辑服务（/__cahier_notes），
+         * 由它原子写入 site/src/data/folio-notes.json。刷新/重启由 localStorage 兜底，
+         * 上线时重新 build 即把这些笔记烤进静态站推上云端。 */
+        const sourceKey = document.querySelector("[data-cahier-source]")?.getAttribute("data-cahier-source") || "";
+        let serverTimer: ReturnType<typeof setTimeout> | null = null;
+        const flushServerSave = () => {
+          if (!sourceKey) return;
+          const payload = { source: sourceKey, pathname: location.pathname, pages: gatherPages() };
+          try {
+            fetch("/__cahier_notes", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+              keepalive: true,
+            });
+          } catch { /* 离线时静默，localStorage 仍在 */ }
+        };
+        const scheduleServerSave = () => {
+          if (serverTimer) clearTimeout(serverTimer);
+          serverTimer = setTimeout(flushServerSave, 800);
+        };
+        window.addEventListener("beforeunload", flushServerSave);
+
         edits.forEach((el) => {
           const page = el.getAttribute("data-page") || "1";
           const key = keyBase + ":" + page;
-          try { el.textContent = localStorage.getItem(key) || ""; } catch {}
+          // 构建期数据为底稿；本地有保存则覆盖（注意 null 与 "" 的区别）
+          let saved: string | null = null;
+          try { saved = localStorage.getItem(key); } catch {}
+          if (saved !== null) el.textContent = saved;
           el.setAttribute("contenteditable", "true");
 
-          /* 写满最后一行即止：编辑区在 CSS 上被约束在纸内（溢出裁切），
-             这里再做一道保险——任何会让文字越过纸底的插入（含中文输入法上屏）
-             都回滚到上一状态；删除、撤销等缩减操作始终放行。 */
-          let goodText = el.textContent;
+          /* ── 隐藏标尺：编辑区的“孪生”测量面。
+           * 宽度必须用 clientWidth（zoom:1.2 上下文中的布局像素），绝不能用
+           * getBoundingClientRect().width——后者把 zoom 视觉缩放也算进去，
+           * 得到约 1.2 倍偏宽，标尺折行更少、误判“放得下”，是旧版顶格错乱的根因。
+           * 标尺与编辑区同字体、同折行宽度，scrollHeight 即真实内容高。 ── */
+          const gauge = el.cloneNode(false) as HTMLElement;
+          gauge.removeAttribute("contenteditable");
+          gauge.removeAttribute("data-page");
+          gauge.removeAttribute("aria-label");
+          gauge.style.cssText =
+            "position:absolute;left:-99999px;top:0;visibility:hidden;pointer-events:none;" +
+            "height:auto;min-height:0;max-height:none;flex:none;overflow:hidden;margin:0;padding:0;";
+          const syncGaugeWidth = () => { gauge.style.width = el.clientWidth + "px"; };
+          syncGaugeWidth();
+          el.parentNode!.appendChild(gauge);
+          // 视口变化（--spread-scale 分档）后重新对齐一次测量宽
+          window.addEventListener("resize", syncGaugeWidth);
+
+          /* 纸张容量：编辑区内容盒高（布局像素）。内容高 ≤ 此值即放得下。 */
+          const capacity = () => el.clientHeight;
+          const fits = (text: string) => {
+            gauge.textContent = text;
+            return gauge.scrollHeight <= capacity() + 1;
+          };
+
           let composing = false;
-          let beforeComposition = el.textContent;
-          const isOverflowing = () => el.scrollHeight - el.clientHeight > 2;
-          const moveCaretToEnd = () => {
-            el.scrollTop = 0;
-            const range = document.createRange();
-            range.selectNodeContents(el);
-            range.collapse(false);
+          let beforeComposition: string | null = null;
+
+          /* 光标字符偏移（DOM 内只有文本节点，Range.toString 即字符数） */
+          const caretOffsets = (): [number, number] | null => {
             const sel = window.getSelection();
-            if (sel) {
-              sel.removeAllRanges();
-              sel.addRange(range);
-            }
+            if (!sel || !sel.rangeCount) return null;
+            const range = sel.getRangeAt(0);
+            if (!el.contains(range.startContainer)) return null;
+            const r = range.cloneRange();
+            r.selectNodeContents(el);
+            r.setEnd(range.startContainer, range.startOffset);
+            const start = r.toString().length;
+            const r2 = range.cloneRange();
+            r2.selectNodeContents(el);
+            r2.setEnd(range.endContainer, range.endOffset);
+            return [start, r2.toString().length];
+          };
+          const prospective = (insert: string) => {
+            const cur = el.textContent || "";
+            const offs = caretOffsets();
+            if (!offs) return cur + insert;
+            return cur.slice(0, offs[0]) + insert + cur.slice(offs[1]);
           };
           const save = () => {
-            goodText = el.textContent;
-            try { localStorage.setItem(key, el.textContent); } catch {}
+            try { localStorage.setItem(key, el.textContent || ""); } catch {}
+            scheduleServerSave();
           };
+
+          /* 纯文本插入：只建文本节点，样式继承笔记纸（外部格式无从进入） */
+          const insertPlain = (text: string) => {
+            if (!text) return;
+            el.focus();
+            const sel = window.getSelection();
+            let range: Range;
+            if (sel && sel.rangeCount && el.contains(sel.getRangeAt(0).commonAncestorContainer)) {
+              range = sel.getRangeAt(0);
+            } else {
+              range = document.createRange();
+              range.selectNodeContents(el);
+              range.collapse(false);
+            }
+            range.deleteContents();
+            const node = document.createTextNode(text);
+            range.insertNode(node);
+            range.setStartAfter(node);
+            range.collapse(true);
+            sel!.removeAllRanges();
+            sel!.addRange(range);
+            save(); // 手动 DOM 改动不触发 input，显式保存
+          };
+
+          /* 粘贴/拖放文本规整：换行统一为 \n、去 BOM、NBSP 转普通空格 */
+          const normalizePlain = (raw: string) =>
+            raw.replace(/\r\n?/g, "\n").replace(/\uFEFF/g, "").replace(/\u00A0/g, " ");
+
+          /* HTML 转纯文本：用临时 DOM 解析（不插入文档、不执行脚本），
+           * 块级元素之间补换行，<br> 转换行，再取 textContent，丢弃一切样式属性。 */
+          const htmlToPlainText = (html: string) => {
+            if (!html) return "";
+            const tpl = document.createElement("template");
+            tpl.innerHTML = html;
+            const frag = tpl.content;
+            const walk = (node: Node): string => {
+              if (node.nodeType === 3) return node.nodeValue || ""; // 文本节点
+              if (node.nodeType !== 1) return "";                   // 注释等忽略
+              const el = node as HTMLElement;
+              const tag = el.tagName;
+              if (tag === "BR") return "\n";
+              if (tag === "SCRIPT" || tag === "STYLE") return "";    // 内容不进笔记
+              let inner = "";
+              el.childNodes.forEach((c) => { inner += walk(c); });
+              if (/^(P|DIV|LI|TR|H[1-6]|BLOCKQUOTE|PRE|SECTION|ARTICLE)$/.test(tag)) {
+                return "\n" + inner + "\n";
+              }
+              return inner;
+            };
+            let out = "";
+            frag.childNodes.forEach((c) => { out += walk(c); });
+            // 折叠多余换行、去首尾空白后交给 normalizePlain 统一
+            return normalizePlain(out.replace(/\n{3,}/g, "\n\n").replace(/^\n+|\n+$/g, ""));
+          };
+
+          /* 插入并遵守纸张容量：写不下时只放能容纳的最长前缀（物理纸写满即止） */
+          const insertPlainWithFit = (raw: string) => {
+            const text = normalizePlain(raw);
+            if (!text) return;
+            if (fits(prospective(text))) { insertPlain(text); return; }
+            const cur = el.textContent || "";
+            const offs = caretOffsets();
+            const [s, e] = offs || [cur.length, cur.length];
+            const head = cur.slice(0, s);
+            const tail = cur.slice(e);
+            const maxLen = (n: number) => fits(head + text.slice(0, n) + tail);
+            if (!maxLen(0)) return; // 纸已满，一字放不下
+            let lo = 0;
+            let hi = text.length;
+            while (lo < hi) {
+              const mid = (lo + hi + 1) >> 1;
+              if (maxLen(mid)) lo = mid; else hi = mid - 1;
+            }
+            // 不切开 UTF-16 代理对
+            if (lo > 0) {
+              const c = text.charCodeAt(lo - 1);
+              if (c >= 0xD800 && c <= 0xDBFF) lo -= 1;
+            }
+            if (lo > 0) insertPlain(text.slice(0, lo));
+          };
+
+          /* 回车：插入换行符；最后一行按回车，什么都不发生（纸已写满） */
+          el.addEventListener("keydown", (ev) => {
+            if (ev.key === "Enter" && !composing) {
+              ev.preventDefault();
+              if (fits(prospective("\n"))) insertPlain("\n");
+            }
+          });
+
+          /* beforeinput：DOM 改变前拦截，写不下即拒绝——从源头杜绝事后回滚顶格 */
+          el.addEventListener("beforeinput", (ev) => {
+            const ie = ev as InputEvent;
+            const type = ie.inputType || "";
+            if (composing) return;
+            if (type === "insertParagraph" || type === "insertLineBreak") {
+              ev.preventDefault(); // 物理键盘回车已由 keydown 处理；软键盘在此兜底
+              if (fits(prospective("\n"))) insertPlain("\n");
+              return;
+            }
+            if (type === "insertFromPaste" || type === "insertFromPasteAsQuotation") {
+              ev.preventDefault();
+              const dt = ie.dataTransfer;
+              insertPlainWithFit((dt && dt.getData("text/plain")) || ie.data || "");
+              return;
+            }
+            if (type === "insertFromDrop") {
+              ev.preventDefault();
+              insertPlainWithFit((ie.dataTransfer && ie.dataTransfer.getData("text/plain")) || ie.data || "");
+              return;
+            }
+            if (type === "insertReplacementText") {
+              ev.preventDefault();
+              insertPlainWithFit(ie.data || "");
+              return;
+            }
+            if (type === "insertHTML") {
+              // 输入法整句上屏、自动更正、部分拖拽会带 HTML：剥掉标签只留纯文本，
+              // 外部字体/颜色/粗体一律进不来，且不会把 <br>/<div> 塞进纯文本模型。
+              ev.preventDefault();
+              insertPlainWithFit(htmlToPlainText(ie.data || ""));
+              return;
+            }
+            if (type.indexOf("insert") === 0) {
+              // insertText / insertDictate 等：纯文本
+              const data = ie.data || "";
+              if (!data) return;
+              /* 含换行的插入（整段多行键入、语音听写、部分输入法整句上屏）：
+               * 浏览器默认会把 \n 渲染成 <br>/<div>，而 textContent 读不到这些
+               * 元素里的换行——保存/刷新后换行丢失、整段顶格挤成一坨（用户报的核心 Bug）。
+               * 改为 preventDefault 后走 insertPlainWithFit 显式建纯文本节点，逐字保留 \n。 */
+              if (/[\r\n]/.test(data)) {
+                ev.preventDefault();
+                insertPlainWithFit(data);
+                return;
+              }
+              // 普通单行字符：写不下即拒绝，写得出就放行（浏览器建文本节点，安全）
+              if (!fits(prospective(data))) ev.preventDefault();
+            }
+          });
+
+          /* 粘贴事件双保险（部分浏览器不走 beforeinput）：只取纯文本，外部样式一律丢弃 */
+          let pasteGuard = false;
+          el.addEventListener("paste", (ev) => {
+            ev.preventDefault();
+            if (pasteGuard) return;
+            pasteGuard = true;
+            setTimeout(() => { pasteGuard = false; }, 0);
+            const cd = (ev as ClipboardEvent).clipboardData;
+            insertPlainWithFit((cd && cd.getData("text/plain")) || "");
+          });
+          /* 拖放双保险：只放纯文本 */
+          el.addEventListener("dragover", (ev) => ev.preventDefault());
+          el.addEventListener("drop", (ev) => {
+            ev.preventDefault();
+            const dt = (ev as DragEvent).dataTransfer;
+            insertPlainWithFit((dt && dt.getData("text/plain")) || "");
+          });
+
+          /* 中文输入法：组词期间不干预，上屏后收口。
+           * 整句上屏后若超出纸面，仅退回本次组词（回到组词前的已存状态），
+           * 绝不连坐擦掉用户此前已写好的整页笔记。 */
           el.addEventListener("compositionstart", () => {
             composing = true;
-            beforeComposition = el.textContent;
+            beforeComposition = el.textContent || "";
           });
           el.addEventListener("compositionend", () => {
             composing = false;
-            if (isOverflowing()) {
-              // 整句拼音上屏后写不下：本次组词整体退回，纸张不被撑破
+            if (beforeComposition !== null && !fits(el.textContent || "")) {
               el.textContent = beforeComposition;
-              moveCaretToEnd();
-            } else {
-              save();
-            }
-          });
-          el.addEventListener("input", (ev) => {
-            if (composing) return; // 输入法组词期间不干预，compositionend 统一收口
-            const inputType = (ev as InputEvent).inputType || "";
-            const inserting = inputType.indexOf("insert") === 0;
-            if (inserting && isOverflowing()) {
-              el.textContent = goodText;
-              moveCaretToEnd();
-              return;
             }
             save();
           });
+
+          /* input：仅保存，绝不回滚已写文本。
+           * 容量拦截已前置在 beforeinput；undo/redo 等漏网溢出由 CSS overflow:hidden
+           * 在视觉上裁掉，不动用户文本，从根上消除“整页顶格错乱”。 */
+          el.addEventListener("input", () => {
+            if (composing) return;
+            save();
+          });
+        });
+
+        /* ── 手动“保存”：立即把笔记回写本地文件并弹提示（不再下载 JSON） ── */
+        const flashSaved = () => {
+          let tip = document.getElementById("notesSavedTip");
+          if (!tip) {
+            tip = document.createElement("div");
+            tip.id = "notesSavedTip";
+            tip.style.cssText =
+              "position:fixed;right:24px;bottom:24px;z-index:9999;background:#1f2937;color:#fff;" +
+              "padding:8px 14px;border-radius:8px;font-size:13px;opacity:0;transition:opacity .25s;pointer-events:none;";
+            document.body.appendChild(tip);
+          }
+          tip.textContent = "笔记已保存到本地";
+          tip.style.opacity = "1";
+          const tipEl = tip as HTMLElement & { _t?: ReturnType<typeof setTimeout> };
+          clearTimeout(tipEl._t);
+          tipEl._t = setTimeout(() => { tip!.style.opacity = "0"; }, 1200);
+        };
+        const flushNow = () => {
+          if (serverTimer) clearTimeout(serverTimer);
+          flushServerSave();
+          flashSaved();
+        };
+        document.addEventListener("keydown", (ev) => {
+          if ((ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === "s") {
+            ev.preventDefault();
+            flushNow();
+          }
         });
       }
       window.addEventListener("DOMContentLoaded", setupEditableNotes);

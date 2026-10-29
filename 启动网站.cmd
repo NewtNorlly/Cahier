@@ -1,12 +1,12 @@
 @echo off
-title Cahier ±¾µØÆô¶¯Æ÷
+title Cahier ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 cd /d "%~dp0"
 
 echo ==========================================
-echo   Cahier ±¾µØÆô¶¯Æ÷
+echo   Cahier ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 echo   http://127.0.0.1:8765/
-echo   (Í¨¹ý 127.0.0.1 ·ÃÎÊÊ±, ±Ê¼ÇÖ½×Ô¶¯ÆôÓÃ±¾µØ±à¼­)
+echo   (Í¨ï¿½ï¿½ 127.0.0.1 ï¿½ï¿½ï¿½ï¿½Ê±, ï¿½Ê¼ï¿½Ö½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½Ã±ï¿½ï¿½Ø±à¼­)
 echo ==========================================
 
 REM ---- check dist ----
@@ -37,7 +37,7 @@ netstat -ano | findstr ":8765 " | findstr "LISTENING" >nul
 if %errorlevel%==0 goto open
 
 echo Starting static server on port 8765 ...
-start "Cahier ¾²Ì¬·þÎñ" /min /D "%~dp0site\dist" "%PYEXE%" -m http.server 8765
+start "Cahier ï¿½ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½" /min /D "%~dp0site" "%PYEXE%" "%~dp0site\local-server.py"
 timeout /t 2 /nobreak >nul
 
 netstat -ano | findstr ":8765 " | findstr "LISTENING" >nul
