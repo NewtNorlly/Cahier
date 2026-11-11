@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from seg140 import han_len, split_long
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-COURSES = ['中国法制史','会计','公共经济学','决策理论与方法','土地资源管理','宪法','德语','批判性思维',
+COURSES = ['中国法制史','会计','公共经济学','决策理论与方法','土地资源管理','宪法','德语','大学生批判性思维',
            '民事诉讼法','法语','知识产权法基础理论','社会保障学','网络工程师','网络技术','脑图集','英语']
 
 

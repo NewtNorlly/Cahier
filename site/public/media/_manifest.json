@@ -1,6 +1,18 @@
 {
-  "generatedAt": "2026-10-29T15:56:55.618Z",
+  "generatedAt": "2026-11-11T06:48:52.740Z",
   "files": [
+    {
+      "path": "大学生批判性思维/covers/critical-thinking-480.webp",
+      "bytes": 6416
+    },
+    {
+      "path": "大学生批判性思维/covers/critical-thinking-960_thumb.webp",
+      "bytes": 3352
+    },
+    {
+      "path": "大学生批判性思维/covers/critical-thinking-960.webp",
+      "bytes": 14526
+    },
     {
       "path": "德语/covers/german-480.webp",
       "bytes": 6458
@@ -708,18 +720,6 @@
     {
       "path": "脑图集/covers/brain-atlas-960.webp",
       "bytes": 26792
-    },
-    {
-      "path": "批判性思维/covers/critical-thinking-480.webp",
-      "bytes": 7346
-    },
-    {
-      "path": "批判性思维/covers/critical-thinking-960_thumb.webp",
-      "bytes": 3500
-    },
-    {
-      "path": "批判性思维/covers/critical-thinking-960.webp",
-      "bytes": 19548
     },
     {
       "path": "社会保障学/covers/social-security-480.webp",
