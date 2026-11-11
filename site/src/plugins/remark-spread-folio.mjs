@@ -1,14 +1,21 @@
 /**
- * remark-three-column.mjs — 三栏康奈尔笔记 + A4 翻页重排（remark 插件）
+ * remark-spread-folio.mjs — 双纸（原文纸 / 笔记纸）康奈尔笔记本 + A4 翻页重排（remark 插件）
  *
- * 设计目标（2026-09 精修）：
+ * 渲染形态（2026-10-26 起，三栏窄便签栏已废弃）：
+ * - 每页为 .folio--spread，内叠两张同规格纸：原文纸（.folio__paper--main，
+ *   中栏 M 原文全套排版）与笔记纸（.folio__paper--notes）；
+ * - 笔记纸内容唯一来源 site/src/data/folio-notes.json（本地编辑即写盘 →
+ *   构建期逐字烤入 .folio__edit → 云端只读呈现）；源 md 的 col:L / col:R
+ *   标记仍被解析（铁律 12 判据载体、保持兼容），但不再渲染为预置笔记；
+ * - 默认笔记纸叠在原文纸正后方，导航铅笔按钮触发后两纸左右摊开。
+ *
+ * 设计目标（2026-09 精修，沿用）：
  * - 严格保留 A4 纸页规格：桌面端每页固定 1536 × 1086（√2 竖纸），页码贴页底。
- * - 行文如翻书：讲稿（无左右批注）按「原子块」自然流动，块与块连续向下排，
- *   一页排满才翻页，段落、列表、表格允许跨页续排；只在必要处分页。
- * - 文献笔记（含 L/R 批注、脚注）以原 PDF 页「带」为对齐单元，保持批注与原文对齐。
+ * - 行文如翻书：原文按「原子块」自然流动，块与块连续向下排，一页排满才翻页，
+ *   段落、列表、表格允许跨页续排；只在必要处分页。
  *
- * 高度模型按 1536px 纸宽、中栏 768px、正文 0.9rem / 1.78 行距实测校准：
- *   每行 25.6px、每行约 47 个中文字；页内可排高度约 951px，留安全余量后 FIXED≈888px。
+ * 高度模型按 1536px 纸宽、原文纸 768px、正文 0.9rem / 1.78 行距实测校准：
+ *   每行 25.6px、每行约 47 个中文字；页内可排高度约 951px，留安全余量后 FIXED≈920px。
  */
 
 import fs from "node:fs";
@@ -1085,46 +1092,31 @@ function splitBlockAt(node, budget) {
 
 /* ── 流动分页 ─────────────────────────────────────────────── */
 
-/**
- * 单元（unit）：
- * - { kind:'block', m:node }  讲稿原子块（无批注）
- * - { kind:'band', l,m,r }    文献带批注的整带（三栏对齐）
- */
-/* 收集两条独立的流（双纸布局后，原文纸与笔记纸不再逐页带对齐）：
- *  - mainStream：全部中栏 M 原子块（段落/列表/表格/图片/公式），文档顺序，可跨页续切；
- *  - noteStream：左注+右注按「带」顺序交织的笔记块流。每条笔记带 alignAt=它所锚定的
- *    原文累计高度（该带 M 内容开始处），笔记纸据此在页顶补垂直空行，使左右对照阅读。 */
-function unitsFromBands(bands) {
+/* 收集原文流：全部中栏 M 原子块（段落/列表/表格/图片/公式），文档顺序，可跨页续切。
+ * 源 md 的 L/R 侧栏（col:L/col:R）只是铁律 12 判据的载体与解析兼容层，
+ * 不再渲染为预置笔记——笔记纸内容唯一来源是 site/src/data/folio-notes.json。 */
+function mainStreamFromBands(bands) {
   const mainStream = [];
-  const noteStream = [];
-  let mainOffset = 0;
   for (const band of bands) {
-    const anchor = mainOffset; // 该带笔记对齐到其 M 内容开始处
     for (const node of band.m) {
       // 讲稿列表逐条展平为带序号/圆点的普通段落，使行文可逐行自然续页
       const expanded = (node.type === "list" && flattenListToBlocks(node)) || [node];
       for (const base of expanded) {
         for (const piece of splitBlock(base)) {
           mainStream.push(piece);
-          mainOffset += blockWeight(piece);
         }
       }
     }
-    for (const n of band.l) noteStream.push({ node: n, alignAt: anchor });
-    for (const n of band.r) noteStream.push({ node: n, alignAt: anchor });
   }
-  return { mainStream, noteStream };
+  return mainStream;
 }
 
-function buildUnits(folios) {
+function buildMainStream(folios) {
   const mainStream = [];
-  const noteStream = [];
   for (const folio of folios) {
-    const s = unitsFromBands(folio.bands);
-    mainStream.push(...s.mainStream);
-    noteStream.push(...s.noteStream);
+    mainStream.push(...mainStreamFromBands(folio.bands));
   }
-  return { mainStream, noteStream };
+  return mainStream;
 }
 
 /* 原文纸：逐行流动排满，一页排满才翻页（讲稿同款），段落自然跨页。
@@ -1217,25 +1209,12 @@ function flowPackMain(mainStream) {
   return pages;
 }
 
-function flowPackNotes(mainPages, noteStream) {
-  // 用户决定自写笔记：不再输出预置笔记，每页笔记纸留空（由本地编辑区填充）。
-  return mainPages.map(() => ({ nodes: [], cursor: 0 }));
-}
-
-/* 合并两股流：原文纸页数与笔记纸页数取大者；
- * 笔记写完后多出的原文页，其笔记纸为空（用户翻原文时笔记纸留白，符合"笔记本"观感）。 */
-function packPages(mainStream, noteStream) {
+/* 原文纸分页：逐行流动排满，一页排满才翻页。
+ * 每页笔记纸不再由源 md 侧栏预填（2026-10-26 起预置笔记已清空），
+ * 笔记文本在渲染时由 folio-notes.json 逐页注入（见主转换函数）。 */
+function packPages(mainStream) {
   const mainPages = flowPackMain(mainStream);
-  const notePages = flowPackNotes(mainPages, noteStream);
-  const count = Math.max(mainPages.length, notePages.length);
-  const pages = [];
-  for (let i = 0; i < count; i += 1) {
-    pages.push({
-      m: (mainPages[i] && mainPages[i].nodes) || [],
-      notes: (notePages[i] && notePages[i].nodes) || [],
-    });
-  }
-  return pages;
+  return mainPages.map((p) => ({ m: p.nodes }));
 }
 
 /* 把一张幻灯片的内容序列渲染为 mdast（连续图片两两包进 .slide-figrow 横排） */
@@ -1346,37 +1325,10 @@ function annotateEst(nodes) {
   });
 }
 
-function makeBand(chunk) {
-  return [
-    htmlNode(`<section class="folio__band">`),
-    htmlNode(`<div class="folio__col folio__col--left">`),
-    ...chunk.l,
-    htmlNode(`</div>`),
-    htmlNode(`<div class="folio__col folio__col--main">`),
-    ...annotateEst(chunk.m),
-    htmlNode(`</div>`),
-    htmlNode(`<div class="folio__col folio__col--right">`),
-    ...chunk.r,
-    htmlNode(`</div>`),
-    htmlNode(`</section>`),
-  ];
-}
-
-function makeFolio(label, page, index) {
-  const children = [htmlNode(`<section class="folio" data-page="${index + 1}">`)];
-  children.push(...makeBand(page));
-  children.push(
-    htmlNode(
-      `<div class="folio__pageno"><span>${label || `第 ${index + 1} 页`}</span></div>`,
-    ),
-  );
-  children.push(htmlNode(`</section>`));
-  return children;
-}
-
 /* 普通讲稿/文献页：左右双纸「原文纸 / 笔记纸」布局。
  * - 原文纸（main）：中栏 M 原文，沿用 .folio__col--main 全套排版；
- * - 笔记纸（notes）：左注+右注按带顺序合并，沿用 .folio__col--notes；
+ * - 笔记纸（notes）：内容唯一来源是 site/src/data/folio-notes.json（构建期逐字烤入），
+ *   md 侧栏（col:L/col:R）不再渲染为预置笔记（2026-10-26 起，笔记纸改本地可编辑 + 云端只读）；
  * 默认笔记纸叠在原文纸正后方（CSS 绝对定位），导航铅笔按钮触发 body 类后两纸左右摊开。
  * slideMod=true 时给 folio 加 --slides 修饰类（课件纸更宽，以容纳 PPT 卡片）。 */
 function makeSpreadFolio(label, page, index, slideMod, noteText) {
@@ -1411,7 +1363,7 @@ function isSlideDeck(file) {
   return typeof dt === "string" && /slide|courseware|deck/i.test(dt);
 }
 
-export function remarkThreeColumn() {
+export function remarkSpreadFolio() {
   return (tree, file) => {
     const folios = parseFolios(tree);
     if (!folios.length) return;
@@ -1425,8 +1377,7 @@ export function remarkThreeColumn() {
       slideMode = true;
       pages = packSlides(folios, file);
     } else {
-      const { mainStream, noteStream } = buildUnits(folios);
-      pages = packPages(mainStream, noteStream);
+      pages = packPages(buildMainStream(folios));
     }
     // 幻灯片各自独立，不做跨页续段缩进
     // ★2026-10-29：移除页级 markContinuation 猜测。续段标记已由 splitParagraphPieces
@@ -1450,4 +1401,4 @@ export function remarkThreeColumn() {
   };
 }
 
-export default remarkThreeColumn;
+export default remarkSpreadFolio;

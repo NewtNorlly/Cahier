@@ -1,18 +1,8 @@
 /* ════════════════════════════════════════════════════════════
-   Cahier · 康奈尔笔记本文档体
-   中栏：干净纸面（原文）   左/右栏：横线本（引导问题 / 手写批注）
-   暖纸色 · 细横线 · 红边线 · 留白优先 —— 清新、克制、像手账
+   Cahier · 康奈尔笔记本文档体（双纸：原文纸 / 笔记纸）
+   原文纸：干净纸面（中栏 M 原文）   笔记纸：本地可编辑、云端只读
+   暖纸色 · 留白优先 —— 清新、克制、像手账
    ════════════════════════════════════════════════════════════ */
-
-/* ── 统一纸页基准 token（1920 视口无头实测固化）──
-   实测邵科论文：.doc-body / .folio 全站统一宽 1536px，中栏 768px；
-   中间健康页高 ≈1086–1128px。横版 A4 短边:长边 = 1:√2，
-   故 --paper-h = --paper-w / √2 ≈ 1086px。桌面端每个 .folio 严格套用
-   同一宽 × 同一高，页脚/页码固定在纸页底部同一基线。 */
-:root {
-  --paper-w: 1536px;
-  --paper-h: calc(var(--paper-w) / 1.41421356237); /* ≈1086px */
-}
 
 /* ── 文档封面（题录页）── */
 .doc-cover {
@@ -162,43 +152,19 @@ html.is-notes-open .doc-body--slides { --spread-scale: 0.78; }
 @media (max-width: 1600px) { html.is-notes-open .doc-body--slides { --spread-scale: 0.58; } }
 @media (max-width: 1300px) { html.is-notes-open .doc-body--slides { --spread-scale: 0.5; } }
 
-/* 每一页 PDF = 一个 folio：由若干「带」纵向堆叠；每带内中栏原文纸与左右便签纸三栏对齐。
-   带（band）是垂直对齐单元：同一带内三栏顶部对齐，批注因此落在其呼应原文的高度上。 */
+/* 每一页 = 一个 .folio--spread 舞台（见下方双纸布局节）；纸 chrome 在 .folio__paper 上。 */
 .folio {
   display: flex;
   flex-direction: column;
-  /* 桌面端：统一竖长 A4 纸页（中栏纸宽 768 × √2 ≈ 1086px 版心高），
-     内容不足页底自然留白、页码贴纸底；窄屏降级在响应式里放开 */
-  min-height: var(--paper-h);
-  /* 清晰纸边：极细边 + 柔和纸影 + 页间 gutter，取代孤零零虚线，
-     滚动一页页像 A4 纸；透明底，继承 .doc-body 纸底与三栏引导竖线 */
-  border: 1px solid #E7E2D6;
-  border-radius: 4px;
-  box-shadow: 0 1px 2px hsl(40 22% 40% / 0.05), 0 12px 28px hsl(40 22% 40% / 0.08);
-  margin: 0 auto clamp(1.6rem, 3vw, 2.6rem);
-  padding: clamp(1.2rem, 2.4vw, 1.8rem) clamp(0.8rem, 2vw, 1.6rem) clamp(1.6rem, 3vw, 2.2rem);
-}
-.folio:last-child { border-bottom: 0; }
-
-/* 一带 = 一行三栏网格（左注 / 原文 / 右注），顶部对齐 → 笔记与原文垂直位置一一对应 */
-.folio__band {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
-  align-items: start;
 }
 
 .folio__col {
   min-width: 0;
 }
 
-/* 页码：固定在每页 A4 纸的最底部居中（中栏宽 50%）；
-   margin-top:auto 把页码压到页底，padding-top 保证与正文至少一行呼吸距离，
-   内容不足一页时页码依然贴底，像真正的书页 */
+/* 页码：贴在每页纸底居中；双纸 flex 布局下由原文纸正文列（flex:1）把它压到页底 */
 .folio__pageno {
-  width: 50%;
-  justify-self: center;
   margin: 0 auto;
-  margin-top: auto;
   padding-top: 0.9rem;
   font-family: Georgia, var(--font-latin);
   font-style: italic;
@@ -207,18 +173,6 @@ html.is-notes-open .doc-body--slides { --spread-scale: 0.78; }
   text-align: center;
   color: #B0A99B;
 }
-
-/* 三栏同带、顶部对齐 → 笔记与原文垂直位置一一对应 */
-.folio__col--left  { grid-column: 1; align-self: start; }
-.folio__col--main  { grid-column: 2; }
-.folio__col--right { grid-column: 3; align-self: start; }
-
-/* ── 左右栏：连贯便签纸（纯白背景，宽度=原文纸一半）── */
-/* 水平内边距逐带保留；纵向留白只落在整页首/末带，避免带间凭空拉高批注与原文的错位 */
-.folio__col--left  { padding: 0 1.1rem 0 0.4rem; }
-.folio__col--right { padding: 0 0.4rem 0 1.1rem; }
-.folio__band:first-child .folio__col--left,
-.folio__band:first-child .folio__col--right { padding-top: clamp(1.2rem, 2.4vw, 2.2rem); }
 
 /* ── 中栏：纯白原文纸（无卡片边框/阴影，与便签纸同属一张纸面）── */
 .folio__col--main {
@@ -236,13 +190,10 @@ html.is-notes-open .doc-body--slides { --spread-scale: 0.78; }
   font-size: 0.9rem;
   line-height: 1.78;
 }
-.folio__band:first-child .folio__col--main { padding-top: clamp(1.2rem, 2.4vw, 2.2rem); }
-.folio__band:last-child  .folio__col--main { padding-bottom: clamp(1.2rem, 2.4vw, 2.2rem); }
-
 /* ════════════════════════════════════════════════════════════
    双纸「原文纸 / 笔记纸」布局（2026-10-25 起，取代左右窄条便签栏）
    - 每页 = 一张舞台（.folio--spread），内叠两张同规格 A4 纸：
-     原文纸（main，M 原文）永远在最前；笔记纸（notes，左注+右注合并）默认叠在正后方、
+     原文纸（main，M 原文）永远在最前；笔记纸（notes，内容来自 folio-notes.json）默认叠在正后方、
      不可见；html.is-notes-open 时两纸以 transform 左右摊开、笔记纸淡入。
    - 纸宽固定 768（原中栏宽），分页高度估算口径不变，零超高硬指标依然成立。
    ════════════════════════════════════════════════════════════ */
@@ -334,28 +285,7 @@ html.is-notes-open .folio__paper--notes {
   line-height: 1.55;
   color: #1F1C18;
 }
-.folio__col--notes .callout {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-  font-family: var(--font-serif);
-  color: #1F1C18;
-}
-.folio__col--notes .callout > :first-child { margin-top: 0; }
-.folio__col--notes .callout > :last-child { margin-bottom: 0; }
-.folio__col--notes .callout p { margin-block: 0.28rem; color: #1F1C18; }
-.folio__col--notes .callout ol,
-.folio__col--notes .callout ul { padding-left: 1.3em; margin-block: 0.28rem; color: #1F1C18; }
-.folio__col--notes .callout li { margin-top: 0.18rem; color: #1F1C18; }
-.folio__col--notes .callout strong { color: #1F1C18; font-weight: 700; }
-.folio__col--notes .callout .callout-title { color: #1F1C18; }
-.folio__col--notes .callout li::marker { color: #6B655C; }
-.folio__col--notes .struct-chip { color: #1F1C18; }
-/* 对齐用垂直空行（插件按原文锚点高度插入），不可见、不占外边距 */
-.folio__col--notes .notes-spacer { margin: 0; padding: 0; flex: none; }
+/* 笔记纸内容为纯文本（.folio__edit），无 callout / struct-chip / notes-spacer 预置节点 */
 
 /* 本地笔记编辑区：纯文本、填满笔记纸；云端不启用 contenteditable 时保持空白。
    flex 约束 + overflow:hidden：文字只能写在纸内，写满最后一行即被纸张裁住，
@@ -444,18 +374,6 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
   color: #1F1C18;
   font-family: inherit;
   font-size: 1em;
-}
-
-/* 整页首带的首个块、末带的末块去掉外边距（由栏内边距统一留白）；
-   中间各带保留正常段距，避免被切开的相邻段落/标题挤在一起 */
-.folio__band:first-child .folio__col--main > :first-child { margin-top: 0; }
-.folio__band:last-child .folio__col--main > :last-child { margin-bottom: 0; }
-
-/* 同一段落为对齐批注而被拆到相邻带时，后续片段（para-run）无缩进、无段距，
-   视觉上与上段无缝连成同一自然段 */
-.folio__col--main p.para-run {
-  margin-block: 0;
-  text-indent: 0;
 }
 
 .folio__col--main h2,
@@ -920,192 +838,7 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
   margin: 0.5rem 0;
 }
 
-/* ── 左/右栏：连贯便签纸（纯白，与正文同款宋体、墨黑，不使用花式字体与彩色）── */
-.folio__col--left,
-.folio__col--right {
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-  font-size: 0.86rem;
-  line-height: 1.78;
-  color: #1F1C18;
-  font-family: var(--font-serif);
-  background: transparent; /* 竖线背景由 .doc-body 提供，贯穿所有页 */
-}
-
-/* 批注容器：无卡片、无边框、无底色，文字直接落在便签纸上 */
-.folio__col--left .callout,
-.folio__col--right .callout {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-  backdrop-filter: none;
-  font-family: var(--font-serif);
-  color: #1F1C18;
-}
-
-.folio__col--left .callout > :first-child,
-.folio__col--right .callout > :first-child { margin-top: 0; }
-.folio__col--left .callout > :last-child,
-.folio__col--right .callout > :last-child { margin-bottom: 0; }
-.folio__col--left .callout p,
-.folio__col--right .callout p { margin-block: 0.28rem; color: #1F1C18; }
-.folio__col--left .callout ol,
-.folio__col--left .callout ul,
-.folio__col--right .callout ol,
-.folio__col--right .callout ul { padding-left: 1.3em; margin-block: 0.28rem; color: #1F1C18; }
-.folio__col--left .callout li,
-.folio__col--right .callout li { margin-top: 0.18rem; color: #1F1C18; }
-/* 笔记中的加粗/斜体保持墨色，不转彩 */
-.folio__col--left .callout strong,
-.folio__col--right .callout strong { color: #1F1C18; font-weight: 700; }
-
-.callout-title {
-  display: block;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  margin-bottom: 0.3rem;
-}
-
-/* 位置说明（带括号的批注提示，如"（提要右侧…）"）→ 淡灰小字，唯一保留的弱提示 */
-.folio__col--right .callout em,
-.folio__col--left .callout em {
-  display: block;
-  font-size: 0.74rem;
-  font-style: normal;
-  color: #9A948A;
-  letter-spacing: 0.01em;
-  margin-bottom: 0.12rem;
-}
-
-/* 左栏引导问题：与正文同款墨色，不使用赭红标记 */
-.folio__col--left .callout .callout-title { color: #1F1C18; }
-.folio__col--left .callout li::marker { color: #6B655C; }
-.folio__col--right .callout .callout-title { color: #1F1C18; }
-
-/* 结构脉络标记：去胶囊色块，仅为普通墨色小字 */
-.struct-chip {
-  display: block;
-  padding: 0;
-  border-radius: 0;
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: #1F1C18;
-  background: transparent;
-  border: 0;
-  margin: 0.5rem 0 0.15rem;
-}
-.struct-chip::before { content: none; }
-
-/* 空批注栏：便签纸始终呈现（连贯），内容为空时保持空栏 */
-/* 注：移动端单列时仍隐藏，见响应式 */
-
-/* ── 讲稿专用：层级清晰的提纲（中栏）── */
-.lecture-outline ul { list-style: none; }
-.lecture-outline .outline-section-title {
-  margin: 1.5rem 0 0.55rem;
-  font-weight: 700;
-  color: #1F1C18;
-  font-size: 0.98rem;
-  letter-spacing: 0.02em;
-}
-.lecture-outline .outline-sub {
-  font-weight: 600;
-  color: #1F1C18;
-  margin: 0.85rem 0 0.3rem;
-}
-.lecture-outline > ul > li {
-  position: relative;
-  padding-left: 1.3em;
-  margin-top: 0.42rem;
-}
-.lecture-outline > ul > li::before {
-  content: "";
-  position: absolute;
-  left: 0.25em;
-  top: 0.8em;
-  width: 0.4em;
-  height: 0.4em;
-  border-radius: 50%;
-  background: #8A857A;
-}
-.lecture-outline li ul {
-  list-style: none;
-  padding-left: 1.1em;
-  margin-top: 0.3rem;
-  border-left: 1px dashed #DDDDDD;
-  margin-left: 0.15em;
-  padding-left: 0.9em;
-}
-.lecture-outline li ul li {
-  position: relative;
-  padding-left: 1em;
-  margin-top: 0.26rem;
-}
-.lecture-outline li ul li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.74em;
-  width: 0.55em;
-  height: 1px;
-  background: #B9B5AC;
-}
-.lecture-outline li ul li ul li::before {
-  width: 0.38em;
-  height: 0.38em;
-  border: 1px solid #B9B5AC;
-  background: transparent;
-  border-radius: 50%;
-  top: 0.58em;
-}
-
-/* ── 响应式 ── */
-@media (max-width: 920px) {
-  /* 单列：去掉三栏竖线背景 */
-  .doc-body {
-    background-image: none;
-    background-color: #FFFFFF;
-  }
-  .folio {
-    gap: 0;
-    padding: 0.6rem 0 1.4rem;
-    /* 窄屏单列纸卷降级：放开固定纸页高，内容自然流式排 */
-    height: auto;
-    min-height: 0;
-  }
-  /* 每带内部单列堆叠：先原文，再左注、右注，使批注紧跟其呼应段落 */
-  .folio__band {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.9rem;
-  }
-  .folio__pageno {
-    width: auto;
-    order: 2;
-    margin: 0;
-    padding: 0.4rem 0 0;
-  }
-  .folio__col--main { grid-column: 1; order: 1; padding-inline: 0.4rem; }
-  .folio__col--left { grid-column: 1; order: 2; padding: 0.2rem 0.4rem 0; }
-  .folio__col--right { grid-column: 1; order: 3; padding: 0.2rem 0.4rem 0; }
-  .folio__band:first-child .folio__col--left,
-  .folio__band:first-child .folio__col--right,
-  .folio__band:first-child .folio__col--main { padding-top: 0.6rem; }
-  .folio__band:last-child .folio__col--main { padding-bottom: 0.4rem; }
-  .folio__col--left,
-  .folio__col--right {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-    gap: 0.7rem;
-  }
-  .folio__col--left:empty,
-  .folio__col--right:empty { display: none; }
-}
+/* ── 响应式 ── 窄屏（≤920px）双纸降级统一由文件末尾「双纸布局：窄屏降级」节负责 */
 
 /* ════════════════════════════════════════════════════════════
    暗夜主题：白昼的纯白纸面在夜间转为柔和「夜读纸」，
@@ -1126,9 +859,7 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
 [data-theme="night"] .doc-cover__keywords b { color: #8b94a6; }
 [data-theme="night"] .doc-cover__rule { background: #3a445a; }
 
-[data-theme="night"] .doc-body,
 [data-theme="night"] .folio__col--main { background-color: #141a26; }
-[data-theme="night"] .doc-body { background-image: none; }
 [data-theme="night"] .folio { border-color: #2c3547; box-shadow: 0 1px 2px hsl(222 30% 10% / 0.3), 0 12px 28px hsl(222 30% 10% / 0.35); }
 /* 双纸夜间：两张纸统一夜读纸色 */
 [data-theme="night"] .folio__paper {
@@ -1138,15 +869,6 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
 }
 [data-theme="night"] .folio__paper--notes { background: #141a26; }
 [data-theme="night"] .folio__col--notes { color: #d6dce7; }
-[data-theme="night"] .folio__col--notes .callout,
-[data-theme="night"] .folio__col--notes .callout .callout-title,
-[data-theme="night"] .folio__col--notes .callout p,
-[data-theme="night"] .folio__col--notes .callout ul,
-[data-theme="night"] .folio__col--notes .callout ol,
-[data-theme="night"] .folio__col--notes .callout li,
-[data-theme="night"] .folio__col--notes .callout strong,
-[data-theme="night"] .folio__col--notes .struct-chip { color: #d6dce7; }
-[data-theme="night"] .folio__col--notes .callout li::marker { color: #7e889c; }
 [data-theme="night"] .folio__pageno { color: #6b7488; }
 
 /* 中栏正文与各级标题：墨色 → 柔白 */
@@ -1159,10 +881,7 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
 [data-theme="night"] .folio__col--main .doc-title,
 [data-theme="night"] .folio__col--main .doc-section,
 [data-theme="night"] .folio__col--main .doc-kicker,
-[data-theme="night"] .folio__col--main .doc-author,
-[data-theme="night"] .lecture-outline .outline-section-title,
-[data-theme="night"] .lecture-outline .outline-sub { color: #eceff6; }
-[data-theme="night"] .struct-chip { color: #e3e8f2; }
+[data-theme="night"] .folio__col--main .doc-author { color: #eceff6; }
 [data-theme="night"] .folio__col--main .doc-file-title { color: #eceff6; }
 [data-theme="night"] .folio__col--main .doc-keywords { border-bottom-color: #2e384c; }
 [data-theme="night"] .folio__col--main .fn,
@@ -1212,41 +931,6 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
 [data-theme="night"] .folio__col--main table tbody tr:nth-child(even) { background: #1a2130; }
 [data-theme="night"] .folio-figure figcaption { color: #8b94a6; }
 
-/* 左右便签批注：容器与所有正文子元素同样转柔白（白昼显式设过墨色，夜间需逐条覆盖，左栏不能漏） */
-[data-theme="night"] .folio__col--left .callout,
-[data-theme="night"] .folio__col--right .callout,
-[data-theme="night"] .folio__col--left .callout .callout-title,
-[data-theme="night"] .folio__col--right .callout .callout-title,
-[data-theme="night"] .folio__col--left .callout p,
-[data-theme="night"] .folio__col--right .callout p,
-[data-theme="night"] .folio__col--left .callout ul,
-[data-theme="night"] .folio__col--right .callout ul,
-[data-theme="night"] .folio__col--left .callout ol,
-[data-theme="night"] .folio__col--right .callout ol,
-[data-theme="night"] .folio__col--left .callout li,
-[data-theme="night"] .folio__col--right .callout li,
-[data-theme="night"] .folio__col--left .callout strong,
-[data-theme="night"] .folio__col--right .callout strong,
-[data-theme="night"] .folio__col--left .callout span,
-[data-theme="night"] .folio__col--right .callout span,
-[data-theme="night"] .folio__col--left .callout div,
-[data-theme="night"] .folio__col--right .callout div { color: #d6dce7; }
-[data-theme="night"] .folio__col--left .callout li::marker,
-[data-theme="night"] .folio__col--right .callout li::marker { color: #7e889c; }
-[data-theme="night"] .folio__col--right .callout em,
-[data-theme="night"] .folio__col--left .callout em { color: #8b94a6; }
-
-/* 提纲层级线/点在暗底上提亮 */
-[data-theme="night"] .lecture-outline > ul > li::before { background: #6e7891; }
-[data-theme="night"] .lecture-outline li ul { border-left-color: #303a4d; }
-[data-theme="night"] .lecture-outline li ul li::before { background: #5a647c; }
-[data-theme="night"] .lecture-outline li ul li ul li::before { border-color: #5a647c; }
-
-/* 移动端单列：同样夜读纸、去掉竖线 */
-@media (max-width: 920px) {
-  [data-theme="night"] .doc-body { background-image: none; background-color: #141a26; }
-}
-
 /* ════════════════════════════════════════════════════════════
    课件（PPT 导出幻灯片）：一个 A4 网页放两张源幻灯片
    米色幻灯片卡片 + 藏青标题 + 橙方块/蓝箭头项目符号，贴近源 PPT。
@@ -1263,16 +947,7 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
 [data-theme="night"] .doc-body--slides {
   background-image: none;
 }
-.doc-body--slides .folio__band {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1004px) minmax(0, 1fr);
-  /* 课件每个 folio 只有一个带：让该带拉满整页 A4 高度，
-     空便签竖线才能与讲稿页一样通顶通底，而不是只在卡片旁边画一小截 */
-  flex: 1 1 auto;
-  grid-template-rows: minmax(0, 1fr);
-}
 .doc-body--slides .folio__col--main {
-  grid-column: 2;
-  width: 100%;
   /* 幻灯片沿用 PPT 的无衬线字体，与讲稿的宋体纸面区分开 */
   font-family: -apple-system, "Segoe UI", "Microsoft YaHei", "PingFang SC",
     "Hiragino Sans GB", "Noto Sans CJK SC", sans-serif;
@@ -1280,11 +955,6 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
   line-height: 1.72;
   color: #2A2620;
 }
-/* 空白便笺纸：拉满整带高度，靠中栏一侧画极淡竖线（夜间在下方覆盖） */
-.doc-body--slides .folio__col--left,
-.doc-body--slides .folio__col--right { align-self: stretch; }
-.doc-body--slides .folio__col--left { border-right: 1px solid #EDEDED; }
-.doc-body--slides .folio__col--right { border-left: 1px solid #EDEDED; }
 
 .slide-block {
   position: relative;
@@ -1495,7 +1165,6 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
 .slide-block--cover ol { text-align: left; }
 .slide-block--cover .slide-block__tag { display: none; }
 /* 封面独占一页时，在版心内垂直居中 */
-.folio:has(.slide-block--cover) .folio__band { align-items: stretch; }
 .folio:has(.slide-block--cover) .folio__col--main {
   display: flex;
   flex-direction: column;
@@ -1504,8 +1173,6 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
 
 /* 课件暗夜主题：米色卡片转夜读蓝灰；空白便签竖线同步转夜读色 */
 [data-theme="night"] .doc-body--slides .folio__col--main { color: #d6dce7; }
-[data-theme="night"] .doc-body--slides .folio__col--left { border-right-color: #28303f; }
-[data-theme="night"] .doc-body--slides .folio__col--right { border-left-color: #28303f; }
 [data-theme="night"] .slide-block {
   background: #1A2231;
   border-color: #2C3547;
@@ -1539,11 +1206,8 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
 }
 
 @media (max-width: 920px) {
-  /* 窄屏：课件退回单列，空白便签栏按全局规则隐藏，中栏归位 */
-  .doc-body--slides .folio__band { grid-template-columns: minmax(0, 1fr); }
-  .doc-body--slides .folio__col--main { grid-column: 1; min-width: 0; }
-  .doc-body--slides .folio__col--left,
-  .doc-body--slides .folio__col--right { display: none; }
+  /* 窄屏：课件退回单列，中栏归位 */
+  .doc-body--slides .folio__col--main { min-width: 0; }
   .slide-block { min-width: 0; padding: 1.1rem 1.05rem 1.05rem; }
   .slide-block h4 { font-size: 1.12rem; margin-right: 1.8rem; }
   .slide-block--cover h4 { font-size: 1.4rem; }
