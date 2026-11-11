@@ -1,10 +1,12 @@
 /**
- * desk-viewer.mjs — 文献笔记首页 3D 场景查看器
+ * lemon-cake-viewer.mjs — 文献笔记首页 3D 场景查看器（柠檬奶油蛋糕静物）
  * ────────────────────────────────────────────────────────────
+ * 场景：木质砧板上的一组印象派静物——淋奶油糖霜的磅蛋糕、整只与切开的柠檬、
+ * 一把黑柄餐刀与一块抹霜蛋糕片。命名以视觉主体为准（lemon-cake-*），名副其实。
  * 外置物体环绕查看：OrbitControls，缓慢自转（拖拽时暂停、闲置后恢复），
  * 禁止平移、限制俯仰与缩放。模型异步加载，就绪后淡入，无加载遮罩与提示文字。
  * 中性灯光与背景，不随站点明暗主题切换。
- * 由 esbuild 打包为 public/3d/desk.js（自包含，无运行时外链）。
+ * 由 esbuild 打包为 public/3d/lemon-cake.js（自包含，无运行时外链）。
  * ────────────────────────────────────────────────────────────
  */
 import * as THREE from 'three';
@@ -84,7 +86,8 @@ const loadTimeout = setTimeout(() => {
 }, 15000);
 
 loader.load(
-  './still_life.glb',
+  // 与 lemon-cake.html 的 <link rel=preload as=fetch> 逐字一致（含 ?v=），命中预加载缓存
+  './lemon-cake-still-life.glb?v=20261111',
   (gltf) => {
     modelLoaded = true;
     clearTimeout(loadTimeout);

@@ -4,10 +4,13 @@
 @import "./article.css" layer(pages);
 @import "./folio.css" layer(pages);
 
-/* 思源宋体 CN（本地字体，全站正文字体） */
+/* 思源宋体 CN（本地子集字体，全站正文字体）
+   子集 WOFF2 约 1.36MB（源 OTF 12.2MB，见 scripts/build-font-subset.py）；
+   GitHub Pages 零压缩传输，全量 OTF 曾是全站最大加载负担。字形不变、视觉零损失。
+   内容大改后需重跑 build-font-subset.py 并提交新 woff2。 */
 @font-face {
   font-family: "Source Han Serif CN";
-  src: url("/fonts/SourceHanSerifCN-Regular.otf") format("opentype");
+  src: url("/fonts/SourceHanSerifCN-subset.woff2") format("woff2");
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;

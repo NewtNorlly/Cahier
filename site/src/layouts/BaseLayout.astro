@@ -36,6 +36,9 @@ const canonicalUrl = canonicalPath !== false && Astro.site
     <meta name="theme-color" content="#eef4ff" id="metaThemeColor" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
+    {/* 预加载全站正文字体（子集 WOFF2 约 1.36MB），尽早开始下载、减少 swap 闪烁；
+        href 必须与 global.css 的 @font-face url 逐字一致，crossorigin 缺省会二次下载 */}
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/SourceHanSerifCN-subset.woff2" crossorigin />
     {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
     <title>{documentTitle}</title>
     {/* 渲染前应用已保存的主题，避免暗夜模式刷新时白屏闪烁 */}

@@ -4,6 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>文献笔记 · 3D 场景</title>
+  <!-- 并行预加载：bundle 与模型同时开下载，消除「先 js 后 glb」的串行瀑布，3D 更快现身；
+       ?v= 为缓存破坏版本号，改 3D 资源后必须换（GitHub Pages/CDN 有缓存） -->
+  <link rel="preload" as="script" href="./lemon-cake.js?v=20261111" />
+  <link rel="preload" as="fetch" href="./lemon-cake-still-life.glb?v=20261111" crossorigin="anonymous" />
   <style>
     * { box-sizing: border-box; }
     html, body {
@@ -49,6 +53,6 @@
     <div id="error-text"></div>
   </div>
 
-  <script src="./desk.js" defer></script>
+  <script src="./lemon-cake.js?v=20261111" defer></script>
 </body>
 </html>
