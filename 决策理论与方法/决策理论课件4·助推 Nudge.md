@@ -1,7 +1,7 @@
 ---
 title: "决策理论课件4·助推 Nudge"
 course: "决策理论与方法"
-description: "石婧老师双语课件《助推》：Thaler 与 Sunstein 的自由主义温和专制主义、选择架构与双系统思维，五种可预测的认知偏差（锚定、安于现状、可得性、代表性、不切实际的乐观）及公共管理实验证据，以及 iNcentives、Mappings、Defaults、Feedback、Expect Error 等良好选择架构原则。"
+keywords: ["选择架构", "双系统思维", "锚定效应", "安于现状偏见", "不切实际的乐观"]
 cover: "./covers/decision-theory-960.webp"
 ---
 

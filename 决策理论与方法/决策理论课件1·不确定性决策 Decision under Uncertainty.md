@@ -1,7 +1,7 @@
 ---
 title: "决策理论课件1·不确定性决策 Decision under Uncertainty"
 course: "决策理论与方法"
-description: "石婧老师双语课件不确定性决策：确定/不确定/风险三类决策的界定、概率论与决策理论简史（Bernoulli、Von Neumann & Morgenstern、Savage、Simon、Allais、Kahneman、Thaler），以希尔顿机场选址为例讲解 Maximax、Maximin、Minimax Regret、Hurwicz α 系数与拉普拉斯等可能五条古典准则，以及数字时代的新特征与课堂练习。"
+keywords: ["三类决策划分", "决策理论简史", "决策矩阵", "Maximax准则", "拉普拉斯准则"]
 cover: "./covers/decision-theory-960.webp"
 ---
 

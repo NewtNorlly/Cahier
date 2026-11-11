@@ -1,7 +1,7 @@
 ---
 title: "决策理论课件3·行为决策分析 Behavioral Decision Analysis"
 course: "决策理论与方法"
-description: "石婧老师双语课件行为决策：Thaler 死亡风险定价实验与前景理论（Prospect Theory），参照点效应与框架效应，风险态度在获得/损失域的反转，以及心理账户、交易偏见、沉没成本、过于自信、适应性偏见五大常见行为偏差的课堂实验与理性提示。"
+keywords: ["前景理论", "参照点效应", "心理账户", "沉没成本", "过于自信"]
 cover: "./covers/decision-theory-960.webp"
 ---
 

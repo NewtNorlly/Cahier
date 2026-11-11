@@ -37,7 +37,11 @@ const isFolioDoc = true; // 新版统一为三栏文档体
 
 <BaseLayout
   title={note.title}
-  description={note.description || `${note.collectionName}收录的${kindLabel}。`}
+  description={
+    note.keywords?.length
+      ? note.keywords.join("、")
+      : note.description || `${note.collectionName}收录的${kindLabel}。`
+  }
   canonicalPath={`/notes/${encodeURIComponent(note.id)}/`}
   pageClass="article-page doc-page"
 >
@@ -62,8 +66,11 @@ const isFolioDoc = true; // 新版统一为三栏文档体
       <div class="cover-hero__meta">
         <h1>{note.title}</h1>
         {note.author && <p class="cover-hero__author">{note.author}</p>}
-        {note.description && (
-          <p class="cover-hero__desc">{note.description}</p>
+        {note.keywords && note.keywords.length > 0 ? (
+          /* 用户要求：摘要全删，原摘要位只放 5 个记忆点关键词；字体格式与正文一致、不做装饰 */
+          <p class="cover-hero__keywords">{note.keywords.join(" · ")}</p>
+        ) : (
+          note.description && <p class="cover-hero__desc">{note.description}</p>
         )}
       </div>
     </div>
@@ -137,6 +144,20 @@ const isFolioDoc = true; // 新版统一为三栏文档体
     max-width: 42rem;
     color: var(--ink-soft);
     line-height: 1.9;
+  }
+
+  /* 5 个记忆点关键词：与正文同字体（衬线、常规字重、墨色、无装饰），只求实用 */
+  .cover-hero__keywords {
+    margin-top: 1.2rem;
+    max-width: 42rem;
+    color: var(--ink);
+    font-family: var(--font-serif);
+    font-size: 1.06rem;
+    font-weight: 400;
+    line-height: 1.8;
+    letter-spacing: 0.01em;
+    overflow-wrap: anywhere;
+    word-break: keep-all;
   }
 
   @media (max-width: 820px) {

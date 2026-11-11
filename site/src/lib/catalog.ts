@@ -60,6 +60,8 @@ export interface Note {
   collectionName: string;
   topics: TopicRef[];
   description?: string;
+  /** 讲稿的 5 个记忆点关键词（frontmatter keywords）；有它的条目不再有摘要 */
+  keywords?: string[];
   excerpt?: string;
   cover?: Cover;
   sourceUrl?: string;
@@ -299,6 +301,22 @@ function getDescription(data: RawData, body: string | undefined): string | undef
   return trimExcerpt(wereadIntroduction ?? body);
 }
 
+/** 讲稿记忆点关键词：字符串数组，去空/去重/保序；没有则返回 undefined */
+function getKeywords(data: RawData): string[] | undefined {
+  const raw = data.keywords;
+  if (!Array.isArray(raw)) return undefined;
+
+  const seen = new Set<string>();
+  const list: string[] = [];
+  for (const item of raw) {
+    const word = stringValue(item);
+    if (!word || seen.has(word)) continue;
+    seen.add(word);
+    list.push(word);
+  }
+  return list.length > 0 ? list : undefined;
+}
+
 function getSourceUrl(data: RawData, body: string | undefined): string | undefined {
   const frontmatterUrl = validHttpUrl(data.sourceUrl) ?? validHttpUrl(data.网址) ?? validHttpUrl(data.url);
   if (frontmatterUrl) return frontmatterUrl;
@@ -361,7 +379,10 @@ async function buildCatalog(): Promise<Catalog> {
     const collectionId = stableId(collectionName, collectionName);
     const title = stringValue(entry.data.title) ?? fileTitle(sourcePath);
     const topicNames = pathParts.slice(1, -1).filter((part) => part !== '文本附件');
-    const description = getDescription(entry.data, entry.body);
+    const keywords = getKeywords(entry.data);
+    /* 用户要求：课程讲稿不再有摘要，摘要位只留 5 个记忆点关键词。
+       有 keywords 的条目不再回退正文摘录，避免删了 frontmatter 又从正文里冒出一段“摘要”。 */
+    const description = keywords ? undefined : getDescription(entry.data, entry.body);
     const weread = getWereadMetadata(entry.data);
     const isReadingStats = entry.data.doc_type === 'weread-reading-stats';
 
@@ -374,6 +395,7 @@ async function buildCatalog(): Promise<Catalog> {
       collectionName,
       topics: getTopicRefs(collectionName, topicNames),
       description,
+      keywords,
       excerpt: description,
       cover: getCover(entry.data, title, sourcePath),
       sourceUrl: getSourceUrl(entry.data, entry.body),

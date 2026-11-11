@@ -1,7 +1,7 @@
 ---
 title: "决策理论课件6B·影响生活的人工智能 AI that Impacts Our Lives"
 course: "决策理论与方法"
-description: "石婧老师双语课件影响生活的人工智能：热门大模型与 AI agent 应用发布时间线（ChatGPT、Gemini、Claude、Grok、DeepSeek、豆包、Kimi、Manus、GPT 等），AI 视频生成的两条技术路径——Video-to-Video 转描与文生/图生视频扩散模型，算法偏见（ProPublica《Machine Bias》对再犯预测软件的调查），AI 在司法、医疗、内容生成与日常生活中的渗透，以及技术伦理、就业与社会治理议题。"
+keywords: ["AI智能体", "AI产业五层架构", "技术成熟度曲线", "赛博朋克", "AI就业冲击"]
 cover: "./covers/decision-theory-960.webp"
 ---
 

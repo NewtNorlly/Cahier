@@ -48,6 +48,8 @@ const notes = defineCollection({
       title: z.string().nullish(),
       description: z.string().nullish(),
       summary: z.string().nullish(),
+      /* 讲稿的记忆点关键词（5 个），取代原先的长摘要 */
+      keywords: z.array(z.string()).nullish(),
       cover: z.union([z.string(), coverObject]).nullish(),
       draft: booleanish.default(false),
       网址: z.string().nullish(),

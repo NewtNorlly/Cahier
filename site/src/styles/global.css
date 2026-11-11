@@ -865,6 +865,17 @@
     word-break: break-word;
   }
 
+  /* 讲稿卡片：5 个记忆点关键词取代长摘要；衬线正体、墨色，不加任何标签装饰 */
+  .entry-card__keywords {
+    margin-top: 0.6rem;
+    color: var(--ink);
+    font-family: var(--font-serif);
+    font-size: var(--text-min);
+    line-height: 1.75;
+    overflow-wrap: anywhere;
+    word-break: keep-all;
+  }
+
   .entry-card__topics {
     display: flex;
     flex-wrap: wrap;
