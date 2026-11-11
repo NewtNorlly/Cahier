@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-11T10:48:59.547Z",
+  "generatedAt": "2026-11-11T12:38:12.927Z",
   "files": [
     {
       "path": "大学生批判性思维/covers/critical-thinking-480.webp",
@@ -26,6 +26,18 @@
       "bytes": 16496
     },
     {
+      "path": "电子政务/covers/e-government-480.webp",
+      "bytes": 6514
+    },
+    {
+      "path": "电子政务/covers/e-government-960_thumb.webp",
+      "bytes": 3610
+    },
+    {
+      "path": "电子政务/covers/e-government-960.webp",
+      "bytes": 16024
+    },
+    {
       "path": "法语/covers/french-480.webp",
       "bytes": 7648
     },
@@ -38,6 +50,18 @@
       "bytes": 20614
     },
     {
+      "path": "公共部门人力资源管理/covers/public-hr-480.webp",
+      "bytes": 10070
+    },
+    {
+      "path": "公共部门人力资源管理/covers/public-hr-960_thumb.webp",
+      "bytes": 5140
+    },
+    {
+      "path": "公共部门人力资源管理/covers/public-hr-960.webp",
+      "bytes": 25122
+    },
+    {
       "path": "公共经济学/covers/public-economics-480.webp",
       "bytes": 7236
     },
@@ -48,6 +72,46 @@
     {
       "path": "公共经济学/covers/public-economics-960.webp",
       "bytes": 20612
+    },
+    {
+      "path": "公共经济学/figures/pubeco-1110-p03-1.webp",
+      "bytes": 21142
+    },
+    {
+      "path": "公共经济学/figures/pubeco-1110-p04-2.webp",
+      "bytes": 21296
+    },
+    {
+      "path": "公共经济学/figures/pubeco-1110-p11-3.webp",
+      "bytes": 14134
+    },
+    {
+      "path": "公共经济学/figures/pubeco-1110-p12-4.webp",
+      "bytes": 31526
+    },
+    {
+      "path": "公共经济学/figures/pubeco-1110-p13-5.webp",
+      "bytes": 15508
+    },
+    {
+      "path": "公共经济学/figures/pubeco-1110-p15-6.webp",
+      "bytes": 23836
+    },
+    {
+      "path": "公共经济学/figures/pubeco-1110-p21-7.webp",
+      "bytes": 25092
+    },
+    {
+      "path": "公共经济学/figures/pubeco-1110-p23-8.webp",
+      "bytes": 23902
+    },
+    {
+      "path": "公共经济学/figures/pubeco-1110-p24-9.webp",
+      "bytes": 19030
+    },
+    {
+      "path": "公共经济学/figures/pubeco-1110-p25-10.webp",
+      "bytes": 17150
     },
     {
       "path": "会计/covers/accounting-480.webp",
@@ -816,6 +880,30 @@
     {
       "path": "宪法/covers/constitution-960.webp",
       "bytes": 22300
+    },
+    {
+      "path": "形势与政策/covers/situation-policy-480.webp",
+      "bytes": 9478
+    },
+    {
+      "path": "形势与政策/covers/situation-policy-960_thumb.webp",
+      "bytes": 4974
+    },
+    {
+      "path": "形势与政策/covers/situation-policy-960.webp",
+      "bytes": 23058
+    },
+    {
+      "path": "应急管理/covers/emergency-management-480.webp",
+      "bytes": 7950
+    },
+    {
+      "path": "应急管理/covers/emergency-management-960_thumb.webp",
+      "bytes": 4182
+    },
+    {
+      "path": "应急管理/covers/emergency-management-960.webp",
+      "bytes": 19848
     },
     {
       "path": "英语/covers/english-480.webp",
