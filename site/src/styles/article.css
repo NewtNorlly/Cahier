@@ -23,14 +23,6 @@
   letter-spacing: -0.035em;
 }
 
-.article-header__description {
-  max-width: 39rem;
-  margin-top: 1.35rem;
-  color: var(--ink-soft);
-  font-family: var(--font-serif);
-  font-size: var(--text-base);
-}
-
 .article-header__links {
   display: flex;
   flex-wrap: wrap;

@@ -152,7 +152,7 @@ def wrap_note(title, course, date, cover, description, body_md, extra_fm=None):
           f'title: "{title}"',
           f'course: "{course}"',
           f'date: "{date}"',
-          f'description: "{description}"',
+          # 2026-11-11 起：课程讲稿不再写 description；5 个记忆点关键词由人工补 keywords（手册 §三十八）
           f'cover: "{cover}"',
           ]
     if extra_fm:

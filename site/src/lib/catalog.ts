@@ -62,7 +62,6 @@ export interface Note {
   description?: string;
   /** 讲稿的 5 个记忆点关键词（frontmatter keywords）；有它的条目不再有摘要 */
   keywords?: string[];
-  excerpt?: string;
   cover?: Cover;
   sourceUrl?: string;
   kind: 'article' | 'book' | 'stats';
@@ -292,10 +291,14 @@ function trimExcerpt(value: string): string | undefined {
   return Array.from(clean).slice(0, 170).join('') + (Array.from(clean).length > 170 ? '…' : '');
 }
 
-function getDescription(data: RawData, body: string | undefined): string | undefined {
+/**
+ * 摘要：文献笔记 / 微信读书条目可以回退正文摘录；
+ * 课程讲稿自 2026-11-11 起不再生成任何摘要（摘要位只留 keywords，手册 §三十八）。
+ */
+function getDescription(data: RawData, body: string | undefined, allowBodyExcerpt: boolean): string | undefined {
   const explicit = stringValue(data.description) ?? stringValue(data.summary);
   if (explicit) return trimExcerpt(explicit);
-  if (!body) return undefined;
+  if (!allowBodyExcerpt || !body) return undefined;
 
   const wereadIntroduction = body.match(/^\s*>?\s*-?\s*简介[：:]\s*(.+)$/m)?.[1];
   return trimExcerpt(wereadIntroduction ?? body);
@@ -380,23 +383,25 @@ async function buildCatalog(): Promise<Catalog> {
     const title = stringValue(entry.data.title) ?? fileTitle(sourcePath);
     const topicNames = pathParts.slice(1, -1).filter((part) => part !== '文本附件');
     const keywords = getKeywords(entry.data);
-    /* 用户要求：课程讲稿不再有摘要，摘要位只留 5 个记忆点关键词。
-       有 keywords 的条目不再回退正文摘录，避免删了 frontmatter 又从正文里冒出一段“摘要”。 */
-    const description = keywords ? undefined : getDescription(entry.data, entry.body);
+    const docType = stringValue(entry.data.doc_type) ?? null;
+    /* 用户要求：课程讲稿不再有摘要，摘要位只留 5 个记忆点关键词（手册 §三十八）。
+       文献笔记以外的全部课程合集不再从正文自动摘一段“摘要”；只有文献笔记与
+       微信读书条目（doc_type 以 weread- 开头）保留正文摘录兜底。 */
+    const allowBodyExcerpt = collectionName === '文献笔记' || docType?.startsWith('weread-') === true;
+    const description = keywords ? undefined : getDescription(entry.data, entry.body, allowBodyExcerpt);
     const weread = getWereadMetadata(entry.data);
     const isReadingStats = entry.data.doc_type === 'weread-reading-stats';
 
     return {
       id: stableId(title, sourcePath),
       title,
-      doc_type: stringValue(entry.data.doc_type) ?? null,
+      doc_type: docType,
       date: noteRecencyKey(entry.data),
       collectionId,
       collectionName,
       topics: getTopicRefs(collectionName, topicNames),
       description,
       keywords,
-      excerpt: description,
       cover: getCover(entry.data, title, sourcePath),
       sourceUrl: getSourceUrl(entry.data, entry.body),
       kind: weread ? 'book' : isReadingStats ? 'stats' : 'article',

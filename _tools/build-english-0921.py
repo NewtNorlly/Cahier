@@ -70,12 +70,12 @@ def build(rows):
         body.append('')  # 块间空行
     return '\n'.join(body).rstrip() + '\n'
 
+# 2026-11-11 起：课程讲稿不再写 description；5 个记忆点关键词由人工补 keywords（手册 §三十八）
 FRONT = '''---
 doc_type: "lecture"
 title: "9月21日讲稿"
 course: "英语"
 date: "2026-09-21"
-description: "刘老师疾病主题词汇联想记忆法课堂笔记。十五组词：诊断诊所（diagnose、clinic、consult）、慢性 chronic/chronicle、良性 benevolent/wholesome、恶意一家 malice/malicious/malignant、传染 contagious、急性致命 acute/fatal/severe、终点 terminal/terminator/terminate、毁灭阶梯 perish/destroy/destructive/devastate、治疗 remedy/therapy、手术与医生 surgery/surgical/surgeon/physician/doctor、药 medication/tablet/pill、便携 portable、营救治愈 rescue/cure、模糊 obscure/vague、安全连续 secure/security/consecutive；逐词记录谐音、拆词、画面联想、例句与老师随谈，末附五部分盘（三条记忆思路、近义等式、词根前缀、谐音速查、全词清单）与课内例句。"
 cover: "./covers/english-960.webp"
 ---
 
