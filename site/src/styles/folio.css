@@ -387,9 +387,9 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
 .folio__col--main h2 {
   font-size: 1.06rem;
   font-weight: 700;
-  padding-bottom: 0.35rem;
-  border-bottom: 1px solid #E6E6E6;
 }
+
+.doc-canvas hr { display: none; }
 
 .folio__col--main h3 { font-size: 1.02rem; font-weight: 700; }
 .folio__col--main h4 {
@@ -475,18 +475,16 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
   text-align: justify;
   margin: 0.4rem 0 0.6rem;
 }
-/* 关键词：引导词黑体、词间全角空格、下划通栏细线 */
+/* 关键词：引导词黑体、词间全角空格 */
 .folio__col--main .doc-keywords {
   text-indent: 0;
   font-size: 0.88rem;
   line-height: 1.7;
-  padding-bottom: 0.55rem;
-  margin-bottom: 0.4rem;
-  border-bottom: 1px solid #4A453C;
+  margin-bottom: 0.95rem;
   word-spacing: 0.35em;
 }
 .folio__col--main .doc-keywords strong { font-weight: 700; word-spacing: 0; margin-right: 0.4em; }
-/* 英文 Abstract / Key Words（文末，小一号、两端对齐、上下细线） */
+/* 英文 Abstract / Key Words（文末，小一号、两端对齐） */
 .folio__col--main .doc-abstract {
   text-indent: 0;
   font-size: 0.8rem;
@@ -663,7 +661,7 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
   letter-spacing: 0.02em;
 }
 
-/* 脚注：学术论文规范 —— 上方短横线、〔n〕编号悬挂缩进、小一号、每条独立成行 */
+/* 脚注：学术论文规范 —— 〔n〕编号悬挂缩进、小一号、每条独立成行 */
 .folio-footnotes {
   margin-top: 1.6rem;
   padding-top: 0.5rem;
@@ -671,14 +669,6 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
   line-height: 1.66;
   color: #3A362F;
   text-align: justify;
-}
-.folio-footnotes::before {
-  content: "";
-  display: block;
-  width: 2.2em;
-  height: 1px;
-  background: #8A857A;
-  margin-bottom: 0.65rem;
 }
 .folio-footnotes p { text-indent: 0; margin-block: 0.34em; }
 /* 单条脚注：悬挂缩进，〔n〕突出、回行对齐 */
@@ -801,7 +791,7 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
   color: #3A362F;
 }
 
-/* 目录条目：标题 + 引导点 + 页码（flex 对齐） */
+/* 目录条目：标题与页码分居两端（flex 对齐） */
 .folio__col--main .doc-toc {
   display: flex;
   align-items: baseline;
@@ -811,12 +801,7 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
   color: #2A2620;
 }
 .folio__col--main .doc-toc__t { flex: 0 0 auto; }
-.folio__col--main .doc-toc__leader {
-  flex: 1 1 auto;
-  margin: 0 0.55em;
-  border-bottom: 1px dotted #B0A99B;
-  transform: translateY(-0.18em);
-}
+.folio__col--main .doc-toc__leader { flex: 1 1 auto; }
 .folio__col--main .doc-toc__p { flex: 0 0 auto; font-family: Georgia, serif; }
 
 /* 索引说明：小一号灰字、居中 */
@@ -873,7 +858,6 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
 
 /* 中栏正文与各级标题：墨色 → 柔白 */
 [data-theme="night"] .folio__col--main { color: #d6dce7; }
-[data-theme="night"] .folio__col--main h2 { border-bottom-color: #2e384c; }
 [data-theme="night"] .folio__col--main h2,
 [data-theme="night"] .folio__col--main h3,
 [data-theme="night"] .folio__col--main h4,
@@ -883,7 +867,6 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
 [data-theme="night"] .folio__col--main .doc-kicker,
 [data-theme="night"] .folio__col--main .doc-author { color: #eceff6; }
 [data-theme="night"] .folio__col--main .doc-file-title { color: #eceff6; }
-[data-theme="night"] .folio__col--main .doc-keywords { border-bottom-color: #2e384c; }
 [data-theme="night"] .folio__col--main .fn,
 [data-theme="night"] .folio__col--main .doc-abstract,
 [data-theme="night"] .folio__col--main .doc-editornote { color: #c2c9d6; }
@@ -898,10 +881,8 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
 [data-theme="night"] .folio__col--main .doc-colophon,
 [data-theme="night"] .folio__col--main .doc-cip { color: #aab4c6; }
 [data-theme="night"] .folio__col--main .doc-index-note { color: #8b94a6; }
-[data-theme="night"] .folio__col--main .doc-toc__leader { border-bottom-color: #5b6478; }
 [data-theme="night"] .folio__col--main blockquote { color: #98a1b3; }
 [data-theme="night"] .folio__col--main li::marker { color: #7e889c; }
-[data-theme="night"] .folio-footnotes { border-top-color: #2e384c; }
 [data-theme="night"] .folio-footnotes .fn-notes-h { color: #eceff6; }
 
 /* 公式块 / 表格：夜读配色 */
@@ -986,7 +967,7 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
   background: #F6F2E8;
 }
 
-/* 幻灯片标题：藏青、加粗、左对齐，下衬一条浅分隔线 */
+/* 幻灯片标题：藏青、加粗、左对齐 */
 .slide-block h4 {
   margin: 0 2.1rem 0.85rem 0;
   padding-bottom: 0.5rem;
@@ -994,7 +975,6 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
   font-weight: 700;
   line-height: 1.4;
   color: #1F3864;
-  border-bottom: 2px solid #E7E0D0;
   text-indent: 0;
 }
 .slide-block h5 {
@@ -1183,7 +1163,7 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
   border-color: #33405a;
   background: #202a3c;
 }
-[data-theme="night"] .slide-block h4 { color: #d6e0ff; border-bottom-color: #2e384c; }
+[data-theme="night"] .slide-block h4 { color: #d6e0ff; }
 [data-theme="night"] .slide-block h5 { color: #c2d0f2; }
 [data-theme="night"] .slide-block li::before { color: #E0884A; }
 [data-theme="night"] .slide-block li li::before { color: #6FA3DC; }
