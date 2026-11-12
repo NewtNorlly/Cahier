@@ -1,77 +1,77 @@
 {
-  "generatedAt": "2026-11-12T16:23:34.571Z",
+  "generatedAt": "2026-11-12T16:51:51.893Z",
   "files": [
     {
       "path": "大学生批判性思维/covers/critical-thinking-480.webp",
-      "bytes": 6416
+      "bytes": 9278
     },
     {
       "path": "大学生批判性思维/covers/critical-thinking-960_thumb.webp",
-      "bytes": 3352
+      "bytes": 4894
     },
     {
       "path": "大学生批判性思维/covers/critical-thinking-960.webp",
-      "bytes": 14526
+      "bytes": 17050
     },
     {
       "path": "德语/covers/german-480.webp",
-      "bytes": 8612
+      "bytes": 9088
     },
     {
       "path": "德语/covers/german-960_thumb.webp",
-      "bytes": 4628
+      "bytes": 4756
     },
     {
       "path": "德语/covers/german-960.webp",
-      "bytes": 16612
+      "bytes": 17694
     },
     {
       "path": "电子政务/covers/e-government-480.webp",
-      "bytes": 7094
+      "bytes": 6700
     },
     {
       "path": "电子政务/covers/e-government-960_thumb.webp",
-      "bytes": 3350
+      "bytes": 3372
     },
     {
       "path": "电子政务/covers/e-government-960.webp",
-      "bytes": 16732
+      "bytes": 15742
     },
     {
       "path": "法语/covers/french-480.webp",
-      "bytes": 7648
+      "bytes": 9270
     },
     {
       "path": "法语/covers/french-960_thumb.webp",
-      "bytes": 3616
+      "bytes": 4948
     },
     {
       "path": "法语/covers/french-960.webp",
-      "bytes": 20614
+      "bytes": 19838
     },
     {
       "path": "公共部门人力资源管理/covers/public-hr-480.webp",
-      "bytes": 10406
+      "bytes": 9426
     },
     {
       "path": "公共部门人力资源管理/covers/public-hr-960_thumb.webp",
-      "bytes": 4834
+      "bytes": 4474
     },
     {
       "path": "公共部门人力资源管理/covers/public-hr-960.webp",
-      "bytes": 24632
+      "bytes": 23632
     },
     {
       "path": "公共经济学/covers/public-economics-480.webp",
-      "bytes": 6414
+      "bytes": 6588
     },
     {
       "path": "公共经济学/covers/public-economics-960_thumb.webp",
-      "bytes": 3076
+      "bytes": 3254
     },
     {
       "path": "公共经济学/covers/public-economics-960.webp",
-      "bytes": 15340
+      "bytes": 15548
     },
     {
       "path": "公共经济学/figures/pubeco-1110-p03-1.webp",
@@ -115,39 +115,39 @@
     },
     {
       "path": "会计/covers/accounting-480.webp",
-      "bytes": 6954
+      "bytes": 10418
     },
     {
       "path": "会计/covers/accounting-960_thumb.webp",
-      "bytes": 3304
+      "bytes": 5416
     },
     {
       "path": "会计/covers/accounting-960.webp",
-      "bytes": 18944
+      "bytes": 21492
     },
     {
       "path": "近现代中日关系史/covers/modern-china-japan-480.webp",
-      "bytes": 10436
+      "bytes": 10684
     },
     {
       "path": "近现代中日关系史/covers/modern-china-japan-960_thumb.webp",
-      "bytes": 5374
+      "bytes": 5592
     },
     {
       "path": "近现代中日关系史/covers/modern-china-japan-960.webp",
-      "bytes": 21708
+      "bytes": 21934
     },
     {
       "path": "决策理论与方法/covers/decision-theory-480.webp",
-      "bytes": 15718
+      "bytes": 21996
     },
     {
       "path": "决策理论与方法/covers/decision-theory-960_thumb.webp",
-      "bytes": 7476
+      "bytes": 11636
     },
     {
       "path": "决策理论与方法/covers/decision-theory-960.webp",
-      "bytes": 40600
+      "bytes": 45150
     },
     {
       "path": "决策理论与方法/figures/6a-s05-1.webp",
@@ -763,87 +763,87 @@
     },
     {
       "path": "民事诉讼法/covers/civil-procedure-480.webp",
-      "bytes": 13948
+      "bytes": 14888
     },
     {
       "path": "民事诉讼法/covers/civil-procedure-960_thumb.webp",
-      "bytes": 7306
+      "bytes": 7422
     },
     {
       "path": "民事诉讼法/covers/civil-procedure-960.webp",
-      "bytes": 27190
+      "bytes": 28036
     },
     {
       "path": "脑图集/covers/brain-atlas-480.webp",
-      "bytes": 9962
+      "bytes": 13794
     },
     {
       "path": "脑图集/covers/brain-atlas-960_thumb.webp",
-      "bytes": 4480
+      "bytes": 6912
     },
     {
       "path": "脑图集/covers/brain-atlas-960.webp",
-      "bytes": 26792
+      "bytes": 27464
     },
     {
       "path": "社会保障学/covers/social-security-480.webp",
-      "bytes": 14872
+      "bytes": 15528
     },
     {
       "path": "社会保障学/covers/social-security-960_thumb.webp",
-      "bytes": 7652
+      "bytes": 7722
     },
     {
       "path": "社会保障学/covers/social-security-960.webp",
-      "bytes": 28656
+      "bytes": 33210
     },
     {
       "path": "土地资源管理/covers/land-resource-480.webp",
-      "bytes": 20922
+      "bytes": 28000
     },
     {
       "path": "土地资源管理/covers/land-resource-960_thumb.webp",
-      "bytes": 9726
+      "bytes": 14190
     },
     {
       "path": "土地资源管理/covers/land-resource-960.webp",
-      "bytes": 54626
+      "bytes": 59416
     },
     {
       "path": "网络工程师/covers/network-engineer-480.webp",
-      "bytes": 12698
+      "bytes": 16560
     },
     {
       "path": "网络工程师/covers/network-engineer-960_thumb.webp",
-      "bytes": 5976
+      "bytes": 8426
     },
     {
       "path": "网络工程师/covers/network-engineer-960.webp",
-      "bytes": 33180
+      "bytes": 35936
     },
     {
       "path": "网络技术/covers/network-tech-480.webp",
-      "bytes": 10928
+      "bytes": 13824
     },
     {
       "path": "网络技术/covers/network-tech-960_thumb.webp",
-      "bytes": 5234
+      "bytes": 7254
     },
     {
       "path": "网络技术/covers/network-tech-960.webp",
-      "bytes": 28492
+      "bytes": 29144
     },
     {
       "path": "文献笔记/covers/legal-zhishichanquan-480.webp",
-      "bytes": 11868
+      "bytes": 17982
     },
     {
       "path": "文献笔记/covers/legal-zhishichanquan-960_thumb.webp",
-      "bytes": 5416
+      "bytes": 8664
     },
     {
       "path": "文献笔记/covers/legal-zhishichanquan-960.webp",
-      "bytes": 28776
+      "bytes": 38298
     },
     {
       "path": "文献笔记/covers/qieshu-wei-yazui-480.webp",
@@ -859,15 +859,15 @@
     },
     {
       "path": "文献笔记/covers/xuanyuanxue-gongminhua-480.webp",
-      "bytes": 9142
+      "bytes": 12336
     },
     {
       "path": "文献笔记/covers/xuanyuanxue-gongminhua-960_thumb.webp",
-      "bytes": 4080
+      "bytes": 5732
     },
     {
       "path": "文献笔记/covers/xuanyuanxue-gongminhua-960.webp",
-      "bytes": 23386
+      "bytes": 29590
     },
     {
       "path": "文献笔记/figures/masthead.webp",
@@ -879,87 +879,87 @@
     },
     {
       "path": "宪法/covers/constitution-480.webp",
-      "bytes": 8234
+      "bytes": 11860
     },
     {
       "path": "宪法/covers/constitution-960_thumb.webp",
-      "bytes": 3760
+      "bytes": 5822
     },
     {
       "path": "宪法/covers/constitution-960.webp",
-      "bytes": 22300
+      "bytes": 22534
     },
     {
       "path": "形势与政策/covers/situation-policy-480.webp",
-      "bytes": 8010
+      "bytes": 7392
     },
     {
       "path": "形势与政策/covers/situation-policy-960_thumb.webp",
-      "bytes": 3754
+      "bytes": 3622
     },
     {
       "path": "形势与政策/covers/situation-policy-960.webp",
-      "bytes": 19282
+      "bytes": 18008
     },
     {
       "path": "应急管理/covers/emergency-management-480.webp",
-      "bytes": 7610
+      "bytes": 7114
     },
     {
       "path": "应急管理/covers/emergency-management-960_thumb.webp",
-      "bytes": 3520
+      "bytes": 3354
     },
     {
       "path": "应急管理/covers/emergency-management-960.webp",
-      "bytes": 18384
+      "bytes": 16976
     },
     {
       "path": "英语/covers/english-480.webp",
-      "bytes": 10346
+      "bytes": 11296
     },
     {
       "path": "英语/covers/english-960_thumb.webp",
-      "bytes": 5322
+      "bytes": 5614
     },
     {
       "path": "英语/covers/english-960.webp",
-      "bytes": 20922
+      "bytes": 23364
     },
     {
       "path": "知识产权法基础理论/covers/ip-theory-480.webp",
-      "bytes": 15134
+      "bytes": 20654
     },
     {
       "path": "知识产权法基础理论/covers/ip-theory-960_thumb.webp",
-      "bytes": 7326
+      "bytes": 10714
     },
     {
       "path": "知识产权法基础理论/covers/ip-theory-960.webp",
-      "bytes": 39216
+      "bytes": 38488
     },
     {
       "path": "中国法制史/covers/legal-history-480.webp",
-      "bytes": 13286
+      "bytes": 14072
     },
     {
       "path": "中国法制史/covers/legal-history-960_thumb.webp",
-      "bytes": 6846
+      "bytes": 7076
     },
     {
       "path": "中国法制史/covers/legal-history-960.webp",
-      "bytes": 23956
+      "bytes": 25794
     },
     {
       "path": "Python/covers/python-480.webp",
-      "bytes": 4912
+      "bytes": 7474
     },
     {
       "path": "Python/covers/python-960_thumb.webp",
-      "bytes": 2462
+      "bytes": 3968
     },
     {
       "path": "Python/covers/python-960.webp",
-      "bytes": 13204
+      "bytes": 15034
     }
   ]
 }
