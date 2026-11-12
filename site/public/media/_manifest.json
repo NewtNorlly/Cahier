@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-12T15:51:24.549Z",
+  "generatedAt": "2026-11-12T16:23:34.571Z",
   "files": [
     {
       "path": "大学生批判性思维/covers/critical-thinking-480.webp",
@@ -63,15 +63,15 @@
     },
     {
       "path": "公共经济学/covers/public-economics-480.webp",
-      "bytes": 7940
+      "bytes": 6414
     },
     {
       "path": "公共经济学/covers/public-economics-960_thumb.webp",
-      "bytes": 3834
+      "bytes": 3076
     },
     {
       "path": "公共经济学/covers/public-economics-960.webp",
-      "bytes": 18594
+      "bytes": 15340
     },
     {
       "path": "公共经济学/figures/pubeco-1110-p03-1.webp",
@@ -835,15 +835,15 @@
     },
     {
       "path": "文献笔记/covers/legal-zhishichanquan-480.webp",
-      "bytes": 18102
+      "bytes": 11868
     },
     {
       "path": "文献笔记/covers/legal-zhishichanquan-960_thumb.webp",
-      "bytes": 8274
+      "bytes": 5416
     },
     {
       "path": "文献笔记/covers/legal-zhishichanquan-960.webp",
-      "bytes": 48704
+      "bytes": 28776
     },
     {
       "path": "文献笔记/covers/qieshu-wei-yazui-480.webp",
@@ -858,8 +858,16 @@
       "bytes": 33882
     },
     {
+      "path": "文献笔记/covers/xuanyuanxue-gongminhua-480.webp",
+      "bytes": 9142
+    },
+    {
+      "path": "文献笔记/covers/xuanyuanxue-gongminhua-960_thumb.webp",
+      "bytes": 4080
+    },
+    {
       "path": "文献笔记/covers/xuanyuanxue-gongminhua-960.webp",
-      "bytes": 10914
+      "bytes": 23386
     },
     {
       "path": "文献笔记/figures/masthead.webp",
