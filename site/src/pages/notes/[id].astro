@@ -68,7 +68,7 @@ const isFolioDoc = true; // 新版统一为三栏文档体
         {note.author && <p class="cover-hero__author">{note.author}</p>}
         {note.keywords && note.keywords.length > 0 ? (
           /* 用户要求：摘要全删，原摘要位只放 5 个记忆点关键词；字体格式与正文一致、不做装饰 */
-          <p class="cover-hero__keywords">{note.keywords.join(" · ")}</p>
+          <p class="cover-hero__keywords">{note.keywords.join("、")}</p>
         ) : (
           note.description && <p class="cover-hero__desc">{note.description}</p>
         )}

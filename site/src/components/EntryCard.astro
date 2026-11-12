@@ -33,7 +33,7 @@ const kindLabel = note.kind === "book" ? "书摘" : note.kind === "stats" ? "阅
     )}
     {note.keywords && note.keywords.length > 0 ? (
       /* 讲稿卡片：摘要位同样只放 5 个记忆点关键词 */
-      <p class="entry-card__keywords">{note.keywords.join(" · ")}</p>
+      <p class="entry-card__keywords">{note.keywords.join("、")}</p>
     ) : (
       note.description && <p class="entry-card__description">{note.description}</p>
     )}
