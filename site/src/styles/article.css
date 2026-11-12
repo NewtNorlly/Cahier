@@ -222,23 +222,6 @@
   letter-spacing: 0.08em;
 }
 
-/* 手写痕迹：黄色荧光高亮（==text== → <mark>） */
-.prose mark,
-.prose .md-highlight {
-  padding: 0.05em 0.18em;
-  border-radius: 0.2em;
-  background: linear-gradient(180deg, transparent 0%, rgba(250, 214, 76, 0.42) 18%, rgba(250, 214, 76, 0.5) 100%);
-  color: inherit;
-  font-weight: inherit;
-}
-
-/* 手写痕迹：红色下划线（<u> 对应原文红色划线） */
-.prose u {
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 3px;
-  text-decoration-color: hsl(354 68% 52% / 0.85);
-}
-
 .prose img {
   height: auto;
   margin: 2rem auto;

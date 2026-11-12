@@ -342,37 +342,6 @@ function normalizeHeadingLevels(tree) {
   });
 }
 
-function transformHighlights(tree) {
-  // Obsidian 高亮语法 ==text== → <mark>text</mark>
-  const targets = [];
-  visit(tree, 'text', (node, index, parent) => {
-    if (index === undefined || !parent?.children || parent.type === 'link') return;
-    if (!node.value.includes('==')) return;
-    targets.push({ node, index, parent });
-  });
-
-  for (const { node, index, parent } of targets.reverse()) {
-    const segments = node.value.split(/==([^=\n]+)==/gu);
-    if (segments.length === 1) continue;
-
-    const replacement = [];
-    for (let i = 0; i < segments.length; i += 1) {
-      const value = segments[i];
-      if (!value) continue;
-      if (i % 2 === 1) {
-        replacement.push({
-          type: 'highlight',
-          data: { hName: 'mark', hProperties: { className: ['md-highlight'] } },
-          children: [{ type: 'text', value }],
-        });
-      } else {
-        replacement.push({ type: 'text', value });
-      }
-    }
-    parent.children.splice(index, 1, ...replacement);
-  }
-}
-
 function transformTextNodes(tree, sourcePath, base) {
   const targets = [];
   visit(tree, 'text', (node, index, parent) => {
@@ -430,7 +399,6 @@ export function remarkObsidian(options = {}) {
     transformSeparators(tree);
     transformCallouts(tree);
     transformTextNodes(tree, sourcePath, base);
-    transformHighlights(tree);
     transformImages(tree, sourcePath, base);
     transformMarkdownLinks(tree, sourcePath, base);
   };

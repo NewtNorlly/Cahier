@@ -548,20 +548,6 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
 .folio__col--main li > ul,
 .folio__col--main li > ol { padding-left: 1.4em; }
 
-/* 手写痕迹：荧光高亮 / 红色下划线 */
-.folio__col--main mark,
-.folio__col--main .md-highlight {
-  padding: 0.04em 0.16em;
-  border-radius: 0.18em;
-  background: linear-gradient(180deg, transparent 0%, rgba(248, 216, 96, 0.32) 18%, rgba(248, 216, 96, 0.45) 100%);
-  color: inherit;
-}
-.folio__col--main u {
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 3px;
-  text-decoration-color: hsl(354 68% 52% / 0.8);
-}
-
 /* 公式 */
 .folio__col--main .katex-display {
   margin: 1rem 0;
