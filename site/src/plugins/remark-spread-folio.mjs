@@ -621,7 +621,14 @@ function splitTextByVisual(text, need) {
   let acc = 0;
   for (let i = 0; i < text.length; i += 1) {
     acc += /[㐀-䶿一-鿿豈-﫿＀-￯]/.test(text[i]) ? 1 : 0.56;
-    if (acc >= need) return [text.slice(0, i + 1), text.slice(i + 1)];
+    if (acc >= need) {
+      let cut = i + 1;
+      if (!keepIndexedPages && /[\p{Script=Latin}\d]/u.test(text[cut] ?? "")) {
+        const partial = text.slice(0, cut).match(/[\p{Script=Latin}\d'’–-]+$/u)?.[0];
+        if (partial && partial.length < cut && partial.length <= 30) cut -= partial.length;
+      }
+      return [text.slice(0, cut), text.slice(cut)];
+    }
   }
   return [text, ""];
 }
