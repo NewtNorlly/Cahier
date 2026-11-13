@@ -5,53 +5,24 @@ keywords: ["选择架构", "双系统思维", "锚定效应", "安于现状偏�
 cover: "./covers/decision-theory-960.webp"
 ---
 
-<!--folio:第1页-->
-
-<!--col:L-->
-
+<!--folio-->
 <!--col:M-->
-#### Decision Theory and Method
+
+## Decision Theory and Method
 石婧
 华中科技大学公共管理学院
 Shi.jing@hust.edu.cn
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第2页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### Nudge
+## Nudge
 Improving Decisions about Health, Wealth, and Happiness
 by Richard H. Thaler & Cass R. Sunstein
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第3页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### Every Decision can be Nudged
+## Every Decision can be Nudged
 - the researchers were able to increase or decrease selection of specific foods by 25%, just by rearranging them.
 
 ![自助餐厅自助取餐台：仅靠重新排列食物位置即可助推选择|640](./figures/c4-p03-cafeteria.webp)
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第4页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### Nudge
+## Nudge
 - Thaler and Sunstein define a nudge as altering people's behavior in a predictable way without significantly changing their economic incentives
 Ø Libertarianism
   - Be free to do what they like
@@ -59,97 +30,33 @@ by Richard H. Thaler & Cass R. Sunstein
 Ø Libertarian paternalism
   - 自由（主义）的温和专制主义
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第5页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### Case 1
+## Case 1
 
 ![“Don't Mess With Texas”警示牌：以反垃圾标语助推不乱扔垃圾|640](./figures/c4-p05-dont-mess-tx.webp)
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第6页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### Case 2
+## Case 2
 
 ![夜间行人天桥（首尔麻浦大桥自杀干预助推案例）|640](./figures/c4-p06-mapo-bridge.webp)
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第7页-->
-
-<!--col:L-->
-
-<!--col:M-->
-
 ![麻浦大桥相关助推宣传画面（KSPO 等公共机构合作宣传）|720](./figures/c4-p07-ksp-bridge.webp)
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第8页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### More public issues
+## More public issues
 - Obeying traffic rules
 - Smoking
 - Low carbon consumption
 - Obesity
 - Short sight
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第9页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### Decision Architecture
+## Decision Architecture
 - Organize the context in which people make decisions
 - An effective design enables people to easily focus on the right things and make meaningful evaluations.
 
 ![2000 年美国大选“蝴蝶选票”：选票排版（选择架构）误导了部分选民|720](./figures/c4-p09-ballot-2000.webp)
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第10页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### How we think: 2 systems
+## How we think: 2 systems
 
 ![“哪张桌子更长？”视错觉：直觉系统快速给出答案，反思系统才会度量|480](./figures/c4-p10-table-illusion.webp)
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第11页-->
-
-<!--col:L-->
-
-<!--col:M-->
 两个系统对照：
 
 | Automatic System（直觉系统） | Reflective System（反思系统） |
@@ -160,59 +67,23 @@ by Richard H. Thaler & Cass R. Sunstein
 | Doer（行动者） | Planner（计划者） |
 | Uncontrolled（不受控） | Controlled（受控） |
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第12页-->
-
-<!--col:L-->
-
-<!--col:M-->
 - 光滑的门板让人们推门，门上有把手使人产生“拉门”的倾向。
 - 球拍与球总价 1.1 元，球拍比球贵 1 元，问球拍的价格？
 - 请说出文字的颜色：红 绿 白。
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第13页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### When do we need nudges?
+## When do we need nudges?
 - When we see the benefits now, costs later.
 - When encountering decisions we make infrequently.
 - When feedback is not immediate.
 - When it is hard to imagine the possible outcomes.
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第14页-->
-
-<!--col:L-->
-
-<!--col:M-->
 Benefits now / Costs later（收益在当下、成本在未来）。
 
 ![冰淇淋自助：当下的味觉享受（benefit now）|720](./figures/c4-p14-gelato.webp)
 
 ![减肥卡通：远期的健康代价（cost later）|300](./figures/c4-p14-diet-cartoon.webp)
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第15页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### Human's actions are predictable
+## Human's actions are predictable
 - We have predictable mental biases.
   - Anchoring Bias: We are heavily biased by where we start.
   - Status Quo Bias: We rarely overcome inertia（惯性/惰性）.
@@ -220,16 +91,7 @@ Benefits now / Costs later（收益在当下、成本在未来）。
   - Representativeness Bias: We sometimes see patterns where there are none.
   - Unrealistic Optimism: Almost all of us think we are better than average.
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第16页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### 01 · 概念界定
+## 01 · 概念界定
 锚定效应：从初始值出发，但调整不足。
 
 锚定是估计未知数量时，从一个初始值出发进行调整的认知倾向。不同起点会产生不同估计，并使最终判断偏向最初看到的数值。
@@ -242,16 +104,7 @@ Benefits now / Costs later（收益在当下、成本在未来）。
 
 资料来源：Bellé, Cantarelli & Belardinelli（2018），Prospect Theory Goes Public: Experimental Evidence on Cognitive Biases in Public Policy and Management Decisions，Public Administration Review，pp. 830–831。
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第17页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### 02 · 实验设计
+## 02 · 实验设计
 实验 6：同一道决策题，只替换一个数字锚。
 
 样本与分组：600 名意大利公共部门员工与管理者；调查时间：2016 年 6—7 月，共 5 轮。实验 6 有效样本：545；低锚组 228 人，高锚组 317 人。注：第一波低锚情境文字有误，作者剔除了 55 份相关回答。
@@ -265,16 +118,7 @@ Benefits now / Costs later（收益在当下、成本在未来）。
 
 资料来源：Bellé, Cantarelli & Belardinelli（2018），Table 1（p. 832）与 Table 2（p. 833）。
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第18页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### 03 · 结果与启示
+## 03 · 结果与启示
 结果：高锚把建议的回复期限抬高约 68.5%。
 
 组间差异 +21.8 天 = 高锚组均值 − 低锚组均值。
@@ -290,44 +134,16 @@ Benefits now / Costs later（收益在当下、成本在未来）。
 
 ![图 3：低锚组（31.82 天）与高锚组（53.62 天）建议最长回复期限均值，误差线为 95% CI|640](./figures/c4-p18-anchoring-chart.webp)
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第19页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### Status quo bias
+## Status quo bias
 - first introduced by researchers William Samuelson and Richard Zeckhauser in 1988.
   - people preferring that things stay as they are or that the current state of affairs remains the same.
   - 90 年代初，New Jersey 和 Pennsylvania 要改革汽车保险，给保民们两个选择，A. 贵的，但是赔偿高，权利多，B. 便宜的，赔偿低，权利有限。两州给保民的这两个选择内容都差不多。
 - 在 New Jersey，贵的那种是 default，结果改革后，75% 保民选了贵的。
 - 在 Pennsylvania，便宜的那种是 default，所以改革后大部分人选的还是便宜的那种。
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第20页-->
-
-<!--col:L-->
-
-<!--col:M-->
-
 ![手机充值中心界面：默认推荐档位（10/20/30 元）作为选择架构的默认项示例|280](./figures/c4-p20-recharge.webp)
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第21页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### 01 · 概念界定
+## 01 · 概念界定
 安于现状效应：备选越多，越倾向不行动。
 
 当可行替代方案增加时，决策者反而更可能维持现状。即使新方案可能更优，更多选择也可能带来冲突、延迟与不作为。——据本文 Status Quo 部分译写，亦称为“多重替代效应”。
@@ -338,16 +154,7 @@ Benefits now / Costs later（收益在当下、成本在未来）。
 
 资料来源：Bellé, Cantarelli & Belardinelli（2018），Status Quo 部分，p. 831；Tversky & Shafir（1992）。
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第22页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### 02 · 实验设计
+## 02 · 实验设计
 实验 8–9：把可替代方案从一个增加到两个。
 
 共同设置：600 名意大利公共部门员工与管理者。实验 8：一个替代承包商组 235 人；两个替代承包商组 263 人。实验 9：一个修复方案组 155 人；两个修复方案组 141 人。
@@ -358,16 +165,7 @@ Benefits now / Costs later（收益在当下、成本在未来）。
 
 资料来源：Bellé, Cantarelli & Belardinelli（2018），Table 1（p. 832）与 Table 2（p. 833）。
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第23页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### 03 · 结果与启示
+## 03 · 结果与启示
 结果：两个替代方案提高维持现状的发生比。
 
 核心发现：
@@ -384,73 +182,27 @@ Benefits now / Costs later（收益在当下、成本在未来）。
 
 ![实验 9：可用修复程序数量与维持原定招标行动的比例|360](./figures/c4-p23-statusquo-chart2.webp)
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第24页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### Availability Bias
+## Availability Bias
 - We are much more scared of vivid and easily imagined threats (like plane crashes or tornadoes), than we are of ordinary but much more common dangers (like asthma attacks).
   - We are 20x more likely to die of asthma attack than tornado, so if we were purely rational, we'd be 20x more scared of asthma than tornadoes.
 
 ![空难现场：生动、易想象的威胁让人过度恐惧|480](./figures/c4-p24-plane-crash.webp)
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第25页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### Representativeness Bias
+## Representativeness Bias
 - Based on the beauty pageant contestants you've seen in the media lately, you might think that ALL of them are dumb as a post. (That's not true.)
 - If you wore your old hat during two games which your team won, you might assume that it's a lucky hat, and that if you don't wear it during the next game, your team will lose. (Sorry, there's no connection.)
 
 ![选美比赛参赛者：媒体曝光让我们以为“都很笨”，其实并非如此|360](./figures/c4-p25-beauty.webp)
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第26页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### Unrealistic Optimism
+## Unrealistic Optimism
 - In one study the authors conducted, 90% of their students predicted they would finish in the top 2 percentiles in their class.
 
 ![多数人高估自己：正态分布曲线与“90% 的学生预测自己名列前茅”|480](./figures/c4-p26-optimism-curve.webp)
-
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第27页-->
-
-<!--col:L-->
-
-<!--col:M-->
 
 ![冲浪主题简笔画（过于自信与乐观的生活隐喻）|240](./figures/c4-p27-doodle.webp)
 
 ![冲浪者：人们总以为自己比平均水平更安全、更幸运|420](./figures/c4-p27-surfers.webp)
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第28页-->
-
-<!--col:L-->
-
-<!--col:M-->
 - 劳东燕讲述，自己在 10 月 1 日接到电话，对方声称是电信服务商的工作人员，说她名下另外有个手机号，一直向加拿大公民发送虚假广告，如果她不申诉并获取警方的立案报告的话，就要断掉她当前在本地办理的手机电信服务。
 - 为取得劳东燕的信任，对方在电话里报了自己的姓名、工号还有处理该事项的文件号，之后说给她转接广州公安局的电话。随后，有一位自称是广州市公安局民警的男子声称要给她做笔录，按规定要录音录像，还与她确认是否是在单独的房间，房间里有无他人，并要求她开摄像头。
 - 从劳东燕所了解的电诈案件来看，如果犯罪分子拿到受骗人的姓名、手机号、身份证和人脸识别的视频，基本上受骗人银行账户里的钱，对方就能如入无人之境那般转走。去年发生过好几起这样的案件，诈骗分子利用银行人脸识别系统的漏洞，同时截获了手机的验证码，转走被害人账户里的存款。
@@ -459,16 +211,7 @@ https://mp.weixin.qq.com/s/JSdFShw_0FlvcHUXlHo8tA
 
 ![“清华刑法学教授险被电信诈骗”相关新闻截图|560](./figures/c4-p28-fraud-news.webp)
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第29页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### How to achieve a good choice architecture
+## How to achieve a good choice architecture
 - iNcentives
 - Understand "mappings"
 - Defaults
@@ -476,89 +219,32 @@ https://mp.weixin.qq.com/s/JSdFShw_0FlvcHUXlHo8tA
 - Expect Error
 - Structure Complex Choices
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第30页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### Understand "mappings"
+## Understand "mappings"
 - Mappings means how we translate data about an option into what it actually means for us
   - like translating kilowatts of energy into dollars on the electricity bill
 
 ![把用电量即时换算为金额的电表/气表设备|480](./figures/c4-p30-energy-meter.webp)
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第31页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### Default
+## Default
 
 ![新泽西州驾照上的器官捐献默认勾选（Default）示例|720](./figures/c4-p31-nj-license.webp)
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第32页-->
-
-<!--col:L-->
-
-<!--col:M-->
-
 ![默认选项的奇特效果：器官捐献在线调查三种默认方式下的同意比例（明确同意42%、推定同意82%、中立条件79%）书页|720](./figures/c4-p32-default-effect.webp)
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第33页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### Default
+## Default
 - Large railroad Europe made small change to its website so seat reservations would be included automatically with ticket purchases (at an added cost of 1-2 Euros), unless the customer unchecked a box on the online booking form.
   - Before: 9% tickets including reservations
   - After: 47% tickets including reservations
 - Earning railroad an additional 40 million annually
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第34页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### Feedback
+## Feedback
 - This device is designed to give you feedback about your energy usage as you are using it. It is also mapping your usage to money, targeting your loss aversion, and it plans to tap into vast social pressures by broadcasting your usage statistics to Facebook and Twitter.
 
 ![书架与电价计量屏：把使用量即时反馈给用户|420](./figures/c4-p34-bookshelf.webp)
 
-<!--col:R-->
-
-<!--/folio-->
-
-<!--folio:第35页-->
-
-<!--col:L-->
-
-<!--col:M-->
-#### Expect Error
+## Expect Error
 - Make plan for the errors
 
 ![路面上的“LOOK RIGHT”提示：为行人看错方向这一常见错误预先设计提示|480](./figures/c4-p35-look-right.webp)
-
-<!--col:R-->
 
 <!--/folio-->

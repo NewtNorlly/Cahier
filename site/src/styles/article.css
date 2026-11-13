@@ -225,8 +225,6 @@
 .prose img {
   height: auto;
   margin: 2rem auto;
-  border-radius: var(--radius-sm);
-  box-shadow: 0 10px 28px hsl(var(--fg) / 8%);
 }
 
 .prose hr { display: none; }
@@ -240,7 +238,6 @@
   padding: 0.12em 0.3em;
   border: 1px solid var(--line-soft);
   border-radius: var(--radius-sm);
-  background: var(--sheet-muted);
   font-family: "SFMono-Regular", Consolas, monospace;
   font-size: max(0.84em, var(--text-min));
 }
@@ -249,7 +246,6 @@
   overflow-x: auto;
   padding: 1.25rem;
   border-radius: var(--radius-sm);
-  background: var(--ink);
   color: var(--sheet);
   line-height: 1.65;
 }
@@ -278,7 +274,6 @@
 }
 
 .prose th {
-  background: var(--sheet-muted);
 }
 
 .article-end {

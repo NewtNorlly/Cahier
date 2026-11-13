@@ -27,14 +27,6 @@
   pointer-events: none;
 }
 
-.doc-cover__masthead {
-  display: block;
-  max-width: 17rem;
-  width: 60%;
-  height: auto;
-  margin: 0 auto 1.6rem;
-}
-
 .doc-cover__kicker {
   font-family: var(--font-latin);
   font-size: 0.78rem;
@@ -137,20 +129,12 @@
 html.is-notes-open .doc-body {
   width: min(calc(100% - 2.5rem), 1980px);
 }
-/* 课件纸更宽，舞台相应加宽 */
-.doc-body--slides { width: min(calc(100% - 2.5rem), 1300px); }
-html.is-notes-open .doc-body--slides { width: min(calc(100% - 2.5rem), 2520px); }
 /* 中等屏：两纸等比缩小以并排（transform 缩、高度由 --spread-scale 补偿，分页口径不变）。
    纸面已 zoom 1.2，有效两纸宽约 1900，按此重排断点。 */
 @media (max-width: 1800px) { html.is-notes-open .doc-body { --spread-scale: 0.86; } }
 @media (max-width: 1600px) { html.is-notes-open .doc-body { --spread-scale: 0.76; } }
 @media (max-width: 1400px) { html.is-notes-open .doc-body { --spread-scale: 0.68; } }
 @media (max-width: 1200px) { html.is-notes-open .doc-body { --spread-scale: 0.6; } }
-/* 课件纸 1004×1.2 更宽，断点另算 */
-html.is-notes-open .doc-body--slides { --spread-scale: 0.78; }
-@media (max-width: 1900px) { html.is-notes-open .doc-body--slides { --spread-scale: 0.68; } }
-@media (max-width: 1600px) { html.is-notes-open .doc-body--slides { --spread-scale: 0.58; } }
-@media (max-width: 1300px) { html.is-notes-open .doc-body--slides { --spread-scale: 0.5; } }
 
 /* 每一页 = 一个 .folio--spread 舞台（见下方双纸布局节）；纸 chrome 在 .folio__paper 上。 */
 .folio {
@@ -214,8 +198,6 @@ html.is-notes-open .doc-body--slides { --spread-scale: 0.78; }
   margin: 0 auto clamp(1.6rem, 3vw, 2.6rem);
   background: transparent;
 }
-/* 课件纸更宽，以容纳 PPT 卡片（SLIDE_CAP=951 / 主列 1004 几何口径不变） */
-.folio--spread--slides { --paper-w: 1004px; }
 
 .folio__paper {
   position: absolute;
@@ -263,11 +245,6 @@ html.is-notes-open .folio__paper--notes {
   /* min-height:0 允许 flex 子项收缩到内容高度以内，否则笔记纸编辑区会把栏撑破纸底 */
   min-height: 0;
   padding: clamp(1.4rem, 2.6vw, 2rem) clamp(1.5rem, 3vw, 2.6rem) 1.2rem;
-}
-/* 课件：卡片按原 1004 几何排版，内部栏不再加横向内边距 */
-.folio--spread--slides .folio__paper .folio__col--main {
-  padding-left: 0.6rem;
-  padding-right: 0.6rem;
 }
 .folio__paper .folio__pageno {
   width: auto;
@@ -339,14 +316,10 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
   text-indent: 0;
 }
 
-/* ── 代码块：极浅蓝白 + 黑色思源宋体（蓝白仅比白纸泛一点蓝，
-   若有若无的极小圆角、同色系淡边框；字体与字号都与中栏正文一致）── */
+/* 代码沿用纸色与正文墨色，保留原始缩进。 */
 .folio__col--main pre {
   margin-block: 0.85em;
   padding: 0.75em 1.15em;
-  background: #F4F8FD;                       /* 极浅蓝白 hsl(213 69% 97%)，蓝白若有若无 */
-  border: 1px solid #E0E9F3;                 /* 同色系淡边框 hsl(212 44% 92%)，轻轻勾边 */
-  border-radius: 3px;                        /* 极小圆角，精致不抢眼 */
   color: #1F1C18;                      /* 与中栏正文同墨色（黑色） */
   /* 与中栏正文同一字体：西文 Times New Roman、中文思源宋体 */
   font-family: "Times New Roman", "Liberation Serif", "Source Han Serif CN",
@@ -365,12 +338,9 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
   font-size: inherit;
   white-space: pre;
 }
-/* 行内代码：比代码块更浅一档的蓝白 + 若有若无的圆角，宋体、字号同正文 */
+/* 行内代码与正文同底。 */
 .folio__col--main :not(pre) > code {
   padding: 0.07em 0.34em;
-  background: #F7FAFD;                       /* 近白蓝 hsl(210 60% 98%)，嵌入正文几乎不打扰 */
-  border: 1px solid #E8EEF5;                 /* 极淡边框 hsl(212 39% 94%) */
-  border-radius: 2px;
   color: #1F1C18;
   font-family: inherit;
   font-size: 1em;
@@ -554,23 +524,19 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
   padding: 0.7rem 0.9rem;
   overflow-x: auto;
   overflow-y: hidden;
-  background: #F6F4EE;
-  border-radius: 6px;
 }
 .folio__col--main .katex { font-size: 1.02em; }
 
 /* 学术三线表：仅上下框线 + 表头下细线，无竖线，清新克制 */
 .folio__col--main table {
-  width: 100%;
+  width: auto;
+  max-width: 100%;
   border-collapse: collapse;
-  margin: 1.1rem 0;
+  margin: 1.1rem auto;
   font-size: 0.86rem;
   line-height: 1.6;
-  display: block;
-  overflow-x: auto;
+  overflow-wrap: anywhere;
 }
-.folio__col--main table thead,
-.folio__col--main table tbody { display: table; width: 100%; table-layout: auto; }
 .folio__col--main table th,
 .folio__col--main table td {
   padding: 0.5rem 0.85rem;
@@ -585,12 +551,10 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
   border-top: 1.6px solid #3A362F;
   border-bottom: 1px solid #3A362F;
   background: none;
-  white-space: nowrap;
 }
 .folio__col--main table tbody tr:last-child td { border-bottom: 1.6px solid #3A362F; }
-.folio__col--main table tbody tr:nth-child(even) { background: #FAF9F5; }
 .folio__col--main table th:first-child,
-.folio__col--main table td:first-child { white-space: nowrap; font-weight: 600; }
+.folio__col--main table td:first-child { font-weight: 600; }
 
 /* 图片 figure */
 .folio-figure {
@@ -598,15 +562,7 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
   text-align: center;
   text-indent: 0;
 }
-.folio-figure img {
-  max-width: 100%;
-  height: auto;
-  margin: 0 auto;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  box-shadow: 0 6px 18px hsl(var(--fg) / 0.07);
-  background: #fff;
-}
+
 .folio-figure figcaption {
   margin-top: 0.5rem;
   font-size: 0.83rem;
@@ -619,14 +575,31 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
   text-align: center;
   margin: 1.3rem 0 0.3rem;
 }
-.folio__col--main img.markdown-image {
+.folio__col--main img {
   max-width: 100%;
   height: auto;
+  max-height: 760px;
+  object-fit: contain;
   margin: 0 auto;
-  border-radius: 6px;
-  border: 1px solid var(--line);
-  box-shadow: 0 6px 18px hsl(var(--fg) / 0.08);
-  background: #fff;
+}
+
+[data-theme="cobalt"] .folio__col--main img {
+  mix-blend-mode: multiply;
+}
+
+/* 透明墨线插图在夜间改用浅色墨线。 */
+[data-theme="night"] .folio__col--main img:is([src*="/figures/pubeco-1110-"], [src$="-ink.webp"]) {
+  filter: invert(0.88);
+}
+
+.folio__col--main .doc-journal {
+  text-align: center;
+  text-indent: 0;
+}
+
+.folio__col--main .doc-journal-name {
+  font-size: 1.34em;
+  font-weight: 700;
 }
 .folio__col--main .fig-caption {
   text-indent: 0 !important;
@@ -872,322 +845,16 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
 [data-theme="night"] .folio-footnotes .fn-notes-h { color: #eceff6; }
 
 /* 公式块 / 表格：夜读配色 */
-[data-theme="night"] .folio__col--main .katex-display { background: #1b2230; }
 
-/* 代码块 / 行内代码：低饱和雾蓝在夜读底上呈淡蓝晕、柔白宋体（圆角同白昼，若有若无） */
-[data-theme="night"] .folio__col--main pre {
-  background: hsl(212 52% 70% / 0.16);
-  border-color: hsl(212 48% 66% / 0.30);
-  color: #d6dce7;
-}
-[data-theme="night"] .folio__col--main pre code {
-  background: transparent;
-  color: inherit;
-}
-[data-theme="night"] .folio__col--main :not(pre) > code {
-  background: hsl(212 52% 70% / 0.13);
-  border-color: hsl(212 48% 66% / 0.26);
-  color: #d6dce7;
-}
+[data-theme="night"] .folio__col--main pre,
+[data-theme="night"] .folio__col--main :not(pre) > code { color: inherit; }
 [data-theme="night"] .folio__col--main table thead th {
   color: #e3e8f2;
   border-top-color: #46506a;
   border-bottom-color: #46506a;
 }
 [data-theme="night"] .folio__col--main table tbody tr:last-child td { border-bottom-color: #46506a; }
-[data-theme="night"] .folio__col--main table tbody tr:nth-child(even) { background: #1a2130; }
 [data-theme="night"] .folio-figure figcaption { color: #8b94a6; }
-
-/* ════════════════════════════════════════════════════════════
-   课件（PPT 导出幻灯片）：一个 A4 网页放两张源幻灯片
-   米色幻灯片卡片 + 藏青标题 + 橙方块/蓝箭头项目符号，贴近源 PPT。
-   ════════════════════════════════════════════════════════════ */
-
-/* 课件与讲稿一致：左右始终呈现空白便笺纸（即使没有笔记也留空栏），
-   中栏为固定 1004px 幻灯片轨道（卡宽与既有零超高几何口径完全一致），
-   两侧 1fr 空白便签以极淡竖线与中栏分界。 */
-.doc-body--slides {
-  background-image: none;
-}
-
-/* 夜间 [data-theme="night"] .doc-body 会重画 25%/75% 笔记本竖线；课件中栏固定 1004px、自带左右便签边框，必须再次关掉，否则夜间多出错位竖线 */
-[data-theme="night"] .doc-body--slides {
-  background-image: none;
-}
-.doc-body--slides .folio__col--main {
-  /* 幻灯片沿用 PPT 的无衬线字体，与讲稿的宋体纸面区分开 */
-  font-family: -apple-system, "Segoe UI", "Microsoft YaHei", "PingFang SC",
-    "Hiragino Sans GB", "Noto Sans CJK SC", sans-serif;
-  font-size: 1.02rem;
-  line-height: 1.72;
-  color: #2A2620;
-}
-
-.slide-block {
-  position: relative;
-  margin: 0 0 1.15rem;
-  padding: 1.35rem 1.7rem 1.3rem;
-  background: #FCFAF5;
-  border: 1px solid #EAE2D2;
-  border-radius: 12px;
-  box-shadow: 0 1px 2px hsl(40 24% 45% / 0.06), 0 10px 24px hsl(40 24% 45% / 0.08);
-  break-inside: avoid;
-}
-.slide-block:last-child { margin-bottom: 0; }
-
-/* 来源幻灯片序号签：右上角小芯片，标明对应源 PDF 第几张幻灯片 */
-.slide-block__tag {
-  position: absolute;
-  top: 0.7rem;
-  right: 0.85rem;
-  min-width: 1.5rem;
-  padding: 0.08rem 0.42rem;
-  text-align: center;
-  font-family: Georgia, var(--font-latin);
-  font-style: italic;
-  font-size: 0.74rem;
-  letter-spacing: 0.04em;
-  color: #9A9384;
-  border: 1px solid #E4DDCD;
-  border-radius: 999px;
-  background: #F6F2E8;
-}
-
-/* 幻灯片标题：藏青、加粗、左对齐 */
-.slide-block h4 {
-  margin: 0 2.1rem 0.85rem 0;
-  padding-bottom: 0.5rem;
-  font-size: 1.22rem;
-  font-weight: 700;
-  line-height: 1.4;
-  color: #1F3864;
-  text-indent: 0;
-}
-.slide-block h5 {
-  margin: 0.9rem 0 0.45rem;
-  font-size: 1.04rem;
-  font-weight: 700;
-  color: #24406E;
-  text-indent: 0;
-}
-
-/* 幻灯片正文段落不首行缩进（PPT 为要点排版，非散文） */
-.slide-block p {
-  margin-block: 0.5em;
-  text-indent: 0;
-  text-align: left;
-  line-height: 1.72;
-}
-
-/* 项目符号：一级橙色方块 ■，二级蓝色箭头 ▸（对齐源 PPT） */
-.slide-block ul {
-  list-style: none;
-  padding-left: 0;
-  margin: 0.55rem 0;
-}
-.slide-block ul ul {
-  margin: 0.15rem 0;
-  padding-left: 0.2rem;
-}
-.slide-block li {
-  position: relative;
-  padding-left: 1.35em;
-  margin-top: 0.4rem;
-  text-align: left;
-}
-.slide-block li::before {
-  content: "■";
-  position: absolute;
-  left: 0.1em;
-  top: 0.06em;
-  font-size: 0.78em;
-  line-height: 1.7;
-  color: #C55A11;
-}
-.slide-block li li::before {
-  content: "▸";
-  left: 0.02em;
-  top: 0.02em;
-  font-size: 0.95em;
-  color: #2E75B6;
-}
-.slide-block ol {
-  padding-left: 1.5em;
-  margin: 0.55rem 0;
-}
-.slide-block ol > li { padding-left: 0.3em; }
-.slide-block ol > li::before { content: none; }
-.slide-block ol > li::marker { color: #1F3864; font-weight: 700; }
-.slide-block li p { text-indent: 0; }
-
-/* 单张大图：居中、圆角、轻边框、限高，保证两张幻灯片能共处一页 */
-.slide-block p:has(> img.markdown-image) { margin: 0.8rem 0 0.3rem; text-align: center; }
-.slide-block img.markdown-image {
-  max-width: 100%;
-  max-height: 430px;
-  width: auto;
-  margin: 0 auto;
-  border-radius: 8px;
-  border: 1px solid #E4DDCD;
-  box-shadow: 0 6px 16px hsl(40 24% 40% / 0.1);
-  background: #fff;
-}
-/* 连续截图两两横排（插件包成 .slide-figrow），贴近 PPT 并压低纵向高度 */
-.slide-figrow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.7rem;
-  align-items: flex-start;
-  margin: 0.8rem 0;
-}
-.slide-fig {
-  /* 每行固定两张并排（gap 0.7rem，半 gap 0.35rem），奇数张最后一张占半宽 */
-  flex: 0 1 calc(50% - 0.35rem);
-  min-width: 0;
-  text-align: center;
-}
-.slide-figrow--3 .slide-fig {
-  /* 每行三张并排（gap 0.7rem，三列两 gap，列 gap 0.47rem），复现源 PPTX 三列图片网格 */
-  flex: 0 1 calc(33.333% - 0.47rem);
-}
-.slide-fig p:has(> img.markdown-image) { margin: 0; }
-.slide-fig img.markdown-image {
-  width: 100%;
-  max-width: 100%;
-  max-height: 256px;
-  height: auto;
-  object-fit: contain;
-}
-.slide-block .fig-caption {
-  text-indent: 0 !important;
-  text-align: center;
-  margin: 0.25rem 0 0.6rem;
-  font-size: 0.82rem;
-  color: #9A9384;
-}
-
-/* 表格：藏青表头、淡蓝框线，呼应源 PPT 蓝框表 */
-.slide-block table {
-  display: table;
-  width: 100%;
-  margin: 0.9rem 0;
-  font-size: 0.92rem;
-  line-height: 1.55;
-  border-collapse: collapse;
-  border: 1px solid #C7D6EA;
-  border-radius: 8px;
-  overflow: hidden;
-}
-.slide-block table thead,
-.slide-block table tbody { display: table-row-group; width: auto; }
-.slide-block table th,
-.slide-block table td {
-  padding: 0.5rem 0.8rem;
-  border: 1px solid #D3E0F0;
-  text-align: left;
-  vertical-align: top;
-  text-indent: 0;
-}
-.slide-block table thead th {
-  white-space: normal;
-  color: #FFFFFF;
-  background: #1F3864;
-  border-color: #1F3864;
-  border-top: 0;
-  font-weight: 700;
-}
-.slide-block table tbody tr:nth-child(even) { background: #F1F5FB; }
-.slide-block table tbody tr:last-child td { border-bottom: 0; }
-.slide-block table th:first-child,
-.slide-block table td:first-child { white-space: normal; font-weight: 600; }
-
-/* 公式块 */
-.slide-block .katex-display {
-  margin: 0.8rem 0;
-  padding: 0.6rem 0.9rem;
-  background: #F5F2EA;
-  border-radius: 8px;
-}
-
-/* 列表项内的段落（松散列表）：与条目同字号、零额外间距、左对齐 */
-.slide-block li p { margin-block: 0; text-align: left; }
-
-/* 封面幻灯片（每个课件第一张）：标题与署名居中、放大、整卡在页面内垂直居中 */
-.slide-block--cover {
-  text-align: center;
-  padding-top: 2.1rem;
-}
-.slide-block--cover h4 {
-  margin-inline: auto;
-  text-align: center;
-  font-size: 1.66rem;
-  line-height: 1.45;
-  border-bottom: 0;
-  padding-bottom: 0.2rem;
-  margin-bottom: 1rem;
-}
-.slide-block--cover p { text-align: center; }
-.slide-block--cover ul,
-.slide-block--cover ol { text-align: left; }
-.slide-block--cover .slide-block__tag { display: none; }
-/* 封面独占一页时，在版心内垂直居中 */
-.folio:has(.slide-block--cover) .folio__col--main {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-/* 课件暗夜主题：米色卡片转夜读蓝灰；空白便签竖线同步转夜读色 */
-[data-theme="night"] .doc-body--slides .folio__col--main { color: #d6dce7; }
-[data-theme="night"] .slide-block {
-  background: #1A2231;
-  border-color: #2C3547;
-  box-shadow: 0 1px 2px hsl(222 30% 8% / 0.3), 0 10px 24px hsl(222 30% 8% / 0.35);
-}
-[data-theme="night"] .slide-block__tag {
-  color: #8b94a6;
-  border-color: #33405a;
-  background: #202a3c;
-}
-[data-theme="night"] .slide-block h4 { color: #d6e0ff; }
-[data-theme="night"] .slide-block h5 { color: #c2d0f2; }
-[data-theme="night"] .slide-block li::before { color: #E0884A; }
-[data-theme="night"] .slide-block li li::before { color: #6FA3DC; }
-[data-theme="night"] .slide-block ol > li::marker { color: #B9C8EE; }
-[data-theme="night"] .slide-block img.markdown-image {
-  border-color: #33405a;
-  background: #141a26;
-}
-[data-theme="night"] .slide-block .fig-caption { color: #8b94a6; }
-[data-theme="night"] .slide-block table { border-color: #33405a; }
-[data-theme="night"] .slide-block table th,
-[data-theme="night"] .slide-block table td { border-color: #2e384c; }
-[data-theme="night"] .slide-block table thead th { background: #2b4a7e; border-color: #2b4a7e; color: #eef3ff; }
-[data-theme="night"] .slide-block table tbody tr:nth-child(even) { background: #1c2536; }
-[data-theme="night"] .slide-block .katex-display { background: #1b2230; }
-
-[data-theme="night"] .slide-fig img.markdown-image {
-  border-color: #33405a;
-  background: #141a26;
-}
-
-@media (max-width: 920px) {
-  /* 窄屏：课件退回单列，中栏归位 */
-  .doc-body--slides .folio__col--main { min-width: 0; }
-  .slide-block { min-width: 0; padding: 1.1rem 1.05rem 1.05rem; }
-  .slide-block h4 { font-size: 1.12rem; margin-right: 1.8rem; }
-  .slide-block--cover h4 { font-size: 1.4rem; }
-  .slide-block img.markdown-image { max-height: none; }
-  .slide-fig img.markdown-image { max-height: none; }
-  .slide-figrow { flex-direction: column; }
-  /* 超宽公式在卡片内部横向滑动，不得撑破纸面 */
-  .slide-block .katex-display { overflow-x: auto; overflow-y: hidden; }
-  /* 夹在句子/条目里的行内长公式同样在段落内部滑动 */
-  .slide-block p,
-  .slide-block li { overflow-x: auto; }
-  /* 长链接允许在任意字符间断行 */
-  .slide-block a { overflow-wrap: anywhere; }
-}
 
 /* 窄屏兜底（≤700px 手机）：字体加载完成前回退字体度量可能让宽公式/长链接瞬时超出，
    最终布局本身不溢出；在根上裁掉横向滚动，避免加载瞬间页面可横滑。
@@ -1223,6 +890,13 @@ body.notes-local-edit .folio__edit:empty::before { content: "在此写笔记…"
   html.is-notes-open .folio__paper--notes { display: flex; }
   .folio__paper .folio__col--main,
   .folio__paper .folio__col--notes { padding: 0.9rem 0.5rem 0.6rem; }
+  /* 宽表在正文列内滚动，表头与表体共用同一张表。 */
+  .folio__col--main table {
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    overflow-x: auto;
+  }
   .folio__paper .folio__pageno { padding-top: 0.4rem; }
   /* 窄屏笔记纸为流式高度：编辑区保留一块可写纸面、随内容自然增高，不裁切 */
   .folio__edit {

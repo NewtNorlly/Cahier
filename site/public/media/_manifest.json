@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-12T17:00:53.188Z",
+  "generatedAt": "2026-11-13T09:38:02.978Z",
   "files": [
     {
       "path": "大学生批判性思维/covers/critical-thinking-480.webp",
@@ -75,43 +75,235 @@
     },
     {
       "path": "公共经济学/figures/pubeco-1110-p03-1.webp",
-      "bytes": 21142
+      "bytes": 40156
     },
     {
       "path": "公共经济学/figures/pubeco-1110-p04-2.webp",
-      "bytes": 21296
+      "bytes": 39996
     },
     {
       "path": "公共经济学/figures/pubeco-1110-p11-3.webp",
-      "bytes": 14134
+      "bytes": 26318
     },
     {
       "path": "公共经济学/figures/pubeco-1110-p12-4.webp",
-      "bytes": 31526
+      "bytes": 66404
     },
     {
       "path": "公共经济学/figures/pubeco-1110-p13-5.webp",
-      "bytes": 15508
+      "bytes": 28956
     },
     {
       "path": "公共经济学/figures/pubeco-1110-p15-6.webp",
-      "bytes": 23836
+      "bytes": 45838
     },
     {
       "path": "公共经济学/figures/pubeco-1110-p21-7.webp",
-      "bytes": 25092
+      "bytes": 45522
     },
     {
       "path": "公共经济学/figures/pubeco-1110-p23-8.webp",
-      "bytes": 23902
+      "bytes": 43246
     },
     {
       "path": "公共经济学/figures/pubeco-1110-p24-9.webp",
-      "bytes": 19030
+      "bytes": 37624
     },
     {
       "path": "公共经济学/figures/pubeco-1110-p25-10.webp",
-      "bytes": 17150
+      "bytes": 29468
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-1-13-1-ink.webp",
+      "bytes": 57002
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-1-25-1-ink.webp",
+      "bytes": 34472
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-1-30-1-ink.webp",
+      "bytes": 34122
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-1-39-1-ink.webp",
+      "bytes": 38540
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-2-34-1.webp",
+      "bytes": 63042
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-3-15-1.webp",
+      "bytes": 91198
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-3-16-1.webp",
+      "bytes": 39292
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-3-22-1-ink.webp",
+      "bytes": 5374
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-3-22-2-ink.webp",
+      "bytes": 53446
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-3-32-1-ink.webp",
+      "bytes": 27764
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-3-35-1.webp",
+      "bytes": 146856
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-4-13-1-ink.webp",
+      "bytes": 305600
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-4-14-1-ink.webp",
+      "bytes": 34490
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-4-17-1-ink.webp",
+      "bytes": 66490
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-4-20-1-ink.webp",
+      "bytes": 39746
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-4-21-1-ink.webp",
+      "bytes": 37994
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-4-25-1-ink.webp",
+      "bytes": 49500
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-5-08-1-ink.webp",
+      "bytes": 48300
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-5-13-1-ink.webp",
+      "bytes": 21058
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-5-16-1-ink.webp",
+      "bytes": 45046
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-5-17-1-ink.webp",
+      "bytes": 150588
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-5-22-1-ink.webp",
+      "bytes": 57270
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-5-23-1-ink.webp",
+      "bytes": 73108
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-5-24-1-ink.webp",
+      "bytes": 92848
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-5-25-1-ink.webp",
+      "bytes": 96194
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-5-28-1-ink.webp",
+      "bytes": 66494
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-5-29-1-ink.webp",
+      "bytes": 48530
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-5-30-1-ink.webp",
+      "bytes": 52702
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-5-31-1-ink.webp",
+      "bytes": 93286
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-5-32-1-ink.webp",
+      "bytes": 94000
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-5-33-1-ink.webp",
+      "bytes": 90110
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-5-39-1-ink.webp",
+      "bytes": 26486
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-5-40-1-ink.webp",
+      "bytes": 25382
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-5-42-1-ink.webp",
+      "bytes": 35448
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-5-47-1-ink.webp",
+      "bytes": 47064
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-5-66-1-ink.webp",
+      "bytes": 31066
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-6-08-1.webp",
+      "bytes": 50528
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-6-08-2.webp",
+      "bytes": 35818
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-6-09-1.webp",
+      "bytes": 44478
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-6-09-2-ink.webp",
+      "bytes": 106824
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-6-12-1-ink.webp",
+      "bytes": 49432
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-6-14-1-ink.webp",
+      "bytes": 48094
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-6-20-1-ink.webp",
+      "bytes": 117370
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-6-24-1-ink.webp",
+      "bytes": 181390
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-6-25-1-ink.webp",
+      "bytes": 97776
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-6-29-1-ink.webp",
+      "bytes": 65462
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-6-31-1-ink.webp",
+      "bytes": 110346
+    },
+    {
+      "path": "公共经济学/figures/pubeco-handout-6-37-1-ink.webp",
+      "bytes": 34814
     },
     {
       "path": "会计/covers/accounting-480.webp",

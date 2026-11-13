@@ -26,10 +26,6 @@ if (!note || note.draft) {
 const { Content } = await render(note.entry);
 const isLiterature = note.collectionName === "文献笔记";
 const kindLabel = isLiterature ? "文献笔记" : "教学讲稿";
-// 课件（PPT 导出幻灯片）：与分页插件 isSlideDeck 判定保持一致（文件名/标题含「课件」）
-const isSlideDeck = note.title.includes("课件")
-  || (typeof note.doc_type === "string" && /slide|courseware|deck/i.test(note.doc_type));
-
 const homeTarget = isLiterature ? "literature" : "lectures";
 const parentUrl = isLiterature ? undefined : collectionUrl(note.collectionId);
 const isFolioDoc = true; // 新版统一为三栏文档体
@@ -76,8 +72,8 @@ const isFolioDoc = true; // 新版统一为三栏文档体
     </div>
   </header>
 
-  <!-- 三栏文档体：左批注 / 中原文 / 右批注（课件用 slides 修饰类：一页放两张幻灯片） -->
-  <div class:list={["doc-body", { "doc-body--slides": isSlideDeck }]}>
+  <!-- 原文纸与笔记纸 -->
+  <div class="doc-body">
     <article class:list={["doc-canvas", { "is-folio": isFolioDoc }]}>
       <Content />
     </article>

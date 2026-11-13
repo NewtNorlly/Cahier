@@ -142,7 +142,8 @@ function imageWeight(node) {
   } else {
     renderH = Math.min(560, renderW * 1.15);
   }
-  return renderH + 52;
+  // 与正文配图的 CSS 高度上限一致。
+  return Math.min(renderH, 760) + 52;
 }
 
 /* 一页中栏可排高度（估算 px）。
@@ -160,261 +161,12 @@ const FIXED = Number(process.env.LEC_FIXED) || 920;
 /* 单个列表/表格拆分片段的目标高度，留出标题与续接余量。 */
 const SPLIT_TARGET = Math.round(FIXED * 0.9);
 
-/* ── 课件（PPT 导出幻灯片）分页模型 ─────────────────────────
- * 一个 A4 网页放「两张」源幻灯片；幻灯片用无衬线大字号、米色卡片。
- * 连续的图片两两横排（.slide-figrow），贴近 PPT 并排截图、压低纵向高度。
- *
- * 几何口径按 1536px 视口实测（folio.css）：
- * - 幻灯片卡片居中限宽 920，卡内文宽 ≈858；正文 1.02rem / 1.72 行距 → 每行 28.1px、约 52 个中字 / 100 西文
- * - 卡片上下内边距+边框 ≈44px；两张卡片间距 18px；A4 页主列可排高度实测 951px
- * - 单图按自然尺寸渲染、max-height 426；横排半宽图（可用宽 421）max-height 256
- * 估算后再留 SLIDE_SAFETY 安全余量吸收折行偏差，DP 求页数最少的两页配对，保证零超高。 */
-const SLIDES_PER_PAGE = 2;
-const SLIDE_CAP = 951;             // 一个 A4 页主列可排高度（CDP 实测：1086 − 纸页上下边距 − 主列顶距 − 页码行）
-// 配对安全余量（px）。密集纯中文流动段落（mixedLines 按 52 中字/行折算）会把折行数
-// 低估约 1 行（≈28px/张），两张叠加即低估 ~60–70px；原余量 26 不足，会让 6B 第
-// 47+48 两张稠密文字幻灯片（est 911）误配合页、实测 980 撑破 A4（1118px）。提到 46
-// 后配对限额 = 951−46 = 905：911>905 拆开，而 6A 最高配对 900、其余 <883 的配对均不变。
-const SLIDE_SAFETY = 46;           // 配对安全余量（px），吸收稠密段落折行低估，保证零超高
-const SLIDE_GAP = 18;              // 两张卡片之间的纵向间距
-const SLIDE_CARD_PAD = 44;         // 卡片上下内边距 + 边框
-const SLIDE_LINE = 28.1;           // 1.02rem × 1.72
-const SLIDE_CJK_CPL = 52;          // 段落每行中文字数（卡内文宽 858，中英混排聚合回归校准）
-const SLIDE_LAT_CPL = 100;         // 段落每行西文字符数（含空格折行，聚合回归校准）
-const SLIDE_LI_CJK = 50;           // 一级列表项每行中文字数（缩进占宽）
-const SLIDE_LI_LAT = 96;           // 一级列表项每行西文字符数
-const SLIDE_IMG_CAP = 426;         // 单张大图渲染上限（与 CSS max-height 对齐）
-const SLIDE_ROW_IMG_CAP = 256;     // 横排（半宽）图片渲染上限（与 CSS max-height 对齐）
-const SLIDE_CONTENT_W = 858;       // 卡内文宽
-const SLIDE_HALF_W = 421;          // 两列横排每张图可用宽（(858 - 0.7rem)/2）
-const SLIDE_THIRD_W = 278;         // 三列横排每张图可用宽（(858 - 2*0.7rem)/3 ≈ 278，复现源 PPTX 三列图片网格）
-
 function blockHasImage(node) {
   return !!(node && node.children && node.children.some(
     (c) => c.type === "image" || c.type === "imageReference" ||
       (c.type === "html" && /<img/i.test(c.value || "")),
   ));
 }
-/* 仅含图片（可带空白）的段落，视作可横排的图片块 */
-function isImageParagraph(node) {
-  const n = u(node);
-  if (!n || n.type !== "paragraph" || !blockHasImage(n)) return false;
-  return (n.children || []).every((c) =>
-    c.type === "image" || c.type === "imageReference" ||
-    (c.type === "html" && /<img/i.test(c.value || "")) ||
-    (c.type === "text" && c.value.trim() === ""));
-}
-/* 把一张幻灯片的原子块整理为序列：普通块 {node}，连续图片块合并成 {figs:[...], cols}。
- * 图片横排列数由内联标记 <!--figrow:3--> 指定（忠实复现源 PPTX 的多列图片网格，如 slide11
- * 的 3列×2行、slide39 的 3 个方形图标一排）；无标记时默认两列，行为与旧版完全一致。 */
-const FIGROW_RE = /^\s*<!--\s*figrow:([23])\s*-->\s*$/;
-function groupSlideContent(nodes) {
-  const items = [];
-  let run = [];
-  let runCols = 2;
-  const flush = () => {
-    if (!run.length) return;
-    if (run.length === 1) items.push({ node: run[0] });
-    else items.push({ figs: run, cols: runCols });
-    run = [];
-  };
-  for (const n of nodes) {
-    if (n.type === "html") {
-      const m = FIGROW_RE.exec(n.value || "");
-      if (m) { flush(); runCols = Number(m[1]); continue; } // 纯布局标记，不产出可见节点
-    }
-    if (isImageParagraph(n)) run.push(n);
-    else { flush(); runCols = 2; items.push({ node: n }); }
-  }
-  flush();
-  return items;
-}
-
-/* 课件口径下一张图片的渲染高度（按真实宽高比；幻灯片里图片按自然尺寸渲染，
- * 仅受卡宽与 max-height 约束，alt 里的 |宽 标记不参与）。 */
-function slideImageH(node, half = false, third = false) {
-  const n = u(node);
-  if (!n) return 0;
-  let url = n.url || "";
-  if (n.type === "html") {
-    const m = (n.value || "").match(/<img[^>]+src=["']([^"']+)["']/i);
-    url = m ? m[1] : "";
-  }
-  const nat = imgDims.get(url);
-  const maxW = third ? SLIDE_THIRD_W : half ? SLIDE_HALF_W : SLIDE_CONTENT_W;
-  const maxH = (half || third) ? SLIDE_ROW_IMG_CAP : SLIDE_IMG_CAP;
-  if (nat && nat.w) {
-    const h = Math.min(nat.h, (maxW * nat.h) / nat.w);
-    return Math.min(h, maxH);
-  }
-  return (half || third) ? SLIDE_ROW_IMG_CAP : 300; // 无元数据时取偏保守值
-}
-
-/* 中英混排行数：中文按中文字容、西文按西文字容分别占宽 */
-function mixedLines(text, cjkCpl, latCpl) {
-  let cjk = 0;
-  let lat = 0;
-  for (const ch of text) {
-    if (/\s/.test(ch)) continue;
-    if (/[㐀-䶿一-鿿豈-﫿＀-￯]/.test(ch)) cjk += 1;
-    else lat += 1;
-  }
-  return Math.max(1, Math.ceil(cjk / cjkCpl + lat / latCpl));
-}
-
-/* 段落/标题按显式换行折成若干段文本，分别计行 */
-function slideTextLines(node, cjkCpl = SLIDE_CJK_CPL, latCpl = SLIDE_LAT_CPL) {
-  const segs = [];
-  const walk = (n) => {
-    if (!n) return;
-    if (n.type === "break") { segs.push(""); return; }
-    if (typeof n.value === "string") {
-      if (!segs.length) segs.push("");
-      segs[segs.length - 1] += n.value;
-      return;
-    }
-    if (Array.isArray(n.children)) {
-      if (!segs.length) segs.push("");
-      n.children.forEach(walk);
-    }
-  };
-  walk(node);
-  const texts = segs.length ? segs : [textOf(node)];
-  return texts.reduce((s, t) => s + mixedLines(t, cjkCpl, latCpl), 0);
-}
-
-/* 课件列表高度：复用展平行，按课件字号口径计行，缩进每深一级每行少容 2 中字/4 西文。
- * 注意「- 1. 文本」这类写法会被 mdast 解析成空的外层 li 套内层有序列表，
- * 空包裹行不占纵向高度，必须剔除，只在首次进入有内容的更深层级时补一次嵌套外边距。 */
-function slideListWeight(node) {
-  const rows = flattenList(node)
-    .filter((r) => r.own.some((c) => c.type !== "list"));
-  let h = 18; // ul/ol 上下外边距
-  let prevDepth = 0;
-  for (const r of rows) {
-    if (r.depth > prevDepth) h += 8; // 嵌套列表外边距（空包裹层不重复计）
-    prevDepth = r.depth;
-    const cjkCpl = Math.max(32, SLIDE_LI_CJK - r.depth * 2);
-    const latCpl = Math.max(60, SLIDE_LI_LAT - r.depth * 4);
-    let lines = 0;
-    let blocks = 0;
-    for (const c of r.own) {
-      if (c.type === "list") continue;
-      lines += Math.max(1, slideTextLines(c, cjkCpl, latCpl));
-      blocks += 1;
-    }
-    if (!blocks) continue;
-    h += lines * SLIDE_LINE + 4 + (blocks > 1 ? (blocks - 1) * 8 : 0);
-  }
-  return h;
-}
-
-/* 课件表格：auto 布局，卡内文宽 858，0.86rem / 1.55 行距，单行 ≈34px */
-function slideTableWeight(node) {
-  const rows = node.children || [];
-  const ncols = rows.reduce((m, r) => Math.max(m, (r.children || []).length), 1);
-  const narrow = Math.max(4, Math.floor(((SLIDE_CONTENT_W / Math.max(1, ncols) - 18) / 13.8) * 1.05));
-  const wideShare = Math.max(0.42, 0.9 / Math.max(1, ncols));
-  const wide = Math.max(7, Math.floor(((SLIDE_CONTENT_W * wideShare - 18) / 13.8) * 1.05));
-  let h = 29; // 表格上下外边距
-  for (const row of rows) {
-    const cells = row.children || [];
-    let longest = -1;
-    let longestLen = -1;
-    cells.forEach((cell, i) => {
-      const len = visualLength(textOf(cell));
-      if (len > longestLen) { longestLen = len; longest = i; }
-    });
-    let lines = 1;
-    cells.forEach((cell, i) => {
-      const cap = i === longest ? wide : narrow;
-      lines = Math.max(lines, Math.max(1, Math.ceil(visualLength(textOf(cell)) / cap)));
-    });
-    h += lines * 21.3 + 13;
-  }
-  return h;
-}
-
-/* 课件展示公式（KaTeX display）：按 LaTeX 换行数估高，含段落上下边距 */
-function slideMathWeight(node) {
-  const src = (node.value || "").replace(/\\begin\{[^}]+\}/g, "").replace(/\\end\{[^}]+\}/g, "");
-  const breaks = (src.match(/\\\\/g) || []).length;
-  const nl = (src.split("\n").filter((s) => s.trim()).length) - 1;
-  const lines = Math.max(1, 1 + breaks + Math.max(0, nl));
-  return 64 + 20 * (lines - 1) + 33;
-}
-
-/* 单张幻灯片内一个原子块的课件口径高度（不含卡片铬） */
-function slideBlockWeight(node) {
-  const n = u(node);
-  if (!n) return 0;
-  if (n.type === "image" || n.type === "imageReference") return slideImageH(n);
-  if (n.type === "math") return slideMathWeight(n);
-  if (n.type === "paragraph") {
-    if (blockHasImage(n)) {
-      let h = 13; // 段落上下边距（相邻块外边距折叠后）
-      for (const c of n.children || []) {
-        if (c.type === "image" || c.type === "imageReference") h += slideImageH(c);
-        else if (c.type === "math") h += slideMathWeight(c) - 33;
-        else if (c.type === "html" && /<img/i.test(c.value || "")) h += slideImageH(c);
-      }
-      return h;
-    }
-    return slideTextLines(n) * SLIDE_LINE + 9;
-  }
-  if (n.type === "heading") {
-    if (n.depth <= 3) return slideTextLines(n, 38, 78) * 27 + 30;
-    return slideTextLines(n, 42, 84) * 27.3 + 36; // 卡片小标题 h4：含下边线与间距
-  }
-  if (n.type === "list") return slideListWeight(n);
-  if (n.type === "table") return slideTableWeight(n);
-  if (n.type === "blockquote") return mixedLines(textOf(n), 48, 92) * 25 + 26;
-  if (n.type === "code") return 24 + (n.value || "").split("\n").length * 20;
-  if (n.type === "thematicBreak") return 30;
-  if (n.type === "html") {
-    if (/<img/i.test(n.value || "")) return slideImageH(n) + 13;
-    return 13 + mixedLines(stripHtml(n.value || ""), SLIDE_CJK_CPL, SLIDE_LAT_CPL) * SLIDE_LINE;
-  }
-  return mixedLines(textOf(n), SLIDE_CJK_CPL, SLIDE_LAT_CPL) * SLIDE_LINE + 9;
-}
-
-/* 单张图片在横排下的高度估算（cols=2 半宽 / cols=3 三分之一宽） */
-function slideRowImageWeight(node, cols = 2) {
-  const n = u(node);
-  if (!n) return 0;
-  const third = cols === 3;
-  if (n.type === "paragraph") {
-    let h = 0;
-    for (const c of n.children || []) {
-      if (c.type === "image" || c.type === "imageReference") h = Math.max(h, slideImageH(c, false, third));
-      else if (c.type === "html" && /<img/i.test(c.value || "")) h = Math.max(h, slideImageH(c, false, third));
-    }
-    return h;
-  }
-  return slideImageH(n, false, third);
-}
-/* 一个图片横排的高度 = 每行取大 + 行距，含横排上下外边距；cols 决定每行张数 */
-function figRowWeight(figs, cols = 2) {
-  const perRow = cols === 3 ? 3 : 2;
-  let h = 0;
-  for (let i = 0; i < figs.length; i += perRow) {
-    let rowMax = 0;
-    for (let j = i; j < i + perRow && j < figs.length; j++) {
-      rowMax = Math.max(rowMax, slideRowImageWeight(figs[j], cols));
-    }
-    h += rowMax + 14;
-  }
-  return h + 14;
-}
-/* 单张幻灯片卡片的完整估算高度（含卡片铬） */
-function slideWeight(nodes) {
-  let w = SLIDE_CARD_PAD;
-  for (const it of groupSlideContent(nodes)) {
-    w += it.figs ? figRowWeight(it.figs, it.cols) : slideBlockWeight(it.node);
-  }
-  return w;
-}
-
 function u(node) {
   return node && typeof node === "object" ? node : undefined;
 }
@@ -817,11 +569,6 @@ function splitTableTo(node, firstBudget, restBudget) {
   return pieces.length ? pieces : [node];
 }
 
-function splitTable(node, target = SPLIT_TARGET) {
-  if (tableWeight(node) <= FIXED) return [node];
-  return splitTableTo(node, target, target);
-}
-
 /* ── 行内感知的段落切分（保留加粗/斜体/链接/行内公式/上标等格式） ──
  * 把段落的行内树展平成一串「叶子」：普通文本叶子可从中切断，链接/图片/
  * 行内代码/行内公式等作为不可切原子整体挪动；strong/em 等包裹层在重建时克隆。 */
@@ -1028,7 +775,6 @@ function splitBlock(node) {
   const w = blockWeight(node);
   if (w <= FIXED) return [node];
   if (node.type === "list") return splitList(node);
-  if (node.type === "table") return splitTable(node);
   if (node.type === "paragraph") return splitParagraph(node);
   return [node]; // 图片、公式、HTML 脚注等不可拆，独占一页
 }
@@ -1037,7 +783,7 @@ function splitBlock(node) {
  * <ol> 里常含若干条、每条又是一整段长文；列表只能在条目之间切，条目内部无法续页，
  * 整块翻页就留下大片空白。这里把中栏列表逐条展平成「带序号/圆点的普通段落」，
  * 层级用左缩进表达，随后交段落切分自然跨页，行文如笔记本逐行向下。
- * 仅用于无批注的讲稿中栏；文献批注带与课件幻灯片不走这里。 */
+ * 原文纸的列表在分页前按条目展开。 */
 function flattenListToBlocks(node) {
   if (!node || node.type !== "list") return null;
   const rows = flattenList(node);
@@ -1081,10 +827,6 @@ function splitBlockAt(node, budget) {
   }
   if (n.type === "list") {
     const pieces = splitListTo(n, budget, SPLIT_TARGET);
-    return pieces.length >= 2 ? pieces : null;
-  }
-  if (n.type === "table") {
-    const pieces = splitTableTo(n, budget, SPLIT_TARGET);
     return pieces.length >= 2 ? pieces : null;
   }
   return null;
@@ -1148,6 +890,18 @@ function flowPackMain(mainStream) {
   // 把一个原子块放进当前页；放不下时优先「填满本页 + 续到下页」
   const place = (node) => {
     const w = blockWeight(node);
+    if (node.type === "table" && w > FIXED) {
+      const pieces = splitTableTo(node, SPLIT_TARGET, SPLIT_TARGET);
+      // 只有超出整页的长表才按行拆分。续页带表头，每页放一段。
+      if (pieces.length > 1) {
+        pieces.forEach((piece, index) => {
+          if (index) newChunk();
+          if (!pageEmpty() && chunk.w + blockWeight(piece) > FIXED) newChunk();
+          pushBlock(piece, blockWeight(piece));
+        });
+        return;
+      }
+    }
     if (pageEmpty()) { pushBlock(node, w); return; }
     if (chunk.w + w <= FIXED) {
       // 标题孤行控制：标题后若几乎放不下正文，标题整体移到下页
@@ -1186,10 +940,20 @@ function flowPackMain(mainStream) {
    * 放不下整组一起翻页，说明永远紧贴图片下方，绝不分离到两页。 */
   const isImgBlock = (n) => blockHasImage(n) || (n.type === "html" && /<img/i.test(n.value || ""));
   const isFigCaption = (n) => n.type === "html" && /fig-caption/.test(n.value || "");
+  const isTableLead = (node) => node?.type === "paragraph" && /[：:]$/u.test(textOf(node).trim());
   const groups = [];
   for (let gi = 0; gi < mainStream.length; gi += 1) {
     const n = mainStream[gi];
-    if (isImgBlock(n) && gi + 1 < mainStream.length && isFigCaption(mainStream[gi + 1])) {
+    const next = mainStream[gi + 1];
+    const table = mainStream[gi + 2];
+    if (isHeadingLike(n) && isTableLead(next) && table?.type === "table" &&
+        blockWeight(n) + blockWeight(next) + blockWeight(table) <= FIXED) {
+      groups.push([n, next, table]);
+      gi += 2;
+    } else if (isTableLead(n) && next?.type === "table" && blockWeight(n) + blockWeight(next) <= FIXED) {
+      groups.push([n, next]);
+      gi += 1;
+    } else if (isImgBlock(n) && next && isFigCaption(next)) {
       groups.push([n, mainStream[gi + 1]]);
       gi += 1;
     } else {
@@ -1217,97 +981,6 @@ function packPages(mainStream) {
   return mainPages.map((p) => ({ m: p.nodes }));
 }
 
-/* 把一张幻灯片的内容序列渲染为 mdast（连续图片两两包进 .slide-figrow 横排） */
-function renderSlideItems(nodes) {
-  const out = [];
-  for (const it of groupSlideContent(nodes)) {
-    if (it.node) {
-      out.push(it.node);
-      continue;
-    }
-    out.push(htmlNode(`<div class="slide-figrow${it.cols === 3 ? " slide-figrow--3" : ""}">`));
-    for (const fig of it.figs) {
-      out.push(htmlNode(`<div class="slide-fig">`));
-      out.push(fig);
-      out.push(htmlNode(`</div>`));
-    }
-    out.push(htmlNode(`</div>`));
-  }
-  return out;
-}
-
-/* ── 课件（幻灯片）分页：一个 A4 页放两张源幻灯片 ─────────────
- * 每张幻灯片保持原子完整（不在幻灯片内部切分），用 .slide-block 卡片包裹，
- * 带来源幻灯片序号签；封面独占一页，其余用动态规划求「页数最少」的两页配对，
- * 两张估算高度 + 卡间距 ≤ 页内容量（留安全余量）才合页；超重单张独占一页。 */
-function packSlides(folios, file) {
-  const dbgBase = (((file && file.path) || "").split(/[\\/]/).pop() || "").slice(0, 14);
-
-  // 1) 收集幻灯片（跳过源文件中的空页）
-  const slides = [];
-  let slideIndex = 0;
-  for (const folio of folios) {
-    slideIndex += 1;
-    const nodes = [];
-    for (const band of folio.bands) {
-      for (const n of band.m) nodes.push(n);
-    }
-    if (!nodes.length) continue;
-    const w = slideWeight(nodes);
-    if (process.env.SLIDE_DEBUG) console.error(`SLIDEW ${dbgBase} #${slideIndex} est=${Math.round(w)}`);
-    slides.push({ index: slideIndex, nodes, w });
-  }
-  if (!slides.length) return [];
-
-  // 2) 封面（第 1 张）独占一页
-  const groups = [];
-  let rest = slides;
-  if (slides[0].index === 1) {
-    groups.push([slides[0]]);
-    rest = slides.slice(1);
-  }
-
-  // 3) DP：每页放 1–2 张连续幻灯片，最小化页数
-  const n = rest.length;
-  const limit = SLIDE_CAP - SLIDE_SAFETY;
-  const dp = new Array(n + 1).fill(Infinity);
-  const take = new Array(n + 1).fill(1);
-  dp[0] = 0;
-  for (let i = 1; i <= n; i += 1) {
-    dp[i] = dp[i - 1] + 1;
-    take[i] = 1;
-    if (i >= 2) {
-      const pairW = rest[i - 2].w + rest[i - 1].w + SLIDE_GAP;
-      if (pairW <= limit && dp[i - 2] + 1 < dp[i]) {
-        dp[i] = dp[i - 2] + 1;
-        take[i] = 2;
-      }
-    }
-  }
-  const tail = [];
-  let i = n;
-  while (i >= 1) {
-    if (take[i] === 2) { tail.push([rest[i - 2], rest[i - 1]]); i -= 2; }
-    else { tail.push([rest[i - 1]]); i -= 1; }
-  }
-  tail.reverse();
-  groups.push(...tail);
-
-  // 4) 渲染为页 chunk
-  return groups.map((group) => {
-    const chunk = { l: [], m: [], r: [], w: 0, slides: group.map((s) => s.index) };
-    for (const s of group) {
-      const coverCls = s.index === 1 ? " slide-block--cover" : "";
-      chunk.m.push(htmlNode(`<div class="slide-block${coverCls}" data-slide="${s.index}">`));
-      chunk.m.push(htmlNode(`<span class="slide-block__tag" aria-hidden="true">${s.index}</span>`));
-      chunk.m.push(...renderSlideItems(s.nodes));
-      chunk.m.push(htmlNode(`</div>`));
-      chunk.w += s.w;
-    }
-    return chunk;
-  });
-}
-
 /* ── mdast 组装（remark 阶段以 html 节点包裹原始 mdast 内容） ──── */
 
 function htmlNode(value) {
@@ -1329,11 +1002,10 @@ function annotateEst(nodes) {
  * - 原文纸（main）：中栏 M 原文，沿用 .folio__col--main 全套排版；
  * - 笔记纸（notes）：内容唯一来源是 site/src/data/folio-notes.json（构建期逐字烤入），
  *   md 侧栏（col:L/col:R）不再渲染为预置笔记（2026-10-26 起，笔记纸改本地可编辑 + 云端只读）；
- * 默认笔记纸叠在原文纸正后方（CSS 绝对定位），导航铅笔按钮触发 body 类后两纸左右摊开。
- * slideMod=true 时给 folio 加 --slides 修饰类（课件纸更宽，以容纳 PPT 卡片）。 */
-function makeSpreadFolio(label, page, index, slideMod, noteText) {
+ * 默认笔记纸叠在原文纸正后方（CSS 绝对定位），导航铅笔按钮触发 body 类后两纸左右摊开。 */
+function makeSpreadFolio(label, page, index, noteText) {
   return [
-    htmlNode(`<section class="folio folio--spread${slideMod ? " folio--spread--slides" : ""}" data-page="${index + 1}">`),
+    htmlNode(`<section class="folio folio--spread" data-page="${index + 1}">`),
     htmlNode(`<div class="folio__paper folio__paper--main">`),
     htmlNode(`<div class="folio__col folio__col--main">`),
     ...annotateEst(page.m),
@@ -1352,17 +1024,6 @@ function makeSpreadFolio(label, page, index, slideMod, noteText) {
   ];
 }
 
-/* 课件（幻灯片）判定：文件名含「课件」或以 doc_type 标注。
- * 幻灯片每个源 folio 是一张自洽的幻灯片，必须保持硬页边界：
- * 不跨幻灯片合并、不让一张幻灯片的图片流落到别张幻灯片的页面。 */
-function isSlideDeck(file) {
-  const fp = (file && (file.path || (file.history && file.history[0]))) || "";
-  const base = fp.split(/[\\/]/).pop() || "";
-  if (base.includes("课件")) return true;
-  const dt = file && file.data && file.data.astroFrontmatter && file.data.astroFrontmatter.doc_type;
-  return typeof dt === "string" && /slide|courseware|deck/i.test(dt);
-}
-
 export function remarkSpreadFolio() {
   return (tree, file) => {
     const folios = parseFolios(tree);
@@ -1370,27 +1031,12 @@ export function remarkSpreadFolio() {
 
     imgDims = loadImageDims(folios, file);
 
-    let pages;
-    let slideMode = false;
-    if (isSlideDeck(file)) {
-      // 课件：每张源幻灯片原子完整，DP 配对为一个 A4 页两张幻灯片
-      slideMode = true;
-      pages = packSlides(folios, file);
-    } else {
-      pages = packPages(buildMainStream(folios));
-    }
-    // 幻灯片各自独立，不做跨页续段缩进
-    // ★2026-10-29：移除页级 markContinuation 猜测。续段标记已由 splitParagraphPieces
-    // 在「真正被跨页切断的续片」上精确打标；页级按「上一页尾是否句读」猜会把
-    // 目录行/CIP 行/脚注行/题辞（本无句读）之后的新章首段误判为续段而取消缩进
-    // （用户报「每个文章的第一自然段都没有缩进」）。段落要么整块在一页、要么被
-    // 切成续片，不存在第三种跨页形态，故页级猜测只产生误伤，删除。
-
+    const pages = packPages(buildMainStream(folios));
     const docNotes = loadFolioNotes()[sourceDocKey(file)] || {};
     const children = [];
     pages.forEach((page, i) => {
       children.push(
-        ...makeSpreadFolio(`第 ${i + 1} 页`, page, i, slideMode, docNotes[String(i + 1)] || ""),
+        ...makeSpreadFolio(`第 ${i + 1} 页`, page, i, docNotes[String(i + 1)] || ""),
       );
     });
     // 注入源 md 相对路径，供本地编辑服务把笔记回写进 folio-notes.json 的对应键
