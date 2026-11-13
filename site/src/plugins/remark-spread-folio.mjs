@@ -54,6 +54,7 @@ const MARKER_RE = /^\s*<!--\s*\/?\s*(folio|band|col)(?:\s*:\s*([^>]*?))?\s*-->\s
 
 /* 本地图片真实尺寸缓存（构建期读取，保证图片页分页估算准确） */
 let imgDims = new Map();
+let keepIndexedPages = false;
 
 /* 纯 JS 读取 WebP 尺寸（只读文件头 30 字节，避免引入原生依赖） */
 function webpSize(buf) {
@@ -127,7 +128,7 @@ function loadImageDims(folios, file) {
 }
 
 /* 图片渲染高度：按真实宽高比换算到中栏（内容宽 678），含题注与外边距 */
-function imageWeight(node) {
+function imageWeight(node, spacing = 52) {
   const alt = node.alt || "";
   const wm = alt.match(/\|\s*(\d{2,4})/);
   const specW = node.data?.hProperties?.width || (wm ? Number(wm[1]) : null);
@@ -143,7 +144,7 @@ function imageWeight(node) {
     renderH = Math.min(560, renderW * 1.15);
   }
   // 与正文配图的 CSS 高度上限一致。
-  return Math.min(renderH, 760) + 52;
+  return Math.min(renderH, 760) + spacing;
 }
 
 /* 一页中栏可排高度（估算 px）。
@@ -167,6 +168,12 @@ function blockHasImage(node) {
       (c.type === "html" && /<img/i.test(c.value || "")),
   ));
 }
+function standaloneImage(node) {
+  if (node?.type !== "paragraph") return undefined;
+  const content = node.children.filter((child) => child.type !== "text" || child.value.trim());
+  return content.length === 1 && content[0].type === "image" ? content[0] : undefined;
+}
+
 function u(node) {
   return node && typeof node === "object" ? node : undefined;
 }
@@ -355,7 +362,11 @@ function tableRowWeight(row, cpl) {
   let lines = 1;
   cells.forEach((cell, i) => {
     const cap = i === longest ? wide : narrow;
-    lines = Math.max(lines, Math.max(1, textLines(textOf(cell), cap)));
+    const text = textOf(cell);
+    const cellLines = keepIndexedPages ? textLines(text, cap) : text
+      .split(/<br\s*\/?\s*>/i)
+      .reduce((total, line) => total + Math.max(1, textLines(line, cap)), 0);
+    lines = Math.max(lines, cellLines);
   });
   return lines * TABLE_LINE + 16;
 }
@@ -436,6 +447,8 @@ function blockWeight(node) {
   if (!n) return 0;
   switch (n.type) {
     case "paragraph": {
+      const image = standaloneImage(n);
+      if (!keepIndexedPages && image) return imageWeight(image, 32);
       // 图片段落（markdown-image）按图片估
       if (n.children && n.children.some((c) => c.type === "image" || c.type === "html" && /<img/i.test(c.value || ""))) {
         let w = 70;
@@ -891,7 +904,14 @@ function flowPackMain(mainStream) {
   const place = (node) => {
     const w = blockWeight(node);
     if (node.type === "table" && w > FIXED) {
-      const pieces = splitTableTo(node, SPLIT_TARGET, SPLIT_TARGET);
+      const remaining = FIXED - chunk.w;
+      const partial = !keepIndexedPages && !pageEmpty() && remaining >= 220
+        ? splitTableTo(node, remaining, SPLIT_TARGET)
+        : [];
+      const first = partial[0];
+      const pieces = first?.children.length >= 3 && blockWeight(first) <= remaining
+        ? partial
+        : splitTableTo(node, SPLIT_TARGET, SPLIT_TARGET);
       // 只有超出整页的长表才按行拆分。续页带表头，每页放一段。
       if (pieces.length > 1) {
         pieces.forEach((piece, index) => {
@@ -920,8 +940,12 @@ function flowPackMain(mainStream) {
       const pieces = splitBlockAt(node, remaining);
       if (pieces && pieces.length >= 2) {
         const wa = blockWeight(pieces[0]);
-        // 首片要真正把本页填满（误差一行内），否则宁可不切、整块翻页
-        if (wa >= remaining - LINE * 1.2) {
+        // 大片余白允许就近按句切分。两片都至少两行，避免制造孤行。
+        const fillsPage = wa >= remaining - LINE * 1.2;
+        const fillsLargeGap = !keepIndexedPages && remaining >= 350 &&
+          node.type === "paragraph" && wa <= remaining && wa >= remaining * 0.72 &&
+          blockWeight(pieces[1]) >= LINE * 2;
+        if (fillsPage || fillsLargeGap) {
           pushBlock(pieces[0], wa);
           newChunk();
           for (let k = 1; k < pieces.length; k += 1) place(pieces[k]);
@@ -942,6 +966,8 @@ function flowPackMain(mainStream) {
   const isFigCaption = (n) => n.type === "html" && /fig-caption/.test(n.value || "");
   const isTableLead = (node) => node?.type === "paragraph" && /[：:]$/u.test(textOf(node).trim());
   const groups = [];
+  const imageLead = (node) => isHeadingLike(node) || (node?.type === "paragraph" &&
+    /(?:下图|如图|[：:]$)/u.test(textOf(node).trim()));
   for (let gi = 0; gi < mainStream.length; gi += 1) {
     const n = mainStream[gi];
     const next = mainStream[gi + 1];
@@ -953,6 +979,15 @@ function flowPackMain(mainStream) {
     } else if (isTableLead(n) && next?.type === "table" && blockWeight(n) + blockWeight(next) <= FIXED) {
       groups.push([n, next]);
       gi += 1;
+    } else if (!keepIndexedPages && imageLead(n) && standaloneImage(next)) {
+      const group = [n, next];
+      if (isFigCaption(table)) group.push(table);
+      if (group.reduce((sum, block) => sum + blockWeight(block), 0) <= FIXED) {
+        groups.push(group);
+        gi += group.length - 1;
+      } else {
+        groups.push([n]);
+      }
     } else if (isImgBlock(n) && next && isFigCaption(next)) {
       groups.push([n, mainStream[gi + 1]]);
       gi += 1;
@@ -960,16 +995,54 @@ function flowPackMain(mainStream) {
       groups.push([n]);
     }
   }
+  const groupWeight = (group) => group.reduce((sum, node) => sum + blockWeight(node), 0);
   const placeGroup = (group) => {
+    const gw = groupWeight(group);
+    if (!keepIndexedPages && !pageEmpty() && chunk.w + gw > FIXED) {
+      const image = group.map(standaloneImage).find(Boolean);
+      const reduction = chunk.w + gw - FIXED;
+      if (image && imgDims.has(image.url)) {
+        const height = imageWeight(image, 0);
+        // 页底稍差一点空间时，等比缩图以保留图文关系和读图尺寸。
+        if (reduction <= height * 0.16 && height - reduction >= 240) {
+          const width = Math.floor((height - reduction) * imgDims.get(image.url).w / imgDims.get(image.url).h);
+          image.data = { ...image.data, hProperties: { ...image.data?.hProperties, width } };
+          group.forEach((node) => pushBlock(node, blockWeight(node)));
+          return;
+        }
+      }
+    }
     if (group.length === 1) { place(group[0]); return; }
-    // 图文组：整组原子放置，不拆——放不下就整组翻页，图与说明同页
-    const gw = group.reduce((s, n) => s + blockWeight(n), 0);
     if (!pageEmpty() && chunk.w + gw > FIXED) newChunk();
     group.forEach((n) => pushBlock(n, blockWeight(n)));
   };
 
   for (const group of groups) placeGroup(group);
   if (!pageEmpty()) newChunk();
+  if (!keepIndexedPages && pages.length > 1) {
+    const tail = pages.at(-1);
+    const previous = pages.at(-2);
+    // 一两行的尾页优先并回前页，或与前页末尾的若干自然段平衡。
+    if (tail.w <= 105 && tail.nodes.every(node => node.type === "paragraph" && !blockHasImage(node))) {
+      if (previous.w + tail.w <= FIXED + 30) {
+        previous.nodes.push(...tail.nodes);
+        pages.pop();
+      } else {
+        const groupByEnd = new Map(groups.map((group) => [group.at(-1), group]));
+        let cut = previous.nodes.length;
+        let moved = 0;
+        while (cut > 1 && moved < 220) {
+          const group = groupByEnd.get(previous.nodes[cut - 1]) ?? [previous.nodes[cut - 1]];
+          if (cut <= group.length) break;
+          cut -= group.length;
+          moved += groupWeight(group);
+        }
+        if (moved >= 220 && previous.w - moved >= 380 && !isHeadingLike(previous.nodes[cut - 1])) {
+          tail.nodes.unshift(...previous.nodes.splice(cut));
+        }
+      }
+    }
+  }
   return pages;
 }
 
@@ -1031,8 +1104,10 @@ export function remarkSpreadFolio() {
 
     imgDims = loadImageDims(folios, file);
 
-    const pages = packPages(buildMainStream(folios));
     const docNotes = loadFolioNotes()[sourceDocKey(file)] || {};
+    // 已有笔记按页码索引，保留对应文档的分页口径。
+    keepIndexedPages = Object.values(docNotes).some((text) => text.trim());
+    const pages = packPages(buildMainStream(folios));
     const children = [];
     pages.forEach((page, i) => {
       children.push(
