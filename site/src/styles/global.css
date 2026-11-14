@@ -179,6 +179,8 @@
   }
 
   body {
+    display: flex;
+    flex-direction: column;
     min-width: 18rem;
     min-height: 100vh;
     background:
@@ -318,6 +320,7 @@
 
   /* Fixed header offset for main content */
   #main-content {
+    flex: 1 0 auto;
     padding-top: 5.5rem;
   }
 
