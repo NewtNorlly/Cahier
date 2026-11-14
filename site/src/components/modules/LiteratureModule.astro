@@ -89,14 +89,20 @@ const CLOTH = [
           class="book-card"
           href={noteUrl(note.id)}
           data-shelf-book={categoryOf.get(note.id) ?? ""}
+          data-opening-cover={cover?.src}
           data-search-text={`${note.title} ${note.author ?? ""}`.toLowerCase()}
         >
+          <span class="paper-stack">
+            <span class="paper-stack__leaves" aria-hidden="true">
+              {Array.from({ length: 12 }, (_, i) => <span class="paper-stack__leaf" style={`--leaf: ${i + 1}`} />)}
+            </span>
           <span class="book-card__cover">
             {cover ? (
               <img src={cover.thumbnailSrc ?? cover.src} alt={`${note.title}封面`} loading="lazy" decoding="async" />
             ) : (
               <span class="book-card__fallback">{firstChar(note.title)}</span>
             )}
+          </span>
           </span>
           <span class="book-card__body">
             <span class="book-card__title">{note.title}</span>

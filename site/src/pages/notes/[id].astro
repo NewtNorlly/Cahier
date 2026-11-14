@@ -39,7 +39,7 @@ const isFolioDoc = true; // 新版统一为三栏文档体
       : note.description || `${note.collectionName}收录的${kindLabel}。`
   }
   canonicalPath={`/notes/${encodeURIComponent(note.id)}/`}
-  pageClass="article-page doc-page"
+  pageClass={`article-page doc-page${isLiterature ? " literature-reader" : ""}`}
 >
   <div class="article-shell">
     <nav class="article-back" aria-label="返回导航">

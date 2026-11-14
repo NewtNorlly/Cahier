@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import "../styles/paper-opening.css";
 import "katex/dist/katex.min.css";
 import { withBase } from "../lib/url";
 
@@ -60,6 +61,17 @@ const canonicalUrl = canonicalPath !== false && Astro.site
           }
         } catch { /* 忽略 */ }
       })();
+    </script>
+
+    <script is:inline>
+      try {
+        const entry = JSON.parse(sessionStorage.getItem("cahier-paper-entry") || "null");
+        if (entry && entry.path === location.pathname && Date.now() - entry.time < 12000 &&
+            !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          document.documentElement.classList.add("paper-entry-pending");
+          setTimeout(() => document.documentElement.classList.remove("paper-entry-pending"), 5000);
+        }
+      } catch {}
     </script>
   </head>
   <body class={pageClass}>
@@ -177,6 +189,11 @@ const canonicalUrl = canonicalPath !== false && Astro.site
       const header = document.getElementById("siteHeader");
       let lastScroll = 0;
       let ticking = false;
+
+      window.addEventListener("cahier:paper-opened", () => {
+        lastScroll = window.scrollY;
+        header?.classList.remove("is-hidden");
+      });
 
       function onScroll() {
         const currentScroll = window.scrollY;
@@ -667,5 +684,6 @@ const canonicalUrl = canonicalPath !== false && Astro.site
       }
       window.addEventListener("DOMContentLoaded", setupEditableNotes);
     </script>
+    <script>import "../scripts/paper-opening";</script>
   </body>
 </html>
