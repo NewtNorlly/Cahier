@@ -32,9 +32,7 @@ Social media has both strengthened and weakened interpersonal relationships.（�
 
 Positively, it bridges distance. My cousin studying abroad and I video chat weekly via WeChat, sharing daily lives like we’re together. It also helps us stay in touch with old friends we might otherwise lose contact with.（从积极面看，社交媒体能跨越空间距离，维系远距离关系）
 
-However, it brings problems too. Many people now prioritize “online interactions” over face-to-face ones. I’ve seen groups of friends sitting at a restaurant, all staring at their phones instead of talking. This reduces deep,meaningful communication—liking a post isn’t the same as having a heartfelt conversation. Worse, social media often shows “perfect” versions of others’lives, making some people feel lonely or inadequate.（从消极面看，社交媒体易让人重“线上互动”轻“线下沟通”，
-
-削弱真实连接）
+However, it brings problems too. Many people now prioritize “online interactions” over face-to-face ones. I’ve seen groups of friends sitting at a restaurant, all staring at their phones instead of talking. This reduces deep,meaningful communication—liking a post isn’t the same as having a heartfelt conversation. Worse, social media often shows “perfect” versions of others’lives, making some people feel lonely or inadequate.（从消极面看，社交媒体易让人重“线上互动”轻“线下沟通”，削弱真实连接）
 
 So we need to use social media wisely: let it be a tool to enhance relationships,not replace real connections.（综上，关键在于合理使用，让社交媒体成为关系的“强化剂”而非“替代品”）
 
