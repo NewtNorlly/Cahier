@@ -363,6 +363,20 @@ const canonicalUrl = canonicalPath !== false && Astro.site
       function setupEditableNotes() {
         const host = location.hostname;
         const isLocal = host === "localhost" || host === "127.0.0.1" || host === "[::1]";
+        if (isLocal) {
+          // One-time removal of the test notes for this paper, including prior pagination versions.
+          const cleared = "cahier-note-reset:74905906";
+          try {
+            if (localStorage.getItem(cleared) === null) {
+              const oldPage = /^cahier-note:\/notes\/[^/]+--74905906\/?:(?:v\d+:)?\d+$/;
+              for (let index = localStorage.length - 1; index >= 0; index--) {
+                const key = localStorage.key(index);
+                if (key && oldPage.test(key)) localStorage.removeItem(key);
+              }
+              localStorage.setItem(cleared, "1");
+            }
+          } catch { /* Storage can be disabled. Retry on a later visit. */ }
+        }
         const edits = document.querySelectorAll<HTMLElement>(".folio__edit");
         if (!edits.length) return;
         if (!isLocal) {
