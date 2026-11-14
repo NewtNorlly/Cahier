@@ -20,7 +20,11 @@ I think AI’s impact on human jobs is a double-edged sword, not a simple“repl
 
 On one hand, AI replaces tedious/high-risk jobs. AI excels at repetitive, high-risk tasks—like assembly line work in factories or data entry in offices.（一方面，AI 取代枯燥/高风险工作）
 
-This replaces humans in tedious jobs, freeing us from physical strain or monotony. For example, many logistics companies now use AI-driven robots to sort packages, which is faster and reduces errors.On the other hand, AI can’t replace “human-centric” jobs（另一方面，AI 无法取代“以人为核心”的工作）AI can’t fully replace jobs requiring emotional intelligence, creativity, or critical thinking. Teachers, nurses, and artists rely on human connection or original ideas—AI might assist a nurse with patient data, but it can’t comfort a worried patient like a human can.What’s more, AI creates new jobs: AI trainers, data analysts, and robot maintenance engineers. So instead of fearing replacement, we should focus on upskilling to adapt to the AI era. （AI 创造新工作，提升技能是关键）
+This replaces humans in tedious jobs, freeing us from physical strain or monotony. For example, many logistics companies now use AI-driven robots to sort packages, which is faster and reduces errors.
+
+On the other hand, AI can’t replace “human-centric” jobs（另一方面，AI 无法取代“以人为核心”的工作）AI can’t fully replace jobs requiring emotional intelligence, creativity, or critical thinking. Teachers, nurses, and artists rely on human connection or original ideas—AI might assist a nurse with patient data, but it can’t comfort a worried patient like a human can.
+
+What’s more, AI creates new jobs: AI trainers, data analysts, and robot maintenance engineers. So instead of fearing replacement, we should focus on upskilling to adapt to the AI era. （AI 创造新工作，提升技能是关键）
 
 ### 2. The impact of social media on interpersonal relationships 社交媒体对人际关系的影响
 
@@ -88,7 +92,7 @@ First, diversify activities to match different interests. For example, besides s
 
 Second, reduce barriers to participation. Some students don’t join because activities conflict with classes or cost money. Schools can schedule activities after class hours, provide free materials, or offer transportation for off-campus activities like volunteer trips to rural areas.（第二，消除参与障碍，降低学生参与门槛）
 
-Third, highlight the value of activities. Let students know that extracurricular activities help them make friends, develop skills (like leadership from organizing events), and even boost college applications or job resumes.Teachers can also join activities sometimes to encourage students—if a math teacher plays basketball with the sports club, students might be more willing to join.（第三，明确活动价值，让学生感知参与的好处）
+Third, highlight the value of activities. Let students know that extracurricular activities help them make friends, develop skills (like leadership from organizing events), and even boost college applications or job resumes. Teachers can also join activities sometimes to encourage students—if a math teacher plays basketball with the sports club, students might be more willing to join.（第三，明确活动价值，让学生感知参与的好处）
 
 ### 8. Is a vegetarian diet healthy? 素食是否健康？
 
@@ -96,7 +100,7 @@ A vegetarian diet can be healthy if planned well, but it also has risks if not b
 
 The advantages are clear. Vegetarian diets are rich in fiber, vitamins, and minerals from fruits, vegetables, and whole grains, which help lower the risk of heart disease and diabetes. Many vegetarians also consume less saturated fat(found in meat), which is good for overall health.（合理素食的健康益处主要体现在两方面）
 
-However, a poorly planned vegetarian diet can lead to nutrient deficiencies.Meat is a main source of protein, iron, and vitamin B12—if vegetarians don’t replace these, they might feel tired (from low iron) or have weak immunity(from low protein).（但不合理的素食易导致三大营养素缺失，影响健康）
+However, a poorly planned vegetarian diet can lead to nutrient deficiencies. Meat is a main source of protein, iron, and vitamin B12—if vegetarians don’t replace these, they might feel tired (from low iron) or have weak immunity(from low protein).（但不合理的素食易导致三大营养素缺失，影响健康）
 
 So to keep a healthy vegetarian diet, people need to take three key steps. First,choose the right foods: eat beans, tofu, or lentils for protein, spinach or fortified cereals for iron. Second, take vitamin B12 supplements if needed. Third, consult a nutritionist to make a balanced meal plan.（因此，保持健康素食需做好三项关键措施）
 
@@ -122,7 +126,7 @@ The good side of commercialization is obvious. It makes festivals more visible:F
 
 However, over-commercialization is a serious problem. Some businesses focus only on making money—selling overpriced festival gifts or creating “fake traditions” just for profit. This makes festivals feel like “shopping sprees”instead of times for family reunion or cultural reflection, weakening their core values.（但过度商业化会带来两大负面影响）
 
-So the key is to balance commercialization and cultural protection.Governments can regulate commercial activities and support culture-focused events; media can promote the festival’s cultural meaning, reminding people of its true value.（因此，核心在于“平衡”，让商业化服务于文化传承）
+So the key is to balance commercialization and cultural protection. Governments can regulate commercial activities and support culture-focused events; media can promote the festival’s cultural meaning, reminding people of its true value.（因此，核心在于“平衡”，让商业化服务于文化传承）
 
 In short, commercialization itself isn’t bad—it’s a tool to promote traditional festivals. But we must never let it replace the cultural and emotional core of festivals.（总结：商业化是“工具”而非“目标”，需守住节日的文化与情感内核）
 
@@ -142,7 +146,7 @@ In short, commercialization itself isn’t bad—it’s a tool to promote tradit
 
 **Student B:** I hope so. If they just ban phones completely, some students might get upset. But if they explain the reason (to improve learning) and make flexible rules, most people will understand. Also, teachers can remind students to put phones away instead of just enforcing a strict ban—it feels more respectful.
 
-**Student A:** Exactly! So the key is to make the policy reasonable, not too strict.That way, it helps us study better without causing too much trouble.
+**Student A:** Exactly! So the key is to make the policy reasonable, not too strict. That way, it helps us study better without causing too much trouble.
 
 ### 2. Should college students take part-time jobs? Why or why not?
 
@@ -178,7 +182,7 @@ In short, commercialization itself isn’t bad—it’s a tool to promote tradit
 
 **Student A:** I’ve noticed that many young people around me are obsessed with buying expensive brands—like designer bags or limited-edition sneakers. Do you think consumerism is changing their values?
 
-**Student B:** Absolutely. Consumerism makes some young people equate"happiness" with "buying things." My cousin is always saving up to buy the latest iPhone—she says if she doesn’t have it, she feels "left out" by her friends.It’s like they judge themselves and others based on what they own, not who they are. That’s a bad change in values, right?
+**Student B:** Absolutely. Consumerism makes some young people equate"happiness" with "buying things." My cousin is always saving up to buy the latest iPhone—she says if she doesn’t have it, she feels "left out" by her friends. It’s like they judge themselves and others based on what they own, not who they are. That’s a bad change in values, right?
 
 **Student A:** Yeah, it is. And social media makes it worse—everyone posts photos of their new purchases, so others feel pressured to keep up. I’ve even heard some students take part-time jobs just to buy luxury items, instead of saving money for study or future goals. But is there any positive effect?
 
@@ -194,11 +198,11 @@ In short, commercialization itself isn’t bad—it’s a tool to promote tradit
 
 **Student B:** I get your frustration! Online learning definitely has flaws, especially for hands-on subjects. Like, you can’t ask the teacher to walk you through coding errors in real time, right? But for theoretical courses—like literature or history—it’s actually pretty effective. My cousin studied world history online and aced her exam because she could rewatch lectures whenever she forgot key points.
 
-**Student A:** That’s a good point about flexibility. But don’t you miss the in-class interactions? In my traditional philosophy class, we have heated debates every week, and hearing my classmates’ ideas helps me see different perspectives.Online discussions feel so slow—you post a comment and wait hours for a reply.
+**Student A:** That’s a good point about flexibility. But don’t you miss the in-class interactions? In my traditional philosophy class, we have heated debates every week, and hearing my classmates’ ideas helps me see different perspectives. Online discussions feel so slow—you post a comment and wait hours for a reply.
 
 **Student B:** Oh, I totally agree! The lack of real-time interaction is a big downside.My little sister is in high school, and she hates online math classes because she can’t raise her hand to ask a question immediately. But here’s the thing—online education is a lifesaver for people with busy schedules. My aunt is a working mom who’s getting her master’s online; she studies after her kid goes to bed,which she couldn’t do with traditional classes.
 
-**Student A:** Fair enough! Flexibility is a huge plus. But what about self-discipline?I know so many people who skip online lectures because there’s no teacher watching. In traditional classes, being in a classroom with others keeps me accountable—I don’t want to be the only one not taking notes.
+**Student A:** Fair enough! Flexibility is a huge plus. But what about self-discipline? I know so many people who skip online lectures because there’s no teacher watching. In traditional classes, being in a classroom with others keeps me accountable—I don’t want to be the only one not taking notes.
 
 **Student B:** That’s a valid concern! Self-discipline is key for online learning. But traditional classes have their own issues too—like fixed schedules. If you get sick or have a family emergency, you miss the class entirely. Online classes let you watch recordings later. I think it’s not about which is “more effective,” but which fits your needs. For self-disciplined people who need flexibility, online works; for those who need structure and interaction, traditional is better.
 

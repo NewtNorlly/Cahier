@@ -55,6 +55,8 @@ const MARKER_RE = /^\s*<!--\s*\/?\s*(folio|band|col)(?:\s*:\s*([^>]*?))?\s*-->\s
 /* 本地图片真实尺寸缓存（构建期读取，保证图片页分页估算准确） */
 let imgDims = new Map();
 let keepIndexedPages = false;
+let repaginateLecture = false;
+let latinWidth = 0.56;
 
 /* 纯 JS 读取 WebP 尺寸（只读文件头 30 字节，避免引入原生依赖） */
 function webpSize(buf) {
@@ -252,10 +254,10 @@ const CJK_RE = /[㐀-䶿一-鿿豈-﫿＀-￯]/g;
  * 新自然段会被误判为续段而取消缩进。 */
 const SENTENCE_END_RE = /[。！？!?.…：:；;”’"』）)](?:<\/sup\s*>|〔\s*\d+\s*〕)*\s*$/;
 
-function visualLength(text) {
+function visualLength(text, latin = 0.56) {
   const matched = text.match(CJK_RE);
   const cjk = matched ? matched.length : 0;
-  return cjk + (text.length - cjk) * 0.56;
+  return cjk + (text.length - cjk) * latin;
 }
 
 function textLines(text, charsPerLine) {
@@ -456,7 +458,7 @@ function blockWeight(node) {
         return w;
       }
       // 中英混排受西文词边界与两端对齐影响，每行实容约 40 视觉字（CDP 逐块标定，见 LECTURE_PARA_CPL）
-      return textLines(textOf(n), LECTURE_PARA_CPL) * LINE + 11; // 折叠后段距约 10.4px
+      return Math.ceil(visualLength(textOf(n), latinWidth) / LECTURE_PARA_CPL) * LINE + 11; // 折叠后段距约 10.4px
     }
     case "heading": {
       const lines = Math.max(1, textLines(textOf(n), 40));
@@ -620,7 +622,7 @@ function splitTextByVisual(text, need) {
   if (need <= 0) return ["", text];
   let acc = 0;
   for (let i = 0; i < text.length; i += 1) {
-    acc += /[㐀-䶿一-鿿豈-﫿＀-￯]/.test(text[i]) ? 1 : 0.56;
+    acc += /[㐀-䶿一-鿿豈-﫿＀-￯]/.test(text[i]) ? 1 : latinWidth;
     if (acc >= need) {
       let cut = i + 1;
       if (!keepIndexedPages && /[\p{Script=Latin}\d]/u.test(text[cut] ?? "")) {
@@ -634,27 +636,33 @@ function splitTextByVisual(text, need) {
 }
 
 /* 把叶子序列在视觉长度 target 处分成左右两段；普通文本叶可从中切断 */
-function divideLeaves(leaves, target) {
+function divideLeaves(leaves, target, offset = Infinity) {
+  let consumed = 0;
   const left = [];
   const right = [];
   let acc = 0;
   let done = false;
   for (const leaf of leaves) {
     if (done) { right.push(leaf); continue; }
-    const len = visualLength(leaf.value);
+    const chars = offset - consumed;
+    consumed += leaf.value.length;
+    if (chars <= 0) { right.push(leaf); done = true; continue; }
+    const len = visualLength(leaf.value, latinWidth);
     if (leaf.atom) {
-      if (acc === 0 || acc + len <= target) {
+      if (acc === 0 || (acc + len <= target && leaf.value.length <= chars)) {
         left.push(leaf);
         acc += len;
       } else {
         right.push(leaf);
         done = true;
       }
-    } else if (acc + len <= target) {
+    } else if (acc + len <= target && leaf.value.length <= chars) {
       left.push(leaf);
       acc += len;
     } else {
-      const [lv, rv] = splitTextByVisual(leaf.value, target - acc);
+      const [lv, rv] = Number.isFinite(offset)
+        ? [leaf.value.slice(0, chars), leaf.value.slice(chars)]
+        : splitTextByVisual(leaf.value, target - acc);
       if (lv) left.push({ ...leaf, value: lv });
       if (rv) right.push({ ...leaf, value: rv });
       done = true;
@@ -733,7 +741,10 @@ function mergeFnSups(leaves) {
   return out;
 }
 
-function splitParagraphPieces(node, firstBudget, restBudget) {
+const sentenceSegmenter = new Intl.Segmenter("en", { granularity: "sentence" });
+const sentencePunctuation = /[.!?。！？…][”’"'）)」』】\]]*$/u;
+
+function splitParagraphPieces(node, firstBudget, restBudget, requireSentence = false) {
   let rest = mergeFnSups(flattenInline(node.children || []));
   const pieces = [];
   let budget = firstBudget;
@@ -741,10 +752,21 @@ function splitParagraphPieces(node, firstBudget, restBudget) {
   while (rest.length && guard < 64) {
     guard += 1;
     const cap = paragraphCapChars(budget);
-    if (visualLength(leavesText(rest)) <= cap) { pieces.push(rest); break; }
+    const text = leavesText(rest);
+    if (visualLength(text, latinWidth) <= cap) { pieces.push(rest); break; }
     let { left, right } = divideLeaves(rest, cap);
     const leftText = leavesText(left);
-    if (!SENTENCE_END_RE.test(leftText)) {
+    if (repaginateLecture) {
+      let offset = 0;
+      let used = 0;
+      for (const { segment, index } of sentenceSegmenter.segment(text)) {
+        used += visualLength(segment, latinWidth);
+        if (used > cap) break;
+        if (sentencePunctuation.test(segment.trimEnd())) offset = index + segment.length;
+      }
+      if (offset) ({ left, right } = divideLeaves(rest, Infinity, offset));
+      else if (!pieces.length && requireSentence) return [];
+    } else if (!SENTENCE_END_RE.test(leftText)) {
       const pos = lastSentencePos(leftText);
       if (pos > 0 && pos >= cap * 0.6) ({ left, right } = divideLeaves(rest, pos));
     }
@@ -764,6 +786,7 @@ function splitParagraphPieces(node, firstBudget, restBudget) {
     rest = right;
     budget = restBudget;
   }
+  if (guard === 64 && rest.length && pieces.at(-1) !== rest) pieces.push(rest);
   return pieces
     .filter((lf) => leavesText(lf).trim() || lf.some((l) => l.atom))
     .map((lf, k) => {
@@ -842,7 +865,7 @@ function splitBlockAt(node, budget) {
   if (!n) return null;
   if (n.type === "paragraph") {
     if (blockHasImage(n)) return null;
-    const pieces = splitParagraphPieces(n, budget, SPLIT_TARGET);
+    const pieces = splitParagraphPieces(n, budget, SPLIT_TARGET, repaginateLecture);
     return pieces.length >= 2 && leavesText(flattenInline(pieces[0].children)).trim() ? pieces : null;
   }
   if (n.type === "list") {
@@ -910,7 +933,7 @@ function flowPackMain(mainStream) {
   // 把一个原子块放进当前页；放不下时优先「填满本页 + 续到下页」
   const place = (node) => {
     const w = blockWeight(node);
-    if (node.type === "table" && w > FIXED) {
+    if (node.type === "table" && (w > FIXED || (repaginateLecture && w > FIXED * 0.65 && chunk.w + w > FIXED))) {
       const remaining = FIXED - chunk.w;
       const partial = !keepIndexedPages && !pageEmpty() && remaining >= 220
         ? splitTableTo(node, remaining, SPLIT_TARGET)
@@ -943,6 +966,20 @@ function flowPackMain(mainStream) {
     // 当前页放不下
     if (isHeadingLike(node)) { newChunk(); pushBlock(node, w); return; }
     const remaining = FIXED - chunk.w;
+    if (repaginateLecture && remaining >= 350) {
+      const image = standaloneImage(node);
+      const size = image && imgDims.get(image.url);
+      if (size) {
+        const height = imageWeight(image, 0);
+        const targetHeight = remaining - 34;
+        const width = Math.floor(targetHeight * size.w / size.h);
+        if (targetHeight >= height * 0.65 && width >= 320) {
+          image.data = { ...image.data, hProperties: { ...image.data?.hProperties, width } };
+          pushBlock(node, blockWeight(node));
+          return;
+        }
+      }
+    }
     if (remaining >= FILL_MIN) {
       const pieces = splitBlockAt(node, remaining);
       if (pieces && pieces.length >= 2) {
@@ -952,7 +989,9 @@ function flowPackMain(mainStream) {
         const fillsLargeGap = !keepIndexedPages && remaining >= 350 &&
           node.type === "paragraph" && wa <= remaining && wa >= remaining * 0.72 &&
           blockWeight(pieces[1]) >= LINE * 2;
-        if (fillsPage || fillsLargeGap) {
+        const fillsAtSentence = repaginateLecture && node.type === "paragraph" &&
+          wa >= LINE * 2 && wa <= remaining && remaining - wa <= LINE * 4;
+        if ((fillsPage || fillsLargeGap || fillsAtSentence) && (!repaginateLecture || wa <= remaining)) {
           pushBlock(pieces[0], wa);
           newChunk();
           for (let k = 1; k < pieces.length; k += 1) place(pieces[k]);
@@ -1011,7 +1050,8 @@ function flowPackMain(mainStream) {
       if (image && imgDims.has(image.url)) {
         const height = imageWeight(image, 0);
         // 页底稍差一点空间时，等比缩图以保留图文关系和读图尺寸。
-        if (reduction <= height * 0.16 && height - reduction >= 240) {
+        const maxReduction = repaginateLecture && FIXED - chunk.w >= 350 ? 0.35 : 0.16;
+        if (reduction <= height * maxReduction && height - reduction >= 240) {
           const width = Math.floor((height - reduction) * imgDims.get(image.url).w / imgDims.get(image.url).h);
           image.data = { ...image.data, hProperties: { ...image.data?.hProperties, width } };
           group.forEach((node) => pushBlock(node, blockWeight(node)));
@@ -1026,11 +1066,28 @@ function flowPackMain(mainStream) {
 
   for (const group of groups) placeGroup(group);
   if (!pageEmpty()) newChunk();
+  // Move an orphan heading to the start of its next page when that page has room.
+  if (repaginateLecture) {
+    for (let i = 0; i + 1 < pages.length; i += 1) {
+      const page = pages[i], next = pages[i + 1];
+      const headings = [];
+      while (page.nodes.length && isHeadingLike(page.nodes.at(-1))) headings.unshift(page.nodes.pop());
+      const weight = groupWeight(headings);
+      if (headings.length && next.w + weight <= FIXED) {
+        next.nodes.unshift(...headings);
+        next.w += weight;
+        page.w -= weight;
+      } else page.nodes.push(...headings);
+    }
+  }
   if (!keepIndexedPages && pages.length > 1) {
     const tail = pages.at(-1);
     const previous = pages.at(-2);
     // 一两行的尾页优先并回前页，或与前页末尾的若干自然段平衡。
-    if (tail.w <= 105 && tail.nodes.every(node => node.type === "paragraph" && !blockHasImage(node))) {
+    if (repaginateLecture && previous.w <= 125 && previous.w + tail.w <= FIXED + 30) {
+      previous.nodes.push(...tail.nodes);
+      pages.pop();
+    } else if (tail.w <= 105 && tail.nodes.every(node => node.type === "paragraph" && !blockHasImage(node))) {
       if (previous.w + tail.w <= FIXED + 30) {
         previous.nodes.push(...tail.nodes);
         pages.pop();
@@ -1050,7 +1107,7 @@ function flowPackMain(mainStream) {
       }
     }
   }
-  return pages;
+  return pages.filter((page) => page.nodes.length);
 }
 
 /* 原文纸分页：逐行流动排满，一页排满才翻页。
@@ -1114,6 +1171,9 @@ export function remarkSpreadFolio() {
     const docNotes = loadFolioNotes()[sourceDocKey(file)] || {};
     // 已有笔记按页码索引，保留对应文档的分页口径。
     keepIndexedPages = Object.values(docNotes).some((text) => text.trim());
+    const source = sourceDocKey(file);
+    repaginateLecture = !keepIndexedPages && !source.startsWith("文献笔记/");
+    latinWidth = repaginateLecture && source.startsWith("英语/") ? 0.46 : 0.56;
     const pages = packPages(buildMainStream(folios));
     const children = [];
     pages.forEach((page, i) => {
